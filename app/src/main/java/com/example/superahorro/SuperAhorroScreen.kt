@@ -56,8 +56,7 @@ enum class SuperAhorroScreen() {
     OtherProfile,
     Search,
     Profile,
-    EditProfile,
-    Favorites
+    EditProfile
 }
 
 @Composable
@@ -104,8 +103,8 @@ fun SuperAhorroApp(
                         navController.navigate(SuperAhorroScreen.Profile.name)
                     },
                     onFavoritesClicked = {
-                        navController.navigate(SuperAhorroScreen.Favorites.name)
-                    },
+                        navController.navigate(SuperAhorroScreen.Search.name)
+                    }
 
 
                 )
@@ -118,7 +117,7 @@ fun SuperAhorroApp(
                     },
                     onRegistrarseClicked = {
                         navController.navigate(SuperAhorroScreen.Register.name)
-                    },
+                    }
                 )
             }
             composable(route = SuperAhorroScreen.Register.name) {
@@ -126,43 +125,124 @@ fun SuperAhorroApp(
                 RegisterScreen(
                     onRegistrarClicked = {
                         navController.navigate(SuperAhorroScreen.Login.name)
-                    },
+                    }
                 )
             }
             composable(route = SuperAhorroScreen.ViewTable.name) {
                 val context = LocalContext.current
                 ViewTableScreen(
-
+                    onReturnClicked = {
+                        navController.navigate(SuperAhorroScreen.Main.name)
+                    }
                 )
             }
             composable(route = SuperAhorroScreen.CreateTable.name) {
                 val context = LocalContext.current
                 CreateTableScreen(
-
+                    onReturnClicked = {
+                        navController.navigate(SuperAhorroScreen.Main.name)
+                    },
+                    onCreateClicked = {
+                        navController.navigate(SuperAhorroScreen.ViewTable.name)
+                    }
                 )
             }
             composable(route = SuperAhorroScreen.OtherProfile.name) {
                 val context = LocalContext.current
                 OtherProfileScreen(
-
+                    onHomeButtonClicked = {
+                        navController.navigate(SuperAhorroScreen.Main.name)
+                    },
+                    onCreateTableClicked = {
+                        navController.navigate(SuperAhorroScreen.CreateTable.name)
+                    },
+                    onOtherProfileClicked = {
+                        navController.navigate(SuperAhorroScreen.OtherProfile.name)
+                    },
+                    onSearchClicked = {
+                        navController.navigate(SuperAhorroScreen.Search.name)
+                    },
+                    onViewTableClicked = {
+                        navController.navigate(SuperAhorroScreen.ViewTable.name)
+                    },
+                    onProfileClicked = {
+                        navController.navigate(SuperAhorroScreen.Profile.name)
+                    },
+                    onFavoritesClicked = {
+                        navController.navigate(SuperAhorroScreen.Search.name)
+                    }
                 )
             }
             composable(route = SuperAhorroScreen.Search.name) {
                 val context = LocalContext.current
                 SearchScreen(
-
+                    onHomeButtonClicked = {
+                        navController.navigate(SuperAhorroScreen.Main.name)
+                    },
+                    onCreateTableClicked = {
+                        navController.navigate(SuperAhorroScreen.CreateTable.name)
+                    },
+                    onOtherProfileClicked = {
+                        navController.navigate(SuperAhorroScreen.OtherProfile.name)
+                    },
+                    onSearchClicked = {
+                        navController.navigate(SuperAhorroScreen.Search.name)
+                    },
+                    onViewTableClicked = {
+                        navController.navigate(SuperAhorroScreen.ViewTable.name)
+                    },
+                    onProfileClicked = {
+                        navController.navigate(SuperAhorroScreen.Profile.name)
+                    },
+                    onFavoritesClicked = {
+                        navController.navigate(SuperAhorroScreen.Search.name)
+                    }
                 )
             }
             composable(route = SuperAhorroScreen.Profile.name) {
                 val context = LocalContext.current
                 ProfileScreen(
-
+                    onHomeButtonClicked = {
+                        navController.navigate(SuperAhorroScreen.Main.name)
+                    },
+                    onCreateTableClicked = {
+                        navController.navigate(SuperAhorroScreen.CreateTable.name)
+                    },
+                    onSearchClicked = {
+                        navController.navigate(SuperAhorroScreen.Search.name)
+                    },
+                    onProfileClicked = {
+                        navController.navigate(SuperAhorroScreen.Profile.name)
+                    },
+                    onFavoritesClicked = {
+                        navController.navigate(SuperAhorroScreen.Search.name)
+                    },
+                    onEditProfileClicked = {
+                        navController.navigate(SuperAhorroScreen.EditProfile.name)
+                    }
                 )
             }
             composable(route = SuperAhorroScreen.EditProfile.name) {
                 val context = LocalContext.current
                 EditProfileScreen(
-
+                    onHomeButtonClicked = {
+                        navController.navigate(SuperAhorroScreen.Main.name)
+                    },
+                    onCreateTableClicked = {
+                        navController.navigate(SuperAhorroScreen.CreateTable.name)
+                    },
+                    onSearchClicked = {
+                        navController.navigate(SuperAhorroScreen.Search.name)
+                    },
+                    onProfileClicked = {
+                        navController.navigate(SuperAhorroScreen.Profile.name)
+                    },
+                    onFavoritesClicked = {
+                        navController.navigate(SuperAhorroScreen.Search.name)
+                    },
+                    onAcceptChangesClicked = {
+                        navController.navigate(SuperAhorroScreen.Profile.name)
+                    }
                 )
             }
         }
