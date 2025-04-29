@@ -44,6 +44,7 @@ import androidx.compose.ui.res.dimensionResource
 //import com.example.superahorro.ui.StartOrderScreen
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.layout.fillMaxHeight
+import com.example.superahorro.ui.PantallaInicio
 
 
 enum class SuperAhorroScreen() {
@@ -55,7 +56,8 @@ enum class SuperAhorroScreen() {
     OtherProfile,
     Search,
     Profile,
-    EditProfile
+    EditProfile,
+    Favorites
 }
 
 @Composable
@@ -82,26 +84,49 @@ fun SuperAhorroApp(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(route = SuperAhorroScreen.Main.name) {
-                MainScreen(
-                    quantityOptions = DataSource.quantityOptions,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(dimensionResource(R.dimen.padding_medium))
+                PantallaInicio(
+                    onHomeButtonClicked = {
+                        navController.navigate(SuperAhorroScreen.Main.name)
+                    },
+                    onCreateTableClicked = {
+                        navController.navigate(SuperAhorroScreen.CreateTable.name)
+                    },
+                    onOtherProfileClicked = {
+                        navController.navigate(SuperAhorroScreen.OtherProfile.name)
+                    },
+                    onSearchClicked = {
+                        navController.navigate(SuperAhorroScreen.Search.name)
+                    },
+                    onViewTableClicked = {
+                        navController.navigate(SuperAhorroScreen.ViewTable.name)
+                    },
+                    onProfileClicked = {
+                        navController.navigate(SuperAhorroScreen.Profile.name)
+                    },
+                    onFavoritesClicked = {
+                        navController.navigate(SuperAhorroScreen.Favorites.name)
+                    },
+
+
                 )
             }
             composable(route = SuperAhorroScreen.Login.name) {
                 val context = LocalContext.current
                 LoginScreen(
-                    subtotal = uiState.price,
-                    options = DataSource.flavors.map { id -> context.resources.getString(id) },
-                    onSelectionChanged = { viewModel.setFlavor(it) },
-                    modifier = Modifier.fillMaxHeight()
+                    onAceptarClicked = {
+                        navController.navigate(SuperAhorroScreen.Main.name)
+                    },
+                    onRegistrarseClicked = {
+                        navController.navigate(SuperAhorroScreen.Register.name)
+                    },
                 )
             }
             composable(route = SuperAhorroScreen.Register.name) {
                 val context = LocalContext.current
                 RegisterScreen(
-
+                    onRegistrarClicked = {
+                        navController.navigate(SuperAhorroScreen.Login.name)
+                    },
                 )
             }
             composable(route = SuperAhorroScreen.ViewTable.name) {
