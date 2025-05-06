@@ -87,10 +87,10 @@ fun TablaView(
             modifier = Modifier.fillMaxSize().background(Color.LightGray),
 
             //Cambiarlo a SpaceBetween
-            verticalArrangement = Arrangement.Top,
+            verticalArrangement = Arrangement.SpaceBetween,
             //horizontalAlignment = Alignment.Start
         ){
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             Row(
                 modifier = Modifier,
                 verticalAlignment = Alignment.Top,
