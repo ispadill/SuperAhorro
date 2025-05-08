@@ -44,6 +44,7 @@
 ////import com.example.superahorro.ui.StartOrderScreen
 //import androidx.compose.ui.platform.LocalContext
 //import androidx.compose.foundation.layout.fillMaxHeight
+//import com.example.superahorro.ui.EditProfileScreen
 //import com.example.superahorro.ui.PantallaInicio
 //import com.example.superahorro.ui.ProfileScreen
 //
@@ -206,9 +207,6 @@
 //                    onHomeButtonClicked = {
 //                        navController.navigate(SuperAhorroScreen.Main.name)
 //                    },
-//                    onCreateTableClicked = {
-//                        navController.navigate(SuperAhorroScreen.CreateTable.name)
-//                    },
 //                    onSearchClicked = {
 //                        navController.navigate(SuperAhorroScreen.Search.name)
 //                    },
@@ -228,9 +226,6 @@
 //                EditProfileScreen(
 //                    onHomeButtonClicked = {
 //                        navController.navigate(SuperAhorroScreen.Main.name)
-//                    },
-//                    onCreateTableClicked = {
-//                        navController.navigate(SuperAhorroScreen.CreateTable.name)
 //                    },
 //                    onSearchClicked = {
 //                        navController.navigate(SuperAhorroScreen.Search.name)
