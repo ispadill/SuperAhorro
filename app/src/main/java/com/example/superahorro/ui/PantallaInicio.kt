@@ -57,11 +57,17 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.BottomAppBar
 import com.example.superahorro.ModeloDominio.Plantilla
 import com.example.superahorro.ModeloDominio.Tabla
 import com.example.superahorro.R
 import androidx.compose.material3.Divider
+import androidx.compose.ui.tooling.preview.Preview
 
 val plantillaDefault = Plantilla(nombre="Prueba", numColumnas =3,
     nombresColumnas = listOf("Tienda","Producto","Precio")
@@ -85,7 +91,16 @@ fun performSearch(query: String, tablas: List<Tabla>): List<String> {
 }
 
 @Composable
-fun PantallaInicio() {
+fun PantallaInicio(
+    onCreateTableClicked: () -> Unit,
+    onOtherProfileClicked: () -> Unit,
+    onViewTableClicked: () -> Unit,
+    onHomeButtonClicked: () -> Unit,
+    onSearchClicked: () -> Unit,
+    onProfileClicked: () -> Unit,
+    onFavoritesClicked: () -> Unit,
+
+        ) {
     val modifier = Modifier.fillMaxSize()
 
     var isSearchVisible by rememberSaveable { mutableStateOf(false) }
@@ -108,9 +123,15 @@ fun PantallaInicio() {
                 }
             )
         },
+        bottomBar = {
+            BottomNavigationBar(onHomeButtonClicked,
+            onSearchClicked,
+            onProfileClicked,
+            onFavoritesClicked)
+        },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {},
+                onClick = onCreateTableClicked,
                 shape = MaterialTheme.shapes.medium,
                 containerColor = Color(0xfff68c70),
                 modifier = Modifier
@@ -398,4 +419,46 @@ fun SearchBarBelowAppBar(
             }
         }
     }
+}
+@Composable
+fun BottomNavigationBar(
+    onHomeButtonClicked: () -> Unit,
+    onSearchClicked: () -> Unit,
+    onProfileClicked: () -> Unit,
+    onFavoritesClicked: () -> Unit,
+        ) {
+    BottomAppBar(
+        containerColor = Color(0xfff55c7a), // Color de fondo de la barra inferior
+        contentColor = Color.Black, // Color del contenido (íconos y texto)
+        actions = {
+            IconButton(
+                onClick = onHomeButtonClicked,
+                modifier = Modifier.padding(horizontal = 28.dp)) {
+                    Icon(imageVector = Icons.Default.Home, contentDescription = "Inicio",Modifier.size(40.dp))
+            }
+            IconButton(
+                onClick = onSearchClicked,
+                modifier = Modifier.padding(horizontal = 28.dp)) {
+                    Icon(imageVector = Icons.Default.Search, contentDescription = "Buscar",Modifier.size(40.dp))
+            }
+            IconButton(
+                onClick = onProfileClicked,
+                modifier = Modifier.padding(horizontal = 28.dp)) {
+                    Icon(imageVector = Icons.Default.Person, contentDescription = "Perfil",Modifier.size(40.dp))
+            }
+            IconButton(
+                onClick = onFavoritesClicked,
+                modifier = Modifier.padding(horizontal = 28.dp)) {
+                    Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favoritos",Modifier.size(40.dp))
+            }
+        }
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PantallaInicioPreview() {
+
+    PantallaInicio(onHomeButtonClicked = {}, onProfileClicked = {}, onFavoritesClicked = {}, onOtherProfileClicked = {}, onSearchClicked = {}, onViewTableClicked = {}, onCreateTableClicked = {},)
+
 }

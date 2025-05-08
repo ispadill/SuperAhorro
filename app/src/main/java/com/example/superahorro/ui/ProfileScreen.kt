@@ -15,9 +15,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,104 +44,133 @@ import com.example.superahorro.R
 @Composable
 fun ProfileScreen(
     onEditProfileClicked: () -> Unit,
+    onHomeButtonClicked: () -> Unit,
+    onSearchClicked: () -> Unit,
+    onProfileClicked: () -> Unit,
+    onFavoritesClicked: () -> Unit,
     modifier: Modifier = Modifier
-){
-    Column(modifier.fillMaxWidth().fillMaxSize().background(Color(0xfff55c7a)), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp, top = 50.dp)
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(bottom = 50.dp)) {
-                Image(
-                    painter = painterResource(R.drawable.logoapp),
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .size(200.dp)
-                )
-            }
+) {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = Color(0xfff6bc66), // Fondo de la pantalla
+        bottomBar = {
+            BottomNavigationBar(onHomeButtonClicked,
+                onSearchClicked,
+                onProfileClicked,
+                onFavoritesClicked)
         }
-
-
-        Box(
+    ) { innerPadding ->
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .fillMaxSize()
+                .background(Color(0xfff6bc66))
+                .padding(innerPadding), // Agregar el padding del Scaffold
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-
-                    Text(text = "Nombre de Usuario: Juanito666 ",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.LightGray,
-                        textAlign = TextAlign.Center)
-                }
-
-                Spacer(modifier = Modifier.height(40.dp))
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-
-                    Text(text = "Nombre Completo:  Juan Palomo",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.LightGray,
-                        textAlign = TextAlign.Center)
-                }
-
-                Spacer(modifier = Modifier.height(40.dp))
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
+            // Logo de la aplicación
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp, top = 50.dp)
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(bottom = 50.dp)) {
                     Image(
-                        painter = painterResource(R.drawable.gmail),
+                        painter = painterResource(R.drawable.logoapp),
                         contentDescription = null,
                         contentScale = ContentScale.Fit,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Correo: JuanPalomo@gmail.com", fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.LightGray,
-                        textAlign = TextAlign.Center)
-                }
-            }
-        }
-        Spacer(modifier = Modifier.height(60.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ){
-            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(bottom = 150.dp)) {
-                Button(
-                    onClick = onEditProfileClicked,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xfff6bc66),  // Color de fondo del botón
-                        contentColor = Color.Black   // Color del texto
-                    ),
-                ) {
-                    Text(
-                        text = "Editar Perfil",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        textAlign = TextAlign.Center
+                        modifier = Modifier
+                            .size(200.dp)
                     )
                 }
             }
 
+            // Información del perfil
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
 
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Nombre de Usuario: Juanito666",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(40.dp))
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Nombre Completo: Juan Palomo",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(40.dp))
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(
+                            painter = painterResource(R.drawable.gmail),
+                            contentDescription = null,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Correo: JuanPalomo@gmail.com",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(60.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(bottom = 150.dp)) {
+                    Button(
+                        onClick = onEditProfileClicked,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xfff55c7a),
+                            contentColor = Color.Black
+                        ),
+                    ) {
+                        Text(
+                            text = "Editar Perfil",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
         }
     }
-
-
 }
+
+
 
 @Preview(showBackground = true)
 @Composable
@@ -140,6 +178,10 @@ fun PantallaPerfilPreview() {
 
         ProfileScreen(
             onEditProfileClicked = {},
+            onHomeButtonClicked = {},
+            onSearchClicked = {},
+            onProfileClicked = {},
+            onFavoritesClicked = {},
             modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center))
 
 }
