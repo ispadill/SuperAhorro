@@ -20,22 +20,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SuperAhorroTheme {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .statusBarsPadding(),
-                ) {
-                    PantallaInicio()
-                }
+                SuperAhorroApp()
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SuperAhorroTheme {
-        PantallaInicio()
-    }
-}

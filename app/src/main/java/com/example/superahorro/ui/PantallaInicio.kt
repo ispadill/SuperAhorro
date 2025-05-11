@@ -57,22 +57,36 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.BottomAppBar
 import com.example.superahorro.ModeloDominio.Plantilla
 import com.example.superahorro.ModeloDominio.Tabla
 import com.example.superahorro.R
 import androidx.compose.material3.Divider
+import androidx.compose.ui.tooling.preview.Preview
 
+// Datos de prueba para previsualización
 val plantillaDefault = Plantilla(nombre="Prueba", numColumnas =3,
     nombresColumnas = listOf("Tienda","Producto","Precio")
 )
 
+// Datos de prueba para previsualización
 val tablasDePrueba = listOf(
     Tabla(id = "1",titulo ="Mercadona", autor = "Pedro", valoracion = 3F, numeroValoraciones = 10, plantilla = plantillaDefault),
     Tabla(id = "2",titulo ="BM", autor = "Paco", valoracion = 5F, numeroValoraciones = 4, plantilla = plantillaDefault),
     Tabla(id = "3",titulo ="Carrefour", autor = "Maria", valoracion = 1F, numeroValoraciones = 100, plantilla = plantillaDefault)
 )
-
+/**
+ * Función para filtrar tablas según criterio de búsqueda.
+ *
+ * @param query Texto de búsqueda
+ * @param tablas Lista completa de tablas
+ * @return Lista de resultados formateados como "Título (Autor)"
+ */
 fun performSearch(query: String, tablas: List<Tabla>): List<String> {
     return if (query.isNotEmpty()) {
         tablas
@@ -83,9 +97,34 @@ fun performSearch(query: String, tablas: List<Tabla>): List<String> {
         emptyList()
     }
 }
-
+/**
+ * Pantalla principal de la aplicación que muestra una lista de tablas y funcionalidades de búsqueda.
+ *
+ * Utiliza un [Scaffold] para estructurar los componentes principales:
+ * - TopAppBar con logo y búsqueda
+ * - LazyColumn para lista de elementos
+ * - BottomAppBar con navegación
+ * - FloatingActionButton para creación de nuevas tablas
+ *
+ * @param onCreateTableClicked Callback para creación de nueva tabla
+ * @param onOtherProfileClicked Callback para navegación a perfil de otro usuario
+ * @param onViewTableClicked Callback para visualización de tabla
+ * @param onHomeButtonClicked Callback para navegación a inicio
+ * @param onSearchClicked Callback para activar búsqueda
+ * @param onProfileClicked Callback para navegación a perfil
+ * @param onFavoritesClicked Callback para navegación a favoritos
+ */
 @Composable
-fun PantallaInicio() {
+fun PantallaInicio(
+    onCreateTableClicked: () -> Unit,
+    onOtherProfileClicked: () -> Unit,
+    onViewTableClicked: () -> Unit,
+    onHomeButtonClicked: () -> Unit,
+    onSearchClicked: () -> Unit,
+    onProfileClicked: () -> Unit,
+    onFavoritesClicked: () -> Unit,
+
+        ) {
     val modifier = Modifier.fillMaxSize()
 
     var isSearchVisible by rememberSaveable { mutableStateOf(false) }
@@ -108,9 +147,15 @@ fun PantallaInicio() {
                 }
             )
         },
+        bottomBar = {
+            BottomNavigationBar(onHomeButtonClicked,
+            onSearchClicked,
+            onProfileClicked,
+            onFavoritesClicked)
+        },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {},
+                onClick = onCreateTableClicked,
                 shape = MaterialTheme.shapes.medium,
                 containerColor = Color(0xfff68c70),
                 modifier = Modifier
@@ -169,6 +214,15 @@ fun PantallaInicio() {
     }
 }
 
+/**
+ * Contenedor principal del cuerpo de la pantalla de inicio.
+ *
+ * Encapsula la lista de tablas dentro de un diseño Column centrado horizontalmente.
+ *
+ * @param tablasList Lista de tablas a mostrar
+ * @param modifier Modificador para personalización del layout
+ * @param contentPadding Padding interno para la lista de tablas
+ */
 @Composable
 private fun InicioCuerpo(
     tablasList: List<Tabla>,
@@ -187,6 +241,13 @@ private fun InicioCuerpo(
     }
 }
 
+/**
+ * Componente que muestra una lista desplazable de tablas usando LazyColumn.
+ *
+ * @param tablasList Lista de tablas a mostrar
+ * @param contentPadding Padding interno para la lista
+ * @param modifier Modificador para personalización del layout
+ */
 @Composable
 private fun TablasList(
     tablasList: List<Tabla>,
@@ -208,6 +269,12 @@ private fun TablasList(
     }
 }
 
+/**
+ * Componente que representa un ítem individual de la lista de tablas.
+ *
+ * @param tabla Datos de la tabla a mostrar
+ * @param modifier Modificador para personalización del layout
+ */
 @Composable
 private fun TablaItem(
     tabla: Tabla,
@@ -269,6 +336,19 @@ private fun TablaItem(
     }
 }
 
+/**
+ * Barra superior personalizada para la pantalla de tablas.
+ *
+ * Incluye:
+ * - Logo de la aplicación
+ * - Título centrado
+ * - Botón de búsqueda
+ * - Divisor inferior decorativo
+ *
+ * @param title Texto a mostrar como título
+ * @param onSearchClick Callback para el botón de búsqueda
+ * @param modifier Modificador para personalización del layout
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TablasTopAppBar(
@@ -313,6 +393,17 @@ fun TablasTopAppBar(
     }
 }
 
+/**
+ * Componente que muestra la barra de búsqueda con sugerencias dinámicas.
+ *
+ * @param query Texto actual de búsqueda
+ * @param onQueryChange Callback para cambios en el texto
+ * @param onClearClick Callback para limpiar búsqueda
+ * @param showSuggestions Bandera para mostrar sugerencias
+ * @param searchResults Lista de resultados de búsqueda
+ * @param onResultClick Callback al seleccionar un resultado
+ * @param modifier Modificador para personalización del layout
+ */
 @Composable
 fun SearchBarBelowAppBar(
     query: String,
@@ -398,4 +489,61 @@ fun SearchBarBelowAppBar(
             }
         }
     }
+}
+
+/**
+ * Barra de navegación inferior con acciones principales.
+ *
+ * @param onHomeButtonClicked Callback para navegación a inicio
+ * @param onSearchClicked Callback para activar búsqueda
+ * @param onProfileClicked Callback para navegación a perfil
+ * @param onFavoritesClicked Callback para navegación a favoritos
+ */
+@Composable
+fun BottomNavigationBar(
+    onHomeButtonClicked: () -> Unit,
+    onSearchClicked: () -> Unit,
+    onProfileClicked: () -> Unit,
+    onFavoritesClicked: () -> Unit,
+        ) {
+    BottomAppBar(
+        containerColor = Color(0xfff55c7a), // Color de fondo de la barra inferior
+        contentColor = Color.Black, // Color del contenido (íconos y texto)
+        actions = {
+            IconButton(
+                onClick = onHomeButtonClicked,
+                modifier = Modifier.padding(horizontal = 28.dp)) {
+                    Icon(imageVector = Icons.Default.Home, contentDescription = "Inicio",Modifier.size(40.dp))
+            }
+            IconButton(
+                onClick = onSearchClicked,
+                modifier = Modifier.padding(horizontal = 28.dp)) {
+                    Icon(imageVector = Icons.Default.Search, contentDescription = "Buscar",Modifier.size(40.dp))
+            }
+            IconButton(
+                onClick = onProfileClicked,
+                modifier = Modifier.padding(horizontal = 28.dp)) {
+                    Icon(imageVector = Icons.Default.Person, contentDescription = "Perfil",Modifier.size(40.dp))
+            }
+            IconButton(
+                onClick = onFavoritesClicked,
+                modifier = Modifier.padding(horizontal = 28.dp)) {
+                    Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favoritos",Modifier.size(40.dp))
+            }
+        }
+    )
+}
+
+/**
+ * Previsualización de la pantalla principal con datos de prueba.
+ *
+ * Muestra una implementación estática del layout para visualización en Android Studio.
+ * Utiliza callbacks vacíos para propósitos de demostración.
+ */
+@Preview(showBackground = true)
+@Composable
+fun PantallaInicioPreview() {
+
+    PantallaInicio(onHomeButtonClicked = {}, onProfileClicked = {}, onFavoritesClicked = {}, onOtherProfileClicked = {}, onSearchClicked = {}, onViewTableClicked = {}, onCreateTableClicked = {},)
+
 }
