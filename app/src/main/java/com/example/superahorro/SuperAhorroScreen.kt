@@ -46,8 +46,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.layout.fillMaxHeight
 import com.example.inventory.ui.item.ViewTableScreen
 import com.example.superahorro.Datos.BaseDeDatos
+import com.example.superahorro.ui.LoginScreen
 import com.example.superahorro.ui.PantallaInicio
 import com.example.superahorro.ui.ProfileScreen
+import com.example.superahorro.ui.RegisterScreen
 
 /**
  * Enumeración que representa las diferentes pantallas de la aplicación.
@@ -91,7 +93,7 @@ fun SuperAhorroApp(
 
         NavHost(
             navController = navController,
-            startDestination = SuperAhorroScreen.Main.name,
+            startDestination = SuperAhorroScreen.Register.name,
             modifier = Modifier
         ) {
             composable(route = SuperAhorroScreen.Main.name) {
@@ -125,25 +127,25 @@ fun SuperAhorroApp(
 
                 )
             }
-//            composable(route = SuperAhorroScreen.Login.name) {
-//                val context = LocalContext.current
-//                LoginScreen(
-//                    onAceptarClicked = {
-//                        navController.navigate(SuperAhorroScreen.Main.name)
-//                    },
-//                    onRegistrarseClicked = {
-//                        navController.navigate(SuperAhorroScreen.Register.name)
-//                    }
-//                )
-//            }
-//            composable(route = SuperAhorroScreen.Register.name) {
-//                val context = LocalContext.current
-//                RegisterScreen(
-//                    onRegistrarClicked = {
-//                        navController.navigate(SuperAhorroScreen.Login.name)
-//                    }
-//                )
-//            }
+            composable(route = SuperAhorroScreen.Login.name) {
+                val context = LocalContext.current
+                LoginScreen(
+                    onAceptarClicked = {
+                        navController.navigate(SuperAhorroScreen.Main.name)
+                    },
+                    onRegistrarseClicked = {
+                        navController.navigate(SuperAhorroScreen.Register.name)
+                    }
+                )
+            }
+            composable(route = SuperAhorroScreen.Register.name) {
+                val context = LocalContext.current
+                RegisterScreen(
+                    onRegistrarClicked = {
+                        navController.navigate(SuperAhorroScreen.Login.name)
+                    }
+                )
+            }
             composable(route = SuperAhorroScreen.ViewTable.name) {
                 val context = LocalContext.current
                 ViewTableScreen(
@@ -247,9 +249,6 @@ fun SuperAhorroApp(
 //                EditProfileScreen(
 //                    onHomeButtonClicked = {
 //                        navController.navigate(SuperAhorroScreen.Main.name)
-//                    },
-//                    onCreateTableClicked = {
-//                        navController.navigate(SuperAhorroScreen.CreateTable.name)
 //                    },
 //                    onSearchClicked = {
 //                        navController.navigate(SuperAhorroScreen.Search.name)

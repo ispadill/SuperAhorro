@@ -92,6 +92,8 @@ class DatosPrueba {
 
                 Loggeado(
                     id = id,
+                    nombre = id ,
+                    correo = "$id@gmail.com",
                     contraseña = "pass_$id",
                     listaAmigos = listOf(),
                     tablasPropias = listOf(),
