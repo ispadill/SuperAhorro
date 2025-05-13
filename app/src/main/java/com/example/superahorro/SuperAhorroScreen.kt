@@ -44,6 +44,8 @@ import androidx.compose.ui.res.dimensionResource
 //import com.example.superahorro.ui.StartOrderScreen
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.layout.fillMaxHeight
+import com.example.inventory.ui.item.ViewTableScreen
+import com.example.superahorro.Datos.BaseDeDatos
 import com.example.superahorro.ui.PantallaInicio
 import com.example.superahorro.ui.ProfileScreen
 
@@ -83,14 +85,14 @@ fun SuperAhorroApp(
     )
 
 
-    Scaffold(
-    ) { innerPadding ->
+//    Scaffold(
+//    ) { innerPadding ->
         //val uiState by viewModel.uiState.collectAsState()
 
         NavHost(
             navController = navController,
             startDestination = SuperAhorroScreen.Main.name,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
         ) {
             composable(route = SuperAhorroScreen.Main.name) {
                 PantallaInicio(
@@ -110,8 +112,7 @@ fun SuperAhorroApp(
                           navController.navigate(SuperAhorroScreen.Main.name)
                     },
                     onViewTableClicked = {
-//                        navController.navigate(SuperAhorroScreen.ViewTable.name)
-                          navController.navigate(SuperAhorroScreen.Main.name)
+                        navController.navigate(SuperAhorroScreen.ViewTable.name)
                     },
                     onProfileClicked = {
                         navController.navigate(SuperAhorroScreen.Profile.name)
@@ -119,7 +120,7 @@ fun SuperAhorroApp(
                     onFavoritesClicked = {
 //                        navController.navigate(SuperAhorroScreen.Search.name)
                           navController.navigate(SuperAhorroScreen.Main.name)
-                    }
+                    },
 
 
                 )
@@ -143,14 +144,15 @@ fun SuperAhorroApp(
 //                    }
 //                )
 //            }
-//            composable(route = SuperAhorroScreen.ViewTable.name) {
-//                val context = LocalContext.current
-//                ViewTableScreen(
-//                    onReturnClicked = {
-//                        navController.navigate(SuperAhorroScreen.Main.name)
-//                    }
-//                )
-//            }
+            composable(route = SuperAhorroScreen.ViewTable.name) {
+                val context = LocalContext.current
+                ViewTableScreen(
+                    onReturnClicked = {
+                        navController.navigate(SuperAhorroScreen.Main.name)
+                    },
+                    navigateToEditTabla = {}
+                )
+            }
 //            composable(route = SuperAhorroScreen.CreateTable.name) {
 //                val context = LocalContext.current
 //                CreateTableScreen(
@@ -235,7 +237,7 @@ fun SuperAhorroApp(
                           navController.navigate(SuperAhorroScreen.Main.name)
                     },
                     onEditProfileClicked = {
-//                        navController.navigate(SuperAhorroScreen.EditProfile.name)
+//                        navController.navigate(SuperAhorroScreen.EditProfileScreen.name)
                         navController.navigate(SuperAhorroScreen.Main.name)
                     }
                 )
@@ -263,6 +265,6 @@ fun SuperAhorroApp(
 //                    }
 //                )
 //            }
-        }
+//        }
     }
 }

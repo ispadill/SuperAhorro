@@ -59,27 +59,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.BottomAppBar
-import com.example.superahorro.ModeloDominio.Plantilla
-import com.example.superahorro.ModeloDominio.Tabla
 import com.example.superahorro.R
 import androidx.compose.material3.Divider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.superahorro.Datos.Tabla
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
 
-// Datos de prueba para previsualización
-val plantillaDefault = Plantilla(nombre="Prueba", numColumnas =3,
-    nombresColumnas = listOf("Tienda","Producto","Precio")
-)
-
-// Datos de prueba para previsualización
-val tablasDePrueba = listOf(
-    Tabla(id = "1",titulo ="Mercadona", autor = "Pedro", valoracion = 3F, numeroValoraciones = 10, plantilla = plantillaDefault),
-    Tabla(id = "2",titulo ="BM", autor = "Paco", valoracion = 5F, numeroValoraciones = 4, plantilla = plantillaDefault),
-    Tabla(id = "3",titulo ="Carrefour", autor = "Maria", valoracion = 1F, numeroValoraciones = 100, plantilla = plantillaDefault)
-)
 /**
  * Función para filtrar tablas según criterio de búsqueda.
  *
@@ -123,14 +117,20 @@ fun PantallaInicio(
     onSearchClicked: () -> Unit,
     onProfileClicked: () -> Unit,
     onFavoritesClicked: () -> Unit,
-
-        ) {
+    viewModel: PantallaInicioViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    ) {
     val modifier = Modifier.fillMaxSize()
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var isSearchVisible by rememberSaveable { mutableStateOf(false) }
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var searchResults by remember { mutableStateOf(listOf<String>()) }
     var showSuggestions by remember { mutableStateOf(false) }
+
+    LaunchedEffect(searchQuery) {
+        viewModel.actualizarBusqueda(searchQuery)
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize().background(color = Color(0xfff6bc66)),
@@ -149,9 +149,9 @@ fun PantallaInicio(
         },
         bottomBar = {
             BottomNavigationBar(onHomeButtonClicked,
-            onSearchClicked,
-            onProfileClicked,
-            onFavoritesClicked)
+                onSearchClicked,
+                onProfileClicked,
+                onFavoritesClicked)
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -182,7 +182,7 @@ fun PantallaInicio(
                     query = searchQuery,
                     onQueryChange = {
                         searchQuery = it
-                        searchResults = performSearch(it, tablasDePrueba)
+                        searchResults = performSearch(it, uiState.tablas)
                         showSuggestions = it.isNotEmpty() && searchResults.isNotEmpty()
                     },
                     onClearClick = {
@@ -200,8 +200,8 @@ fun PantallaInicio(
             }
 
             InicioCuerpo(
-                tablasList = if (searchQuery.isEmpty()) tablasDePrueba else {
-                    tablasDePrueba.filter { it.titulo.contains(searchQuery, ignoreCase = true) ||
+                tablasList = if (searchQuery.isEmpty()) uiState.tablas else {
+                    uiState.tablas.filter { it.titulo.contains(searchQuery, ignoreCase = true) ||
                             it.autor.contains(searchQuery, ignoreCase = true) }
                 },
                 modifier = Modifier.fillMaxSize(),
@@ -209,6 +209,7 @@ fun PantallaInicio(
                     top = 8.dp,
                     bottom = innerPadding.calculateBottomPadding()
                 ),
+                onViewTableClicked,
             )
         }
     }
@@ -228,6 +229,7 @@ private fun InicioCuerpo(
     tablasList: List<Tabla>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
+    onViewTableClicked: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -236,7 +238,8 @@ private fun InicioCuerpo(
         TablasList(
             tablasList = tablasList,
             contentPadding = contentPadding,
-            modifier = Modifier.padding(horizontal = 8.dp)
+            modifier = Modifier.padding(horizontal = 8.dp),
+            onViewTableClicked
         )
     }
 }
@@ -252,7 +255,8 @@ private fun InicioCuerpo(
 private fun TablasList(
     tablasList: List<Tabla>,
     contentPadding: PaddingValues,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onViewTableClicked: () -> Unit,
 ) {
     LazyColumn(
         modifier = modifier,
@@ -263,7 +267,8 @@ private fun TablasList(
                 tabla = tabla,
                 modifier = Modifier
                     .padding(8.dp)
-                    .clickable { }
+                    .clickable { },
+                onViewTableClicked
             )
         }
     }
@@ -278,7 +283,8 @@ private fun TablasList(
 @Composable
 private fun TablaItem(
     tabla: Tabla,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onViewTableClicked: () -> Unit,
 ) {
     Card(
         modifier = modifier,
@@ -286,7 +292,8 @@ private fun TablaItem(
         colors = CardDefaults.cardColors(
             containerColor = Color(0xfff68c70),
         ),
-        border = BorderStroke(1.dp, Color.Black)
+        border = BorderStroke(1.dp, Color.Black),
+        onClick = onViewTableClicked
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -296,10 +303,10 @@ private fun TablaItem(
                 modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
-                    Modifier.height(50.dp).width(110.dp), contentAlignment = Alignment.Center
+                    Modifier.height(50.dp).width(130.dp), contentAlignment = Alignment.Center
                 ){
                     Text(
-                        text = tabla.titulo,
+                        text = tabla.titulo.split(" ").firstOrNull() ?: "",
                         style = MaterialTheme.typography.titleLarge,
                     )
                 }
@@ -326,7 +333,7 @@ private fun TablaItem(
                         )
                         Spacer(Modifier.size(2.dp))
                         Text(
-                            text = (tabla.valoracion).toString(),
+                            text = "%.2f".format(tabla.valoracion),
                             style = MaterialTheme.typography.titleMedium,
                         )
                     }
@@ -357,39 +364,39 @@ fun TablasTopAppBar(
     modifier: Modifier = Modifier
 ) {
     Column {
-    androidx.compose.material3.CenterAlignedTopAppBar(
-        title = { Text(
-            text = title,
-            style = AppBarTitleStyle
-        )  },
-        modifier = modifier,
-        colors = topAppBarColors(
-            containerColor = Color(0xfff55c7a)
-        ),
-        navigationIcon = {
-            IconButton(onClick = { }) {
-                Image(
-                    painter = painterResource(id = R.drawable.logoapp),
-                    contentDescription = "Logo de la aplicación",
-                    modifier = Modifier.size(100.dp)
-                )
+        androidx.compose.material3.CenterAlignedTopAppBar(
+            title = { Text(
+                text = title,
+                style = AppBarTitleStyle
+            )  },
+            modifier = modifier,
+            colors = topAppBarColors(
+                containerColor = Color(0xfff55c7a)
+            ),
+            navigationIcon = {
+                IconButton(onClick = { }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.logoapp),
+                        contentDescription = "Logo de la aplicación",
+                        modifier = Modifier.size(100.dp)
+                    )
+                }
+            },
+            actions = {
+                IconButton(onClick = onSearchClick) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Buscar",
+                        tint = Color.Black
+                    )
+                }
             }
-        },
-        actions = {
-            IconButton(onClick = onSearchClick) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Buscar",
-                    tint = Color.Black
-                )
-            }
-        }
-    )
-    Divider(
-        color = Color.Black,
-        thickness = 3.dp,
-        modifier = Modifier.fillMaxWidth()
-    )
+        )
+        Divider(
+            color = Color.Black,
+            thickness = 3.dp,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 
@@ -412,8 +419,10 @@ fun SearchBarBelowAppBar(
     showSuggestions: Boolean,
     searchResults: List<String>,
     onResultClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: PantallaInicioViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -448,9 +457,15 @@ fun SearchBarBelowAppBar(
             },
             singleLine = true,
             shape = RoundedCornerShape(8.dp),
-
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Search
+            ),
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    performSearch(query,uiState.tablas)
+                }
+            )
         )
-
         if (showSuggestions) {
             Box(
                 modifier = Modifier
@@ -505,7 +520,7 @@ fun BottomNavigationBar(
     onSearchClicked: () -> Unit,
     onProfileClicked: () -> Unit,
     onFavoritesClicked: () -> Unit,
-        ) {
+) {
     BottomAppBar(
         containerColor = Color(0xfff55c7a), // Color de fondo de la barra inferior
         contentColor = Color.Black, // Color del contenido (íconos y texto)
@@ -513,22 +528,22 @@ fun BottomNavigationBar(
             IconButton(
                 onClick = onHomeButtonClicked,
                 modifier = Modifier.padding(horizontal = 28.dp)) {
-                    Icon(imageVector = Icons.Default.Home, contentDescription = "Inicio",Modifier.size(40.dp))
+                Icon(imageVector = Icons.Default.Home, contentDescription = "Inicio",Modifier.size(40.dp))
             }
             IconButton(
                 onClick = onSearchClicked,
                 modifier = Modifier.padding(horizontal = 28.dp)) {
-                    Icon(imageVector = Icons.Default.Search, contentDescription = "Buscar",Modifier.size(40.dp))
+                Icon(imageVector = Icons.Default.Search, contentDescription = "Buscar",Modifier.size(40.dp))
             }
             IconButton(
                 onClick = onProfileClicked,
                 modifier = Modifier.padding(horizontal = 28.dp)) {
-                    Icon(imageVector = Icons.Default.Person, contentDescription = "Perfil",Modifier.size(40.dp))
+                Icon(imageVector = Icons.Default.Person, contentDescription = "Perfil",Modifier.size(40.dp))
             }
             IconButton(
                 onClick = onFavoritesClicked,
                 modifier = Modifier.padding(horizontal = 28.dp)) {
-                    Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favoritos",Modifier.size(40.dp))
+                Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favoritos",Modifier.size(40.dp))
             }
         }
     )
