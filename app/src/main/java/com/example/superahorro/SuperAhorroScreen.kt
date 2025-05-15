@@ -93,7 +93,7 @@ fun SuperAhorroApp(
 
         NavHost(
             navController = navController,
-            startDestination = SuperAhorroScreen.Main.name,
+            startDestination = SuperAhorroScreen.Login.name,
             modifier = Modifier
         ) {
             composable(route = SuperAhorroScreen.Main.name) {
@@ -142,6 +142,9 @@ fun SuperAhorroApp(
                 val context = LocalContext.current
                 RegisterScreen(
                     onRegistrarClicked = {
+                        navController.navigate(SuperAhorroScreen.Login.name)
+                    },
+                    onBackClicked = {
                         navController.navigate(SuperAhorroScreen.Login.name)
                     }
                 )

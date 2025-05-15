@@ -7,18 +7,30 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -42,9 +55,11 @@ import com.example.superahorro.R
 
 
 
+
 @Composable
 fun RegisterScreen(
     onRegistrarClicked: () -> Unit,
+    onBackClicked: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: RegisterViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -66,31 +81,56 @@ fun RegisterScreen(
             password2.value.isEmpty() -> errorMessage.value = "Por favor, repita la contraseña."
             password.value != password2.value -> errorMessage.value = "Las contraseñas no coinciden."
             else -> {
-                errorMessage.value = ""
-                var logueado=Loggeado(
-                    id = username.value,
-                    correo=correo.value,
-                    nombre = fullName.value,
-                    contraseña = password.value,
-                    listaAmigos = emptyList(),
-                    tablasPropias = emptyList(),
-                    tablasPublicas = emptyList(),
-                    tablasFavoritas = emptyList()
-                )
-                viewModel.updateUiState(logueado)
+                viewModel.isUsernameTakenFromUi(username.value) { isTaken ->
+                    if (isTaken) {
+                        errorMessage.value = "El nombre de usuario ya está en uso."
+                    } else {
+                        errorMessage.value = ""
 
-                viewModel.saveUserFromUi(logueado)
-                viewModel.saveLoggeadoFromUi(logueado)
+                        val logueado = Loggeado(
+                            id = username.value,
+                            correo = correo.value,
+                            nombre = fullName.value,
+                            contraseña = password.value,
+                            listaAmigos = emptyList(),
+                            tablasPropias = emptyList(),
+                            tablasPublicas = emptyList(),
+                            tablasFavoritas = emptyList()
+                        )
 
-                onRegistrarClicked()
+                        viewModel.saveUserFromUi(logueado)
+                        viewModel.saveLoggeadoFromUi(logueado)
+
+                        onRegistrarClicked()
+                    }
+                }
             }
         }
     }
 
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color(0xfff6bc66), // Fondo de la pantalla
-
+        floatingActionButton = {
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                FloatingActionButton(
+                    onClick = onBackClicked,
+                    shape = MaterialTheme.shapes.medium,
+                    containerColor = Color(0xfff68c70),
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(top = 60.dp, start = 40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Volver"
+                    )
+                }
+            }
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -316,7 +356,7 @@ fun RegisterScreen(
 
 
 /**
- * Previsualización de la pantalla de login para Android Studio.
+ * Previsualización de la pantalla de registro para Android Studio.
  *
  * Muestra una representación estática del diseño para facilitar el desarrollo.
  */
@@ -326,6 +366,7 @@ fun PantallaRegisterPreview() {
 
     RegisterScreen(
         onRegistrarClicked = {},
+        onBackClicked = {},
         modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center))
 
 }

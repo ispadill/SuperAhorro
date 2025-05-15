@@ -46,6 +46,16 @@ class RegisterViewModel(private val usuarioRepository: UsuarioRepository) : View
             saveUsuario(usuario)  // Esto ahora se llama dentro de una corrutina
         }
     }
+    suspend fun isUsernameTaken(username: String): Boolean {
+        return usuarioRepository.getLoggeadoById(username)!=null
+    }
+    fun isUsernameTakenFromUi(username: String, onResult: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val isTaken = isUsernameTaken(username)
+            onResult(isTaken) // Devolvemos el resultado a través del callback
+        }
+    }
+
 
     private fun validateInput(loggeado: Loggeado = registerUiState.loggeado): Boolean {
         return loggeado.nombre.isNotBlank() && loggeado.correo.isNotBlank() && loggeado.contraseña.isNotBlank()
