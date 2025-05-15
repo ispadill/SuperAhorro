@@ -281,7 +281,7 @@ private fun TablasList(
  * @param modifier Modificador para personalización del layout
  */
 @Composable
-private fun TablaItem(
+fun TablaItem(
     tabla: Tabla,
     modifier: Modifier = Modifier,
     onViewTableClicked: () -> Unit,
