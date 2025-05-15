@@ -43,6 +43,11 @@ object AppViewModelProvider {
                 superAhorroApplication().container.tablaRepository
             )
         }
+        initializer {
+            RegisterViewModel(
+                superAhorroApplication().container.usuarioRepository
+            )
+        }
 
     }
 }

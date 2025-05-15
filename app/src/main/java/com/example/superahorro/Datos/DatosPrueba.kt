@@ -23,6 +23,7 @@ class DatosPrueba {
                 db.usuarioDao().deleteAll()
                 db.loggeadoDao().deleteAll()
                 db.plantillaDao().deleteAll()
+                db.anonimosDao().deleteAll()
 
                 val plantillas = crearPlantillas()
                 plantillas.forEach { plantilla ->
@@ -38,6 +39,7 @@ class DatosPrueba {
 
                 usuariosAnonimos.forEach { anonimo ->
                     db.usuarioDao().insert(anonimo)
+                    db.anonimosDao().insert(anonimo)
                 }
 
                 usuariosActualizados.forEach { loggeado ->
@@ -92,6 +94,8 @@ class DatosPrueba {
 
                 Loggeado(
                     id = id,
+                    nombre = id ,
+                    correo = "$id@gmail.com",
                     contraseña = "pass_$id",
                     listaAmigos = listOf(),
                     tablasPropias = listOf(),
@@ -151,7 +155,9 @@ class DatosPrueba {
                 usuario.copy(
                     tablasPropias = tablasPropias,
                     tablasPublicas = listOf(), // Preguntar George
-                    tablasFavoritas = tablasFavoritas
+                    tablasFavoritas = tablasFavoritas,
+                    nombre = usuario.nombre,
+                    correo = usuario.correo
                 )
             }
         }

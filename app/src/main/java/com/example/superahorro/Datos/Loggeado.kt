@@ -19,9 +19,11 @@ import androidx.room.PrimaryKey
 )
 data class Loggeado(
     @PrimaryKey override var id: String,
-    val contraseña: String,
-    val listaAmigos: List<String>,
-    val tablasPropias: List<Int>,
-    val tablasPublicas: List<Int>,
-    val tablasFavoritas: List<Int>
+    var nombre: String,
+    var correo: String,
+    var contraseña: String,
+    var listaAmigos: List<String>,
+    var tablasPropias: List<Int>,
+    var tablasPublicas: List<Int>,
+    var tablasFavoritas: List<Int>
 ) : Usuario(id = id, tipo = "LOGEADO")
