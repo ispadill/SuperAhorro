@@ -46,6 +46,7 @@ class RegisterViewModel(private val usuarioRepository: UsuarioRepository) : View
             saveUsuario(usuario)  // Esto ahora se llama dentro de una corrutina
         }
     }
+
     suspend fun isUsernameTaken(username: String): Boolean {
         return usuarioRepository.getLoggeadoById(username)!=null
     }

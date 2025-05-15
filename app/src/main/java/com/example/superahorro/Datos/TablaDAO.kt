@@ -30,4 +30,9 @@ interface TablaDAO {
     @Query("DELETE FROM tablas")
     suspend fun deleteAll()
 
+    @Query("SELECT * FROM tablas WHERE id IN (:ids)")
+    suspend fun getTablasByIds(ids: List<Int>): List<Tabla>
+
+
+
 }

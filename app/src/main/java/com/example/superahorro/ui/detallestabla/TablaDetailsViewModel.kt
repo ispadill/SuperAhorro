@@ -19,6 +19,7 @@ class TablaDetailsViewModel(
     private val tablaRepository: TablaRepository
 ) : ViewModel() {
 
+
     //private val tablaId: Int =checkNotNull(savedStateHandle[DetallesTablaDestination.tablaIdArg])
     private val tablaId: Int = savedStateHandle[DetallesTablaDestination.tablaIdArg]?:1 //No se pasan los detalles de la tabla correctamente. Al solucionar el error, eliminar esta línea y sustituir por lo de arriba.
 

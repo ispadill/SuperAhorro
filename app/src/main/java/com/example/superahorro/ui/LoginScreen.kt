@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.superahorro.R
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.superahorro.Datos.Loggeado
 import com.example.superahorro.R
@@ -48,6 +49,7 @@ fun LoginScreen(
 
     val username = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+
     val errorMessage = remember { mutableStateOf("") }
 
     fun validateAndLogin() {
@@ -157,6 +159,7 @@ fun LoginScreen(
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
                                 .padding(vertical = 4.dp),
+
                             visualTransformation = PasswordVisualTransformation()
 //                            colors = TextFieldDefaults.outlinedTextFieldColors(
 //                                containerColor = Color(0xfff68c70), //Color del contenedor
@@ -195,6 +198,8 @@ fun LoginScreen(
                             )
                         }
                     }
+
+                }
                     if (errorMessage.value.isNotEmpty()) {
                         Text(
                             text = errorMessage.value,
@@ -216,7 +221,8 @@ fun LoginScreen(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
                     Button(
-                        onClick = {validateAndLogin()},
+                        onClick = onAceptarClicked,
+
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),

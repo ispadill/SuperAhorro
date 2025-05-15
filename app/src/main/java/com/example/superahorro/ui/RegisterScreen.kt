@@ -14,6 +14,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -38,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,6 +59,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.superahorro.Datos.BaseDeDatos
 import com.example.superahorro.Datos.Loggeado
 import com.example.superahorro.R
+
 
 
 
@@ -81,6 +91,7 @@ fun RegisterScreen(
             password2.value.isEmpty() -> errorMessage.value = "Por favor, repita la contraseña."
             password.value != password2.value -> errorMessage.value = "Las contraseñas no coinciden."
             else -> {
+
                 viewModel.isUsernameTakenFromUi(username.value) { isTaken ->
                     if (isTaken) {
                         errorMessage.value = "El nombre de usuario ya está en uso."
@@ -356,7 +367,9 @@ fun RegisterScreen(
 
 
 /**
+
  * Previsualización de la pantalla de registro para Android Studio.
+
  *
  * Muestra una representación estática del diseño para facilitar el desarrollo.
  */
@@ -366,6 +379,7 @@ fun PantallaRegisterPreview() {
 
     RegisterScreen(
         onRegistrarClicked = {},
+
         onBackClicked = {},
         modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center))
 
