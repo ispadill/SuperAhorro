@@ -34,4 +34,5 @@ interface TablaDAO {
     suspend fun getTablasByIds(ids: List<Int>): List<Tabla>
 
 
+
 }

@@ -61,8 +61,6 @@ import com.example.superahorro.Datos.BaseDeDatos
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-
-
 object DetallesTablaDestination {
     val route = "detalles_tabla"
     val titleRes = "Detalles tabla"
@@ -109,6 +107,7 @@ fun ViewTableScreen(
             onPublicar = {},
             onDelete = {
                 coroutineScope.launch {
+//<<<<<<< ispadill --> al hacer el merge no se con cual quedarme
                     viewModel.deleteTabla()
                     onReturnClicked()
                 }
@@ -116,6 +115,12 @@ fun ViewTableScreen(
             scope = coroutineScope,
             context = LocalContext.current,
             tablaId = uiState.value.detallesTabla.id,
+//=======
+                viewModel.deleteTabla()
+                    onReturnClicked()
+                }
+            },
+//>>>>>>> main
             modifier = Modifier
                 .padding(
                     start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
@@ -132,9 +137,11 @@ private fun DetallesTablaCuerpo(
     DetallesTablaUiState: DetallesTablaUiState,
     onPublicar: () -> Unit,
     onDelete: () -> Unit,
+
     scope: CoroutineScope,
     context: android.content.Context,
     tablaId: Int,
+
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -162,6 +169,7 @@ private fun DetallesTablaCuerpo(
         ) {
             Text("Eliminar")
         }
+
         Button(
             onClick = {
                 scope.launch {
@@ -185,6 +193,7 @@ private fun DetallesTablaCuerpo(
         ) {
             Text("Añadir a favoritos")
         }
+
 
 
         if (deleteConfirmationRequired) {

@@ -282,6 +282,7 @@ private fun TablasList(
  */
 @Composable
 fun TablaItem(
+
     tabla: Tabla,
     modifier: Modifier = Modifier,
     onViewTableClicked: () -> Unit,
