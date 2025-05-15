@@ -133,8 +133,7 @@ fun PantallaInicio(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize().background(color = Color(0xfff6bc66)),
-        containerColor = Color(0xfff6bc66),
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             TablasTopAppBar(
                 title = "MIS TABLAS",
@@ -174,7 +173,6 @@ fun PantallaInicio(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xfff6bc66))
                 .padding(top = innerPadding.calculateTopPadding())
         ) {
             if (isSearchVisible) {
@@ -426,7 +424,6 @@ fun SearchBarBelowAppBar(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color(0xFFF6BC66))
             .padding(bottom = 4.dp)
     ) {
         OutlinedTextField(
