@@ -93,7 +93,7 @@ fun SuperAhorroApp(
 
         NavHost(
             navController = navController,
-            startDestination = SuperAhorroScreen.Register.name,
+            startDestination = SuperAhorroScreen.Main.name,
             modifier = Modifier
         ) {
             composable(route = SuperAhorroScreen.Main.name) {

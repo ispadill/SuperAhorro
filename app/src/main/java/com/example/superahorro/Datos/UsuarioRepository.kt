@@ -9,7 +9,7 @@ import com.example.superahorro.Datos.Loggeado
 import com.example.superahorro.Datos.Usuario
 import kotlin.math.log
 
-class UsuarioRepository(private val usuarioDao: UsuarioDAO, private val loggeadoDao: LoggeadoDAO) {
+class UsuarioRepository(private val usuarioDao: UsuarioDAO, private val loggeadoDao: LoggeadoDAO, private val anonimosDao: AnonimosDAO) {
     suspend fun insertUsuario(usuario: Usuario) = usuarioDao.insert(usuario)
     suspend fun getLoggeado(id: String): Loggeado? = loggeadoDao.getLoggeadoById(id)
 
@@ -28,4 +28,14 @@ class UsuarioRepository(private val usuarioDao: UsuarioDAO, private val loggeado
     suspend fun getAllUsuariosLoggeados(Tipo:String="LOGEADO"): List<Loggeado> = loggeadoDao.getAllUsuariosLoggeados(Tipo)
 
     suspend fun deleteAll()=usuarioDao.deleteAll()
+
+    suspend fun insertAnonimo(anonimo: Anonimos)=anonimosDao.insert(anonimo)
+
+    suspend fun updateAnonimo(anonimo: Anonimos)=anonimosDao.update(anonimo)
+
+    suspend fun deleteAnonimo(anonimo: Anonimos)=anonimosDao.delete(anonimo)
+
+    suspend fun deleteAllAnonimo()=anonimosDao.deleteAll()
+
+    suspend fun deleteAllLoggeado()=loggeadoDao.deleteAll()
 }

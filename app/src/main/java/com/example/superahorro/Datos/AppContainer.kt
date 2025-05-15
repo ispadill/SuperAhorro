@@ -35,7 +35,7 @@ class AppDataContainer(private val context: Context) : AppContainer {
      * Implementación de UsuarioRepository que utiliza UsuarioDAO y LoggeadoDAO
      */
     override val usuarioRepository: UsuarioRepository by lazy {
-        UsuarioRepository(database.usuarioDao(), database.loggeadoDao())
+        UsuarioRepository(database.usuarioDao(), database.loggeadoDao(),database.anonimosDao())
     }
 
     /**
