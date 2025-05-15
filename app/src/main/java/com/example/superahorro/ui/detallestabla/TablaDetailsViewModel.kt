@@ -19,7 +19,8 @@ class TablaDetailsViewModel(
     private val tablaRepository: TablaRepository
 ) : ViewModel() {
 
-    private val tablaId: Int = checkNotNull(savedStateHandle[DetallesTablaDestination.tablaIdArg])
+    //private val tablaId: Int = checkNotNull(savedStateHandle[DetallesTablaDestination.tablaIdArg])
+    private val tablaId: Int = savedStateHandle[DetallesTablaDestination.tablaIdArg]?:1
 
     val uiState: StateFlow<DetallesTablaUiState> =
         tablaRepository.getTablaById(tablaId)
