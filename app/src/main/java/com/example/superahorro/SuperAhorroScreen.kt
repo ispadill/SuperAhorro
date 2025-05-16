@@ -44,6 +44,8 @@ import androidx.compose.ui.res.dimensionResource
 //import com.example.superahorro.ui.StartOrderScreen
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.layout.fillMaxHeight
+import com.example.inventory.ui.item.DetallesTabla
+import com.example.inventory.ui.item.DetallesTablaDestination
 import com.example.inventory.ui.item.ViewTableScreen
 import com.example.superahorro.Datos.BaseDeDatos
 import com.example.superahorro.ui.LoginScreen
@@ -123,7 +125,9 @@ fun SuperAhorroApp(
 //                        navController.navigate(SuperAhorroScreen.Search.name)
                           navController.navigate(SuperAhorroScreen.Main.name)
                     },
-
+                    navigateToItemUpdate = {
+                        navController.navigate("${DetallesTablaDestination.route}/${it}")
+                    }
 
                 )
             }

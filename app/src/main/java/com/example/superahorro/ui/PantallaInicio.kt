@@ -73,6 +73,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.superahorro.Datos.Tabla
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 
 /**
  * Función para filtrar tablas según criterio de búsqueda.
@@ -112,6 +113,7 @@ fun performSearch(query: String, tablas: List<Tabla>): List<String> {
 fun PantallaInicio(
     onCreateTableClicked: () -> Unit,
     onOtherProfileClicked: () -> Unit,
+    navigateToItemUpdate: (Int) -> Unit,
     onViewTableClicked: () -> Unit,
     onHomeButtonClicked: () -> Unit,
     onSearchClicked: () -> Unit,
@@ -133,7 +135,9 @@ fun PantallaInicio(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize().background(color = Color(0xfff6bc66)),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color(0xfff6bc66)),
         containerColor = Color(0xfff6bc66),
         topBar = {
             TablasTopAppBar(
@@ -209,7 +213,8 @@ fun PantallaInicio(
                     top = 8.dp,
                     bottom = innerPadding.calculateBottomPadding()
                 ),
-                onViewTableClicked,
+                onViewTableClicked=navigateToItemUpdate,
+                viewModel = viewModel
             )
         }
     }
@@ -229,18 +234,30 @@ private fun InicioCuerpo(
     tablasList: List<Tabla>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    onViewTableClicked: () -> Unit
+    onViewTableClicked: (Int) -> Unit,
+    viewModel: PantallaInicioViewModel
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier,
     ) {
-        TablasList(
-            tablasList = tablasList,
-            contentPadding = contentPadding,
-            modifier = Modifier.padding(horizontal = 8.dp),
-            onViewTableClicked
-        )
+        if (tablasList.isEmpty()) {
+            Text(
+                text = "No hay tablas",
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(contentPadding),
+            )
+        } else {
+            TablasList(
+                tablasList = tablasList,
+                contentPadding = contentPadding,
+                modifier = Modifier.padding(horizontal = 8.dp),
+                onViewTableClicked=onViewTableClicked(it.id),
+                viewModel = viewModel
+            )
+        }
+
     }
 }
 
@@ -256,7 +273,8 @@ private fun TablasList(
     tablasList: List<Tabla>,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
-    onViewTableClicked: () -> Unit,
+    onViewTableClicked: (Tabla) -> Unit,
+    viewModel: PantallaInicioViewModel
 ) {
     LazyColumn(
         modifier = modifier,
@@ -267,8 +285,8 @@ private fun TablasList(
                 tabla = tabla,
                 modifier = Modifier
                     .padding(8.dp)
-                    .clickable { },
-                onViewTableClicked
+                    .clickable {onViewTableClicked(tabla) },
+                viewModel=viewModel
             )
         }
     }
@@ -284,7 +302,7 @@ private fun TablasList(
 private fun TablaItem(
     tabla: Tabla,
     modifier: Modifier = Modifier,
-    onViewTableClicked: () -> Unit,
+    viewModel: PantallaInicioViewModel
 ) {
     Card(
         modifier = modifier,
@@ -293,7 +311,7 @@ private fun TablaItem(
             containerColor = Color(0xfff68c70),
         ),
         border = BorderStroke(1.dp, Color.Black),
-        onClick = onViewTableClicked
+       // onClick = {viewModel.seleccionarTabla(tabla.id)}
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -303,7 +321,9 @@ private fun TablaItem(
                 modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
-                    Modifier.height(50.dp).width(130.dp), contentAlignment = Alignment.Center
+                    Modifier
+                        .height(50.dp)
+                        .width(130.dp), contentAlignment = Alignment.Center
                 ){
                     Text(
                         text = tabla.titulo.split(" ").firstOrNull() ?: "",
@@ -312,7 +332,9 @@ private fun TablaItem(
                 }
                 Spacer(Modifier.weight(1f))
                 Box(
-                    Modifier.height(50.dp).width(80.dp), contentAlignment = Alignment.Center
+                    Modifier
+                        .height(50.dp)
+                        .width(80.dp), contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = tabla.autor,
@@ -321,7 +343,9 @@ private fun TablaItem(
                 }
                 Spacer(Modifier.weight(1f))
                 Box(
-                    Modifier.height(50.dp).width(80.dp), contentAlignment = Alignment.Center
+                    Modifier
+                        .height(50.dp)
+                        .width(80.dp), contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Image(

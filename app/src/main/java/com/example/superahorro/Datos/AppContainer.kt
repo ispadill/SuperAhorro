@@ -5,6 +5,7 @@ import com.example.superahorro.Datos.BaseDeDatos
 import com.example.superahorro.Datos.TablaRepository
 import com.example.superahorro.Datos.UsuarioRepository
 import com.example.superahorro.Datos.PlantillaRepository
+import com.example.superahorro.ui.PantallaInicioViewModel
 
 /**
  * Interface de contenedor de aplicación que proporciona instancias de repositorios
@@ -44,4 +45,5 @@ class AppDataContainer(private val context: Context) : AppContainer {
     override val plantillaRepository: PlantillaRepository by lazy {
         PlantillaRepository(database.plantillaDao())
     }
+
 }

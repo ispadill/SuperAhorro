@@ -22,8 +22,10 @@ object AppViewModelProvider {
         initializer {
             PantallaInicioViewModel(
                 superAhorroApplication().container.tablaRepository,
-                superAhorroApplication().container.usuarioRepository
+                superAhorroApplication().container.usuarioRepository,
+                this.createSavedStateHandle()
             )
+
         }
 
         initializer {
@@ -36,7 +38,6 @@ object AppViewModelProvider {
         initializer {
             TablaEntryViewModel(superAhorroApplication().container.tablaRepository)
         }
-
         initializer {
             TablaDetailsViewModel(
                 this.createSavedStateHandle(),

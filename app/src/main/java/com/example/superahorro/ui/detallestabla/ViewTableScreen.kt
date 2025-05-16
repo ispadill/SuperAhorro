@@ -70,7 +70,7 @@ fun ViewTableScreen(
     navigateToEditTabla: (Int) -> Unit,
     onReturnClicked: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: TablaDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: TablaDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory),
 ) {
     val coroutineScope = rememberCoroutineScope()
     val uiState = viewModel.uiState.collectAsState()

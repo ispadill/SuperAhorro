@@ -1,7 +1,11 @@
 package com.example.superahorro.ui
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.savedstate.SavedState
+import androidx.savedstate.savedState
+import com.example.inventory.ui.item.ViewTableScreen
 import com.example.superahorro.Datos.Loggeado
 import com.example.superahorro.Datos.Tabla
 import com.example.superahorro.Datos.TablaRepository
@@ -21,7 +25,8 @@ data class PantallaInicioUiState(
     val usuarioActual: String = "",
     val searchQuery: String = "",
     val searchResults: List<String> = emptyList(),
-    val error: String? = null
+    val error: String? = null,
+    val tablaSeleccionadaId: Int?=null
 )
 
 /**
@@ -32,7 +37,8 @@ data class PantallaInicioUiState(
  */
 class PantallaInicioViewModel(
     private val tablaRepository: TablaRepository,
-    private val usuarioRepository: UsuarioRepository
+    private val usuarioRepository: UsuarioRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     // Estado UI para la pantalla
@@ -162,6 +168,14 @@ class PantallaInicioViewModel(
             }
         }
     }
+
+    fun seleccionarTabla(id: Int){
+        savedStateHandle["SelectedTablaId"]=id
+    }
+
+//    fun getEstado():Int?{
+//        return _uiState.value.tablaSeleccionadaId
+//    }
 
     /**
      * Limpia el término de búsqueda
