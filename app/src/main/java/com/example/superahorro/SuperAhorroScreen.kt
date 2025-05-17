@@ -46,6 +46,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.layout.fillMaxHeight
 import com.example.inventory.ui.item.ViewTableScreen
 import com.example.superahorro.Datos.BaseDeDatos
+
+import com.example.superahorro.ui.FavoritosScreen
+
 import com.example.superahorro.ui.LoginScreen
 import com.example.superahorro.ui.PantallaInicio
 import com.example.superahorro.ui.ProfileScreen
@@ -63,7 +66,9 @@ enum class SuperAhorroScreen() {
     OtherProfile,
     Search,
     Profile,
-    EditProfile
+    EditProfile,
+    Favorites
+
 }
 
 /**
@@ -94,6 +99,7 @@ fun SuperAhorroApp(
         NavHost(
             navController = navController,
             startDestination = SuperAhorroScreen.Main.name,
+
             modifier = Modifier
         ) {
             composable(route = SuperAhorroScreen.Main.name) {
@@ -121,7 +127,10 @@ fun SuperAhorroApp(
                     },
                     onFavoritesClicked = {
 //                        navController.navigate(SuperAhorroScreen.Search.name)
-                          navController.navigate(SuperAhorroScreen.Main.name)
+
+                          //navController.navigate(SuperAhorroScreen.Main.name)
+                        navController.navigate(SuperAhorroScreen.Favorites.name)
+
                     },
 
 
@@ -143,7 +152,9 @@ fun SuperAhorroApp(
                 RegisterScreen(
                     onRegistrarClicked = {
                         navController.navigate(SuperAhorroScreen.Login.name)
-                    }
+
+                    },
+                    onBackClicked = {navController.navigate(SuperAhorroScreen.Login.name)}
                 )
             }
             composable(route = SuperAhorroScreen.ViewTable.name) {
@@ -236,7 +247,8 @@ fun SuperAhorroApp(
                     },
                     onFavoritesClicked = {
 //                        navController.navigate(SuperAhorroScreen.Search.name)
-                          navController.navigate(SuperAhorroScreen.Main.name)
+                          navController.navigate(SuperAhorroScreen.Favorites.name)
+
                     },
                     onEditProfileClicked = {
 //                        navController.navigate(SuperAhorroScreen.EditProfileScreen.name)
@@ -244,6 +256,29 @@ fun SuperAhorroApp(
                     }
                 )
             }
+
+            composable(route = SuperAhorroScreen.Favorites.name) {
+                FavoritosScreen(
+                    onHomeButtonClicked = {
+                        navController.navigate(SuperAhorroScreen.Main.name)
+                    },
+                    onSearchClicked = {
+                        navController.navigate(SuperAhorroScreen.Main.name)
+                    },
+                    onProfileClicked = {
+                        navController.navigate(SuperAhorroScreen.Profile.name)
+                    },
+                    onFavoritesClicked = {
+                        navController.navigate(SuperAhorroScreen.Favorites.name)
+                    },
+                    onViewTableClicked = {
+                        navController.navigate(SuperAhorroScreen.ViewTable.name)
+                    }
+                )
+            }
+
+
+
 //            composable(route = SuperAhorroScreen.EditProfile.name) {
 //                val context = LocalContext.current
 //                EditProfileScreen(

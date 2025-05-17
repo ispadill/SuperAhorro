@@ -49,6 +49,12 @@ object AppViewModelProvider {
             )
         }
 
+        initializer {
+            LoginViewModel(
+                superAhorroApplication().container.usuarioRepository
+            )
+        }
+
     }
 }
 

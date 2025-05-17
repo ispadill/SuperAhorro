@@ -15,6 +15,9 @@ interface TablaDAO {
     @Delete
     suspend fun delete(tabla: Tabla)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAndGetId(tabla: Tabla): Long
+
     @Query("SELECT * FROM tablas")
     fun getAllTablas(): Flow<List<Tabla>>
 
@@ -29,5 +32,10 @@ interface TablaDAO {
 
     @Query("DELETE FROM tablas")
     suspend fun deleteAll()
+
+    @Query("SELECT * FROM tablas WHERE id IN (:ids)")
+    suspend fun getTablasByIds(ids: List<Int>): List<Tabla>
+
+
 
 }

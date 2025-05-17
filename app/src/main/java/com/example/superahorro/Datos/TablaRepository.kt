@@ -43,4 +43,6 @@ class TablaRepository(private val tablaDao: TablaDAO) {
     suspend fun countTablas(): Int = tablaDao.countTablas()
 
     suspend fun deleteAll()=tablaDao.deleteAll()
+
+    suspend fun insertAndGetId(tabla: Tabla): Long=tablaDao.insertAndGetId(tabla)
 }

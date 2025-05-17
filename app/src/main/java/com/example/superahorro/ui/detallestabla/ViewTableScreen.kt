@@ -56,12 +56,17 @@ import com.example.superahorro.ui.AppViewModelProvider
 import com.example.superahorro.ui.tabla.DetallesTablaUiState
 import com.example.superahorro.ui.tabla.TablaDetailsViewModel
 import kotlinx.coroutines.launch
+import androidx.compose.ui.platform.LocalContext
+import com.example.superahorro.Datos.BaseDeDatos
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 object DetallesTablaDestination {
     val route = "detalles_tabla"
     val titleRes = "Detalles tabla"
     const val tablaIdArg = "tablaId"
     val routeWithArgs = "$route/{$tablaIdArg}"
+
 }
 
 
@@ -71,6 +76,7 @@ fun ViewTableScreen(
     onReturnClicked: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TablaDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
+
 ) {
     val coroutineScope = rememberCoroutineScope()
     val uiState = viewModel.uiState.collectAsState()
@@ -101,10 +107,16 @@ fun ViewTableScreen(
             onPublicar = {},
             onDelete = {
                 coroutineScope.launch {
-                viewModel.deleteTabla()
+//<<<<<<< ispadill --> al hacer el merge no se con cual quedarme
+                    viewModel.deleteTabla()
                     onReturnClicked()
                 }
             },
+            scope = coroutineScope,
+            context = LocalContext.current,
+            tablaId = uiState.value.detallesTabla.id,
+//=======
+//>>>>>>> main
             modifier = Modifier
                 .padding(
                     start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
@@ -116,11 +128,17 @@ fun ViewTableScreen(
     }
 }
 
+
 @Composable
 private fun DetallesTablaCuerpo(
     DetallesTablaUiState: DetallesTablaUiState,
     onPublicar: () -> Unit,
     onDelete: () -> Unit,
+
+    scope: CoroutineScope,
+    context: android.content.Context,
+    tablaId: Int,
+
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -148,6 +166,33 @@ private fun DetallesTablaCuerpo(
         ) {
             Text("Eliminar")
         }
+
+        Button(
+            onClick = {
+                scope.launch {
+                    val db = BaseDeDatos.getDatabase(context)
+                    val loggeadoDAO = db.loggeadoDao()
+
+                    //Cambiar Juan por el ID del usuario logueado real
+                    val usuario = loggeadoDAO.getUsuarioPorId("Juan")
+
+                    val nuevasFavoritas = usuario.tablasFavoritas.toMutableList()
+                    if (!nuevasFavoritas.contains(tablaId)) {
+                        nuevasFavoritas.add(tablaId)
+                        val nuevoUsuario = usuario.copy(tablasFavoritas = nuevasFavoritas)
+                        loggeadoDAO.update(nuevoUsuario)
+                    }
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
+        ) {
+            Text("Añadir a favoritos")
+        }
+
+
+
         if (deleteConfirmationRequired) {
             DeleteConfirmationDialog(
                 onDeleteConfirm = {

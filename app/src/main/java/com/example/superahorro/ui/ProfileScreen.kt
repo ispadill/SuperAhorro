@@ -39,6 +39,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.superahorro.ModeloDominio.Sesion
 import com.example.superahorro.R
 
 /**
@@ -58,8 +61,10 @@ fun ProfileScreen(
     onSearchClicked: () -> Unit,
     onProfileClicked: () -> Unit,
     onFavoritesClicked: () -> Unit,
-    modifier: Modifier = Modifier
+
+    modifier: Modifier = Modifier,
 ) {
+    val usuarioLogueado = Sesion.usuario
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color(0xfff6bc66), // Fondo de la pantalla
@@ -108,7 +113,8 @@ fun ProfileScreen(
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "Nombre de Usuario: Juanito666",
+
+                            text = "Nombre de Usuario: ${usuarioLogueado?.id}",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black,
@@ -120,7 +126,8 @@ fun ProfileScreen(
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "Nombre Completo: Juan Palomo",
+
+                            text = "Nombre Completo: ${usuarioLogueado?.nombre}",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black,
@@ -139,7 +146,8 @@ fun ProfileScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Correo: JuanPalomo@gmail.com",
+
+                            text = "Correo: ${usuarioLogueado?.correo}",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black,
