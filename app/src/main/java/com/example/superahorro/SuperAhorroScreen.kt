@@ -152,8 +152,8 @@ fun SuperAhorroApp(
                 RegisterScreen(
                     onRegistrarClicked = {
                         navController.navigate(SuperAhorroScreen.Login.name)
-
-                    }
+                    },
+                    onBackClicked = {navController.navigate(SuperAhorroScreen.Login.name)}
                 )
             }
             composable(route = SuperAhorroScreen.ViewTable.name) {
