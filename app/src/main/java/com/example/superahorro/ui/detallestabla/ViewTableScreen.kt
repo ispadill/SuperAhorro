@@ -107,7 +107,6 @@ fun ViewTableScreen(
             onPublicar = {},
             onDelete = {
                 coroutineScope.launch {
-//<<<<<<< ispadill --> al hacer el merge no se con cual quedarme
                     viewModel.deleteTabla()
                     onReturnClicked()
                 }
@@ -115,8 +114,6 @@ fun ViewTableScreen(
             scope = coroutineScope,
             context = LocalContext.current,
             tablaId = uiState.value.detallesTabla.id,
-//=======
-//>>>>>>> main
             modifier = Modifier
                 .padding(
                     start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
