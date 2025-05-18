@@ -108,7 +108,7 @@ class PantallaInicioViewModel(
     private fun cargarTablasPorUsuario(usuario: Loggeado) {
         viewModelScope.launch {
             try {
-                val tablasIds = usuario.tablasPropias + usuario.tablasPublicas + usuario.tablasFavoritas
+                val tablasIds = usuario.tablasPropias + usuario.tablasPublicas
 
                 if (tablasIds.isEmpty()) {
                     // Si el usuario no tiene tablas, cargar todas las tablas
@@ -170,3 +170,44 @@ class PantallaInicioViewModel(
         _uiState.update { it.copy(searchQuery = "", searchResults = emptyList()) }
     }
 }
+
+/*Funciones imagenes
+En la clase de la interfaz: viewModelScope.launch {
+    guardarImagenPerfil(context, "Juan", nuevoBitmap)
+}
+En el viewmodel:
+suspend fun guardarImagenPerfil(context: Context, usuarioId: String, bitmap: Bitmap) {
+    val directorio = context.getDir("profile_images", Context.MODE_PRIVATE)
+    val archivoImagen = File(directorio, "$usuarioId.jpg")
+
+    try {
+        FileOutputStream(archivoImagen).use { output ->
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, output)
+        }
+
+        // Actualizar URI en la base de datos
+        val loggeado = usuarioRepository.getLoggeadoById(usuarioId)
+        loggeado?.let {
+            it.imagenPerfilUri = archivoImagen.absolutePath
+            usuarioRepository.updateLoggeado(it)
+        }
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+}
+En la clase de la interfaz: viewModelScope.launch {
+    guardarImagenPerfil(context, "Juan", nuevoBitmap)
+}
+En el viewmodel:
+val imagen = cargarImagenPerfil(context, "Juan")
+fun cargarImagenPerfil(context: Context, usuarioId: String): Bitmap {
+    val loggeado = usuarioRepository.getLoggeadoById(usuarioId)
+    val uri = loggeado?.imagenPerfilUri ?: "default.jpg" // Si es null, usa predeterminada
+
+    val directorio = context.getDir("profile_images", Context.MODE_PRIVATE)
+    val archivoImagen = File(directorio, if (uri == "default.jpg") uri else "$usuarioId.jpg")
+
+    return BitmapFactory.decodeFile(archivoImagen.absolutePath) ?:
+           BitmapFactory.decodeResource(context.resources, R.drawable.default)
+}
+ */

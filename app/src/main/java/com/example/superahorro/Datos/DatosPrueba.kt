@@ -1,10 +1,15 @@
 package com.example.superahorro.Datos
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.room.Room
+import com.example.superahorro.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
 import kotlin.random.Random
 
 /**
@@ -17,6 +22,7 @@ class DatosPrueba {
          */
         suspend fun cargarDatosPrueba(context: Context) {
             val db = BaseDeDatos.getDatabase(context.applicationContext)
+            val directorioImagenes = context.getDir("profile_images", Context.MODE_PRIVATE)
 
             withContext(Dispatchers.IO) {
                 db.tablaDao().deleteAll()
@@ -24,6 +30,12 @@ class DatosPrueba {
                 db.loggeadoDao().deleteAll()
                 db.plantillaDao().deleteAll()
                 db.anonimosDao().deleteAll()
+
+                val defaultBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.logoapp)
+                val defaultFile = File(directorioImagenes, "default.jpg")
+                FileOutputStream(defaultFile).use { output ->
+                    defaultBitmap.compress(Bitmap.CompressFormat.PNG, 90, output)
+                }
 
                 val plantillas = crearPlantillas()
                 plantillas.forEach { plantilla ->
@@ -42,7 +54,8 @@ class DatosPrueba {
                     val loggeadoInicial = loggeado.copy(
                         tablasPropias = emptyList(),
                         tablasPublicas = emptyList(),
-                        tablasFavoritas = emptyList()
+                        tablasFavoritas = emptyList(),
+                        imagenPerfilUri = defaultFile.absolutePath
                     )
                     db.usuarioDao().insert(loggeadoInicial)
                     db.loggeadoDao().insert(loggeadoInicial)
@@ -112,7 +125,8 @@ class DatosPrueba {
                     listaAmigos = listOf(),
                     tablasPropias = listOf(),
                     tablasPublicas = listOf(),
-                    tablasFavoritas = listOf()
+                    tablasFavoritas = listOf(),
+                    imagenPerfilUri = "logoapp"
                 )
             }
 
@@ -168,7 +182,7 @@ class DatosPrueba {
                     .map { it.id }
 
                 Log.d("DATA_DEBUG", "Usuario ${usuario.id} - Tablas propias: ${tablasPropias.size}, Favoritas: ${tablasFavoritas.size}")
-                
+
                 Log.d("DATA_DEBUG", "IDs Tablas propias: $tablasPropias")
                 Log.d("DATA_DEBUG", "IDs Tablas favoritas: $tablasFavoritas")
 
