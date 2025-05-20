@@ -33,17 +33,20 @@ fun EditProfileScreen(
     val usuarioLogueado = Sesion.usuario
 
     val fullName = remember { mutableStateOf("${usuarioLogueado?.nombre}") }
+    val correo = remember { mutableStateOf("${usuarioLogueado?.correo}") }
     val errorMessage = remember { mutableStateOf("") }
 
     fun updateFields() {
         when {
-            fullName.value.isEmpty() -> errorMessage.value = "Por favor, ingrese un nombre completo."
+            fullName.value.isEmpty() -> errorMessage.value = "Por favor, ingrese un nombre ."
+            correo.value.isEmpty() -> errorMessage.value = "Por favor, ingrese un correo electrónico."
             else -> {
 
 
                         errorMessage.value = ""
 
                         usuarioLogueado?.nombre=fullName.value
+                        usuarioLogueado?.correo=correo.value
                         val newLog: Loggeado = usuarioLogueado ?: Loggeado("", "", "", "", listOf(), listOf(), listOf(), listOf())
                         viewModel.updateLogFromUi(newLog)
 
@@ -132,14 +135,7 @@ fun EditProfileScreen(
 //                            )
                         )
                     }
-                    if (errorMessage.value.isNotEmpty()) {
-                        Text(
-                            text = errorMessage.value,
-                            color = Color.Red,
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                    }
+
 
                     Spacer(modifier = Modifier.height(40.dp))
 
@@ -152,11 +148,33 @@ fun EditProfileScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Correo: ${usuarioLogueado?.correo}",
+                            text = "Correo: ",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black,
                             textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        OutlinedTextField(
+                            value = correo.value,
+                            onValueChange = { correo.value = it },
+                            singleLine = true,
+                            modifier = Modifier
+                                .fillMaxWidth(0.8f)
+                                .padding(vertical = 4.dp),
+//                            colors = TextFieldDefaults.outlinedTextFieldColors(
+//                                containerColor = Color(0xfff68c70), //Color del contenedor
+//                                focusedBorderColor = Color.Black, // Color del borde cuando el campo está enfocado
+//                                unfocusedBorderColor = Color(0xfff55c7a) // Color del borde
+//                            )
+                        )
+                    }
+                    if (errorMessage.value.isNotEmpty()) {
+                        Text(
+                            text = errorMessage.value,
+                            color = Color.Red,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(8.dp)
                         )
                     }
                 }
