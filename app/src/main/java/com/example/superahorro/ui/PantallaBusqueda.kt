@@ -60,10 +60,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.superahorro.Datos.Loggeado
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
+import kotlinx.coroutines.launch
 
 /**
  * Función para filtrar usuarios según criterio de búsqueda.
@@ -102,6 +108,7 @@ fun performUserSearch(query: String, usuarios: List<Loggeado>): List<String> {
  */
 @Composable
 fun PantallaBusqueda(
+    navHostController: NavHostController?,
     onViewUserClicked: (String) -> Unit,
     onHomeButtonClicked: () -> Unit,
     onSearchClicked: () -> Unit,
@@ -138,7 +145,9 @@ fun PantallaBusqueda(
                         searchQuery = ""
                         showSuggestions = false
                     }
-                }
+                },
+                viewModel = viewModel,
+                navController=navHostController
             )
         },
         bottomBar = {
@@ -383,8 +392,12 @@ fun UsuarioItem(
 fun UsuariosTopAppBar(
     title: String,
     onSearchClick: () -> Unit,
+    viewModel: PantallaBusquedaViewModel,
+    navController: NavHostController?,
     modifier: Modifier = Modifier
 ) {
+    var showMenu by remember { mutableStateOf(false) }
+
     Column {
         androidx.compose.material3.CenterAlignedTopAppBar(
             title = { Text(
@@ -396,11 +409,25 @@ fun UsuariosTopAppBar(
                 containerColor = Color(0xfff55c7a)
             ),
             navigationIcon = {
-                IconButton(onClick = { }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.logoapp),
-                        contentDescription = "Logo de la aplicación",
-                        modifier = Modifier.size(100.dp)
+                Box {
+                    IconButton(onClick = { showMenu = true }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.logoapp),
+                            contentDescription = "Menú de usuario",
+                            modifier = Modifier.size(100.dp)
+                        )
+                    }
+
+                    UserDropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false },
+                        onLogout = { viewModel.viewModelScope.launch {
+                            if (navController != null) {
+                                viewModel.cerrarSesion(navController)
+                            }
+                        }
+                            showMenu = false
+                        }
                     )
                 }
             },

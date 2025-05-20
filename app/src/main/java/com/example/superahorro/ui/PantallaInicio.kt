@@ -1,8 +1,6 @@
 package com.example.superahorro.ui
 
 import com.example.superahorro.ui.theme.AppBarTitleStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -57,7 +55,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.filled.Favorite
@@ -72,7 +69,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.superahorro.Datos.Tabla
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.ui.text.input.ImeAction
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
+import kotlinx.coroutines.launch
 
 /**
  * Función para filtrar tablas según criterio de búsqueda.
@@ -110,6 +112,7 @@ fun performSearch(query: String, tablas: List<Tabla>): List<String> {
  */
 @Composable
 fun PantallaInicio(
+    navHostController: NavHostController?,
     onCreateTableClicked: () -> Unit,
     onViewTableClicked: (Int) -> Unit,
     onHomeButtonClicked: () -> Unit,
@@ -135,16 +138,20 @@ fun PantallaInicio(
         modifier = Modifier.fillMaxSize().background(color = Color(0xfff6bc66)),
         containerColor = Color(0xfff6bc66),
         topBar = {
-            TablasTopAppBar(
-                title = "MIS TABLAS",
-                onSearchClick = {
-                    isSearchVisible = !isSearchVisible
-                    if (!isSearchVisible) {
-                        searchQuery = ""
-                        showSuggestions = false
-                    }
-                }
-            )
+            if (navHostController != null) {
+                TablasTopAppBar(
+                    title = "MIS TABLAS",
+                    onSearchClick = {
+                        isSearchVisible = !isSearchVisible
+                        if (!isSearchVisible) {
+                            searchQuery = ""
+                            showSuggestions = false
+                        }
+                    },
+                    viewModel =viewModel,
+                    navHostController
+                )
+            }
         },
         bottomBar = {
             BottomNavigationBar(onHomeButtonClicked,
@@ -340,42 +347,77 @@ fun TablaItem(
     }
 }
 
-/**
- * Barra superior personalizada para la pantalla de tablas.
- *
- * Incluye:
- * - Logo de la aplicación
- * - Título centrado
- * - Botón de búsqueda
- * - Divisor inferior decorativo
- *
- * @param title Texto a mostrar como título
- * @param onSearchClick Callback para el botón de búsqueda
- * @param modifier Modificador para personalización del layout
- */
+@Composable
+fun UserDropdownMenu(
+    expanded: Boolean,
+    onDismissRequest: () -> Unit,
+    onLogout: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismissRequest,
+        modifier = modifier
+    ) {
+        DropdownMenuItem(
+            text = {
+                Text(
+                    "Cerrar sesión",
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            onClick = {
+                onLogout()
+                onDismissRequest()
+            }
+        )
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TablasTopAppBar(
     title: String,
     onSearchClick: () -> Unit,
+    viewModel: PantallaInicioViewModel,
+    navController: NavHostController?,
     modifier: Modifier = Modifier
 ) {
+    var showMenu by remember { mutableStateOf(false) }
+
     Column {
         androidx.compose.material3.CenterAlignedTopAppBar(
-            title = { Text(
-                text = title,
-                style = AppBarTitleStyle
-            )  },
+            title = {
+                Text(
+                    text = title,
+                    style = AppBarTitleStyle
+                )
+            },
             modifier = modifier,
             colors = topAppBarColors(
                 containerColor = Color(0xfff55c7a)
             ),
             navigationIcon = {
-                IconButton(onClick = { }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.logoapp),
-                        contentDescription = "Logo de la aplicación",
-                        modifier = Modifier.size(100.dp)
+                Box {
+                    IconButton(onClick = { showMenu = true }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.logoapp),
+                            contentDescription = "Menú de usuario",
+                            modifier = Modifier.size(100.dp)
+                        )
+                    }
+
+                    UserDropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false },
+                        onLogout = { viewModel.viewModelScope.launch {
+                            if (navController != null) {
+                                viewModel.cerrarSesion(navController)
+                            }
+                        }
+                            showMenu = false
+                        }
                     )
                 }
             },
@@ -556,6 +598,6 @@ fun BottomNavigationBar(
 @Composable
 fun PantallaInicioPreview() {
 
-    PantallaInicio(onHomeButtonClicked = {}, onProfileClicked = {}, onFavoritesClicked = {}, onSearchClicked = {}, onViewTableClicked = {}, onCreateTableClicked = {},)
+    PantallaInicio(onHomeButtonClicked = {}, onProfileClicked = {}, onFavoritesClicked = {}, onSearchClicked = {}, onViewTableClicked = {}, onCreateTableClicked = {}, navHostController = null)
 
 }

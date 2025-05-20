@@ -24,7 +24,15 @@ class DatosPrueba {
             val db = BaseDeDatos.getDatabase(context.applicationContext)
             val directorioImagenes = context.getDir("profile_images", Context.MODE_PRIVATE)
 
+
             withContext(Dispatchers.IO) {
+
+                directorioImagenes.listFiles()?.forEach { file ->
+                    if (file.name != "default.jpg") {
+                        file.delete()
+                    }
+                }
+
                 db.tablaDao().deleteAll()
                 db.usuarioDao().deleteAll()
                 db.loggeadoDao().deleteAll()

@@ -2,15 +2,20 @@ package com.example.superahorro.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.example.superahorro.Datos.Loggeado
 import com.example.superahorro.Datos.Tabla
 import com.example.superahorro.Datos.TablaRepository
 import com.example.superahorro.Datos.UsuarioRepository
+import com.example.superahorro.ModeloDominio.Sesion
+import com.example.superahorro.SuperAhorroScreen
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Date
 
 /**
  * Estado UI para la pantalla de inicio
@@ -40,7 +45,14 @@ class PantallaInicioViewModel(
     val uiState: StateFlow<PantallaInicioUiState> = _uiState.asStateFlow()
 
     init {
-        cargarTablasDeUsuarioAleatorio()
+        println("PantallaInicioViewModel - Sesion.usuario: ${Sesion.usuario?.id}")
+
+        viewModelScope.launch {
+            delay(100)
+            Sesion.usuario?.let { usuario ->
+                cargarTablasPorUsuario(usuario)
+            }
+        }
     }
 
     /**
@@ -110,12 +122,6 @@ class PantallaInicioViewModel(
             try {
                 val tablasIds = usuario.tablasPropias + usuario.tablasPublicas
 
-                if (tablasIds.isEmpty()) {
-                    // Si el usuario no tiene tablas, cargar todas las tablas
-                    cargarTodasLasTablas()
-                    return@launch
-                }
-
                 tablaRepository.getAllTablas().collect { todasTablas ->
                     val tablasDelUsuario = todasTablas.filter { tabla ->
                         tabla.id in tablasIds || tabla.autor == usuario.id
@@ -168,6 +174,15 @@ class PantallaInicioViewModel(
      */
     fun limpiarBusqueda() {
         _uiState.update { it.copy(searchQuery = "", searchResults = emptyList()) }
+    }
+
+    suspend fun cerrarSesion(navController: NavHostController) {
+        Sesion.usuario = null
+        Sesion.fechaLogin = Date()
+
+        navController.navigate(SuperAhorroScreen.Login.name) {
+            popUpTo(0)
+        }
     }
 }
 

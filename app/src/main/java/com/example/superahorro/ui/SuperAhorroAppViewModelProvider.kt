@@ -72,6 +72,12 @@ object AppViewModelProvider {
             )
         }
 
+        initializer {
+            ProfileViewModel(
+                usuarioRepository = superAhorroApplication().container.usuarioRepository
+            )
+        }
+
     }
 }
 

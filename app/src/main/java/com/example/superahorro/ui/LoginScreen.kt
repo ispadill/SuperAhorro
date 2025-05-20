@@ -95,7 +95,9 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .padding(8.dp, top = 50.dp)
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(bottom = 50.dp)) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 50.dp)) {
                     Text(
                         text = "SuperAhorro",
                         fontSize = 50.sp,
@@ -220,7 +222,7 @@ fun LoginScreen(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
                     Button(
-                        onClick = onAceptarClicked,
+                        onClick = { validateAndLogin() },
 
                         modifier = Modifier
                             .fillMaxWidth()
@@ -246,7 +248,9 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .padding(8.dp, top = 50.dp)
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(bottom = 50.dp)) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 50.dp)) {
                     Image(
                         painter = painterResource(R.drawable.logoapp),
                         contentDescription = null,
@@ -272,6 +276,8 @@ fun PantallaLoginPreview() {
     LoginScreen(
         onAceptarClicked = {},
         onRegistrarseClicked = {},
-        modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center))
+        modifier = Modifier
+            .fillMaxSize()
+            .wrapContentSize(Alignment.Center))
 
 }

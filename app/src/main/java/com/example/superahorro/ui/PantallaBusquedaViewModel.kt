@@ -5,16 +5,20 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.example.superahorro.Datos.Loggeado
 import com.example.superahorro.Datos.TablaRepository
 import com.example.superahorro.Datos.UsuarioRepository
+import com.example.superahorro.ModeloDominio.Sesion
 import com.example.superahorro.R
+import com.example.superahorro.SuperAhorroScreen
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
+import java.util.Date
 
 /**
  * Estado UI para la pantalla de búsqueda de usuarios
@@ -137,14 +141,25 @@ class PantallaBusquedaViewModel(
      */
     fun cargarImagenPerfil(context: Context, usuarioId: String): Bitmap {
         return try {
-            val loggeado = _uiState.value.usuarios.find { it.id == usuarioId }
-            val uri = loggeado?.imagenPerfilUri ?: "default.jpg"
-
             val directorio = context.getDir("profile_images", Context.MODE_PRIVATE)
-            val archivoImagen = File(directorio, if (uri == "default.jpg") uri else "$usuarioId.jpg")
+            val archivoImagen = File(directorio, "profile_$usuarioId.jpg")
 
-            BitmapFactory.decodeFile(archivoImagen.absolutePath) ?:
-            BitmapFactory.decodeResource(context.resources, R.drawable.logoapp)
+            if (archivoImagen.exists()) {
+                BitmapFactory.decodeFile(archivoImagen.absolutePath)?.also {
+                    _uiState.update { currentState ->
+                        val updatedUsers = currentState.usuariosConRating.map { user ->
+                            if (user.usuario.id == usuarioId) {
+                                user.copy(imagenPerfilBitmap = it)
+                            } else {
+                                user
+                            }
+                        }
+                        currentState.copy(usuariosConRating = updatedUsers)
+                    }
+                } ?: BitmapFactory.decodeResource(context.resources, R.drawable.logoapp)
+            } else {
+                BitmapFactory.decodeResource(context.resources, R.drawable.logoapp)
+            }
         } catch (e: Exception) {
             BitmapFactory.decodeResource(context.resources, R.drawable.logoapp)
         }
@@ -179,5 +194,14 @@ class PantallaBusquedaViewModel(
      */
     fun limpiarBusqueda() {
         _uiState.update { it.copy(searchQuery = "", searchResults = emptyList()) }
+    }
+
+    suspend fun cerrarSesion(navController: NavHostController) {
+        Sesion.usuario = null
+        Sesion.fechaLogin = Date()
+
+        navController.navigate(SuperAhorroScreen.Login.name) {
+            popUpTo(0)
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.superahorro.ui
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,7 +24,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import com.example.superahorro.R
 import androidx.compose.foundation.clickable
-
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
+import com.example.superahorro.ui.theme.AppBarTitleStyle
 
 
 @Composable
@@ -50,7 +53,7 @@ fun FavoritosScreen(
         modifier = Modifier.fillMaxSize().background(color = Color(0xfff6bc66)),
         containerColor = Color(0xfff6bc66),
         topBar = {
-            TablasTopAppBar(title = "FAVORITOS", onSearchClick = onSearchClicked)
+            FavoritosTopAppBar(title = "FAVORITOS", onSearchClick = onSearchClicked)
         },
         bottomBar = {
             BottomNavigationBar(
@@ -143,5 +146,49 @@ fun FavoritosScreen(
         }
 
 
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FavoritosTopAppBar(
+    title: String,
+    onSearchClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column {
+        androidx.compose.material3.CenterAlignedTopAppBar(
+            title = { Text(
+                text = title,
+                style = AppBarTitleStyle
+            )  },
+            modifier = modifier,
+            colors = topAppBarColors(
+                containerColor = Color(0xfff55c7a)
+            ),
+            navigationIcon = {
+                IconButton(onClick = { }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.logoapp),
+                        contentDescription = "Logo de la aplicación",
+                        modifier = Modifier.size(100.dp)
+                    )
+                }
+            },
+            actions = {
+                IconButton(onClick = onSearchClick) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Buscar",
+                        tint = Color.Black
+                    )
+                }
+            }
+        )
+        Divider(
+            color = Color.Black,
+            thickness = 3.dp,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }

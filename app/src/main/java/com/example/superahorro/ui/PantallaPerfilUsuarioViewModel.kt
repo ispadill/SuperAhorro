@@ -3,6 +3,7 @@ package com.example.superahorro.ui
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.superahorro.Datos.Loggeado
@@ -127,14 +128,25 @@ class PantallaPerfilUsuarioViewModel(
      */
     private fun cargarImagenPerfil(context: Context, usuarioId: String): Bitmap {
         return try {
-            val uri = _uiState.value.usuario?.imagenPerfilUri ?: "default.jpg"
-
             val directorio = context.getDir("profile_images", Context.MODE_PRIVATE)
-            val archivoImagen = File(directorio, if (uri == "default.jpg") uri else "$usuarioId.jpg")
+            val archivoImagen = File(directorio, "profile_$usuarioId.jpg")
 
-            BitmapFactory.decodeFile(archivoImagen.absolutePath) ?:
-            BitmapFactory.decodeResource(context.resources, R.drawable.logoapp)
+            BitmapFactory.decodeFile(archivoImagen.absolutePath)
+                ?: _uiState.value.usuario?.imagenPerfilUri?.takeIf { it != "default.jpg" }?.let { uri ->
+                    BitmapFactory.decodeFile(uri)
+                }
+                ?: BitmapFactory.decodeResource(context.resources, R.drawable.logoapp).also { bitmap ->
+                    // Actualizar el estado si usamos la imagen por defecto
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            usuario = currentState.usuario?.copy(
+                                imagenPerfilUri = "default.jpg"
+                            )
+                        )
+                    }
+                }
         } catch (e: Exception) {
+            Log.e("ImageLoad", "Error cargando imagen para $usuarioId: ${e.message}")
             BitmapFactory.decodeResource(context.resources, R.drawable.logoapp)
         }
     }

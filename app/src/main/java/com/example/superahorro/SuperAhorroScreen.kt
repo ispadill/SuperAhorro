@@ -44,6 +44,9 @@ import androidx.compose.ui.res.dimensionResource
 //import com.example.superahorro.ui.StartOrderScreen
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.inventory.ui.item.TablaEditScreen
@@ -120,7 +123,7 @@ fun SuperAhorroApp(
 
         NavHost(
             navController = navController,
-            startDestination = SuperAhorroScreen.Main.name,
+            startDestination = SuperAhorroScreen.Login.name,
 
             modifier = Modifier
         ) {
@@ -131,7 +134,7 @@ fun SuperAhorroApp(
                     },
                     onCreateTableClicked = {
 //                        navController.navigate(SuperAhorroScreen.CreateTable.name)
-                          navController.navigate(SuperAhorroScreen.Main.name)
+                        navController.navigate(SuperAhorroScreen.Main.name)
                     },
                     onSearchClicked = {
                         navController.navigate(SuperAhorroScreen.Search.name)
@@ -146,6 +149,7 @@ fun SuperAhorroApp(
                         navController.navigate(SuperAhorroScreen.Favorites.name)
 
                     },
+                    navHostController = navController
                 )
             }
             composable(route = SuperAhorroScreen.Login.name) {
@@ -166,18 +170,20 @@ fun SuperAhorroApp(
                         navController.navigate(SuperAhorroScreen.Login.name)
 
                     },
-                    onBackClicked = {navController.navigate(SuperAhorroScreen.Login.name)}
+                    onBackClicked = { navController.navigate(SuperAhorroScreen.Login.name) }
                 )
             }
-            composable(route = "${SuperAhorroScreen.ViewTable.name}/{${SuperAhorroScreen.TABLE_ID_KEY}}",
+            composable(
+                route = "${SuperAhorroScreen.ViewTable.name}/{${SuperAhorroScreen.TABLE_ID_KEY}}",
                 arguments = listOf(navArgument(SuperAhorroScreen.TABLE_ID_KEY) {
                     type = NavType.IntType
                 })
             ) { backStackEntry ->
-                val tablaId = backStackEntry.arguments?.getInt(SuperAhorroScreen.TABLE_ID_KEY) ?: run {
-                    navController.navigateUp()
-                    return@composable
-                }
+                val tablaId =
+                    backStackEntry.arguments?.getInt(SuperAhorroScreen.TABLE_ID_KEY) ?: run {
+                        navController.navigateUp()
+                        return@composable
+                    }
                 ViewTableScreen(
                     tablaId = tablaId,
                     onReturnClicked = { navController.navigateUp() },
@@ -203,13 +209,15 @@ fun SuperAhorroApp(
 //                    }
 //                )
 //            }
-            composable(route = "${SuperAhorroScreen.OtherProfile.name}/{${SuperAhorroScreen.USER_ID_KEY}}",
+            composable(
+                route = "${SuperAhorroScreen.OtherProfile.name}/{${SuperAhorroScreen.USER_ID_KEY}}",
                 arguments = listOf(navArgument(SuperAhorroScreen.USER_ID_KEY) {
                     type = NavType.StringType
                     defaultValue = ""
                 })
             ) {
-                val userId = backStackEntry?.arguments?.getString(SuperAhorroScreen.USER_ID_KEY) ?: ""
+                val userId =
+                    backStackEntry?.arguments?.getString(SuperAhorroScreen.USER_ID_KEY) ?: ""
                 val context = LocalContext.current
                 PantallaPerfilUsuario(
                     onHomeButtonClicked = {
@@ -228,7 +236,7 @@ fun SuperAhorroApp(
                         navController.navigate(SuperAhorroScreen.Favorites.name)
                     },
                     usuarioId = userId,
-                    onBackButtonClicked={navController.navigate(SuperAhorroScreen.Search.name)},
+                    onBackButtonClicked = { navController.navigate(SuperAhorroScreen.Search.name) },
                 )
             }
             composable(route = SuperAhorroScreen.Search.name) {
@@ -246,9 +254,10 @@ fun SuperAhorroApp(
                     onFavoritesClicked = {
                         navController.navigate(SuperAhorroScreen.Favorites.name)
                     },
-                    onViewUserClicked={userId ->
+                    onViewUserClicked = { userId ->
                         navController.navigate(SuperAhorroScreen.otherProfileRoute(userId))
-                    }
+                    },
+                    navHostController = navController
                 )
             }
             composable(route = SuperAhorroScreen.Profile.name) {
@@ -267,7 +276,7 @@ fun SuperAhorroApp(
                         navController.navigate(SuperAhorroScreen.Profile.name)
                     },
                     onFavoritesClicked = {
-                          navController.navigate(SuperAhorroScreen.Favorites.name)
+                        navController.navigate(SuperAhorroScreen.Favorites.name)
 
                     },
                     onEditProfileClicked = {
@@ -291,7 +300,11 @@ fun SuperAhorroApp(
                         navController.navigate(SuperAhorroScreen.Search.name)
                     },
                     onAcceptChangesClicked = {
-                        navController.navigate(SuperAhorroScreen.Profile.name)
+                        navController.navigate(SuperAhorroScreen.Profile.name) {
+                            popUpTo(SuperAhorroScreen.Profile.name) {
+                                inclusive = true
+                            }
+                        }
                     }
                 )
             }
@@ -311,7 +324,8 @@ fun SuperAhorroApp(
                     },
                     onViewTableClicked = {
                         navController.navigate(SuperAhorroScreen.ViewTable.name)
-                    }
+                    },
                 )
             }
+        }
 }
