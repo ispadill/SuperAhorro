@@ -40,6 +40,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,24 +57,28 @@ import com.example.superahorro.ui.AppViewModelProvider
 import com.example.superahorro.ui.tabla.DetallesTablaUiState
 import com.example.superahorro.ui.tabla.TablaDetailsViewModel
 import kotlinx.coroutines.launch
-
-object DetallesTablaDestination {
-    val route = "detalles_tabla"
-    val titleRes = "Detalles tabla"
-    const val tablaIdArg = "tablaId"
-    val routeWithArgs = "$route/{$tablaIdArg}"
-}
-
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.superahorro.Datos.BaseDeDatos
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun ViewTableScreen(
+    tablaId: Int,
     navigateToEditTabla: (Int) -> Unit,
     onReturnClicked: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TablaDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
+
 ) {
+    LaunchedEffect(tablaId) {
+        println("Tabla ID recibido: $tablaId")
+        viewModel.cargarTablaUsuario(tablaId)
+    }
+
     val coroutineScope = rememberCoroutineScope()
-    val uiState = viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Scaffold(
         topBar = {
 //            InventoryTopAppBar(
@@ -84,7 +89,7 @@ fun ViewTableScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navigateToEditTabla(uiState.value.detallesTabla.id) },
+                onClick = { uiState.tablaUsuario?.let { navigateToEditTabla(tablaId) } },
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.padding(20.dp)
 
@@ -97,14 +102,16 @@ fun ViewTableScreen(
         }, modifier = modifier
     ) { innerPadding ->
         DetallesTablaCuerpo(
-            DetallesTablaUiState = uiState.value,
             onPublicar = {},
             onDelete = {
                 coroutineScope.launch {
-                viewModel.deleteTabla()
+                    uiState.tablaUsuario?.let { viewModel.deleteTabla(tablaId) }
                     onReturnClicked()
                 }
             },
+            scope = coroutineScope,
+            context = LocalContext.current,
+            tabla = uiState.tablaUsuario,
             modifier = Modifier
                 .padding(
                     start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
@@ -113,14 +120,20 @@ fun ViewTableScreen(
                 )
                 .verticalScroll(rememberScrollState())
         )
+        println("Tabla ID recibido: ${uiState.tablaUsuario?.id}")
     }
 }
 
+
 @Composable
 private fun DetallesTablaCuerpo(
-    DetallesTablaUiState: DetallesTablaUiState,
     onPublicar: () -> Unit,
     onDelete: () -> Unit,
+
+    scope: CoroutineScope,
+    context: android.content.Context,
+    tabla: Tabla?,
+
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -129,10 +142,12 @@ private fun DetallesTablaCuerpo(
     ) {
         var deleteConfirmationRequired by rememberSaveable { mutableStateOf(false) }
 
-        DetallesTabla(
-            tabla = DetallesTablaUiState.detallesTabla.toTabla(),
-            modifier = Modifier.fillMaxWidth()
-        )
+        if (tabla != null) {
+            DetallesTabla(
+                tabla = tabla,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
         Button(
             onClick = onPublicar,
             modifier = Modifier.fillMaxWidth(),
@@ -148,6 +163,37 @@ private fun DetallesTablaCuerpo(
         ) {
             Text("Eliminar")
         }
+
+        Button(
+            onClick = {
+                scope.launch {
+                    val db = BaseDeDatos.getDatabase(context)
+                    val loggeadoDAO = db.loggeadoDao()
+
+                    //Cambiar Juan por el ID del usuario logueado real
+                    val usuario = loggeadoDAO.getUsuarioPorId("Juan")
+
+                    val nuevasFavoritas = usuario.tablasFavoritas.toMutableList()
+                    if (tabla != null) {
+                        if (!nuevasFavoritas.contains(tabla.id)) {
+                            if (tabla != null) {
+                                nuevasFavoritas.add(tabla.id)
+                            }
+                            val nuevoUsuario = usuario.copy(tablasFavoritas = nuevasFavoritas)
+                            loggeadoDAO.update(nuevoUsuario)
+                        }
+                    }
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
+        ) {
+            Text("Añadir a favoritos")
+        }
+
+
+
         if (deleteConfirmationRequired) {
             DeleteConfirmationDialog(
                 onDeleteConfirm = {
@@ -193,7 +239,7 @@ fun DetallesTabla(
             )
             FilaTabla(
                 label = "Valoracion",
-                itemDetail = tabla.valoracion.toString(),
+                itemDetail = "%.2f".format(tabla.valoracion),
                 modifier = Modifier.padding(
                     horizontal = 20.dp
                 )

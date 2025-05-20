@@ -48,6 +48,7 @@ object AppViewModelProvider {
                 superAhorroApplication().container.usuarioRepository
             )
         }
+
         initializer {
             LoginViewModel(
                 superAhorroApplication().container.usuarioRepository
@@ -56,6 +57,18 @@ object AppViewModelProvider {
         initializer {
             EditProfileViewModel(
                 superAhorroApplication().container.usuarioRepository
+            )
+       }
+       initializer {
+            PantallaBusquedaViewModel(
+                superAhorroApplication().container.usuarioRepository,
+                superAhorroApplication().container.tablaRepository
+            )
+        }
+        initializer {
+            PantallaPerfilUsuarioViewModel(
+                superAhorroApplication().container.usuarioRepository,
+                superAhorroApplication().container.tablaRepository
             )
         }
 
