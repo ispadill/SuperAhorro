@@ -46,6 +46,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.layout.fillMaxHeight
 import com.example.inventory.ui.item.ViewTableScreen
 import com.example.superahorro.Datos.BaseDeDatos
+import com.example.superahorro.ui.EditProfileScreen
 import com.example.superahorro.ui.LoginScreen
 import com.example.superahorro.ui.PantallaInicio
 import com.example.superahorro.ui.ProfileScreen
@@ -242,31 +243,30 @@ fun SuperAhorroApp(
                           navController.navigate(SuperAhorroScreen.Main.name)
                     },
                     onEditProfileClicked = {
-//                        navController.navigate(SuperAhorroScreen.EditProfileScreen.name)
-                        navController.navigate(SuperAhorroScreen.Main.name)
+                        navController.navigate(SuperAhorroScreen.EditProfile.name)
                     }
                 )
             }
-//            composable(route = SuperAhorroScreen.EditProfile.name) {
-//                val context = LocalContext.current
-//                EditProfileScreen(
-//                    onHomeButtonClicked = {
-//                        navController.navigate(SuperAhorroScreen.Main.name)
-//                    },
-//                    onSearchClicked = {
-//                        navController.navigate(SuperAhorroScreen.Search.name)
-//                    },
-//                    onProfileClicked = {
-//                        navController.navigate(SuperAhorroScreen.Profile.name)
-//                    },
-//                    onFavoritesClicked = {
-//                        navController.navigate(SuperAhorroScreen.Search.name)
-//                    },
-//                    onAcceptChangesClicked = {
-//                        navController.navigate(SuperAhorroScreen.Profile.name)
-//                    }
-//                )
-//            }
-//        }
-    }
+            composable(route = SuperAhorroScreen.EditProfile.name) {
+                val context = LocalContext.current
+                EditProfileScreen(
+                    onHomeButtonClicked = {
+                        navController.navigate(SuperAhorroScreen.Main.name)
+                    },
+                    onSearchClicked = {
+                        navController.navigate(SuperAhorroScreen.Search.name)
+                    },
+                    onProfileClicked = {
+                        navController.navigate(SuperAhorroScreen.Profile.name)
+                    },
+                    onFavoritesClicked = {
+                        navController.navigate(SuperAhorroScreen.Search.name)
+                    },
+                    onAcceptChangesClicked = {
+                        navController.navigate(SuperAhorroScreen.Profile.name)
+                    }
+                )
+            }
+        }
+ //   }
 }

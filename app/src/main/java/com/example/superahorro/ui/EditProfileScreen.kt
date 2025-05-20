@@ -4,7 +4,6 @@ package com.example.superahorro.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,9 +16,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.superahorro.Datos.Loggeado
+import com.example.superahorro.ModeloDominio.Sesion
 import com.example.superahorro.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileScreen(
     onAcceptChangesClicked: () -> Unit,
@@ -27,11 +28,31 @@ fun EditProfileScreen(
     onSearchClicked: () -> Unit,
     onProfileClicked: () -> Unit,
     onFavoritesClicked: () -> Unit,
-    modifier: Modifier = Modifier
+    viewModel: EditProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    val usuarioLogueado = Sesion.usuario
 
-    val username = remember { mutableStateOf("Juanito666") }
-    val fullName = remember { mutableStateOf("Juan Palomo") }
+    val fullName = remember { mutableStateOf("${usuarioLogueado?.nombre}") }
+    val errorMessage = remember { mutableStateOf("") }
+
+    fun updateFields() {
+        when {
+            fullName.value.isEmpty() -> errorMessage.value = "Por favor, ingrese un nombre completo."
+            else -> {
+
+
+                        errorMessage.value = ""
+
+                        usuarioLogueado?.nombre=fullName.value
+                        val newLog: Loggeado = usuarioLogueado ?: Loggeado("", "", "", "", listOf(), listOf(), listOf(), listOf())
+                        viewModel.updateLogFromUi(newLog)
+
+                        onAcceptChangesClicked()
+
+
+            }
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -78,26 +99,11 @@ fun EditProfileScreen(
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "Nombre de Usuario: ",
+                            text = "Nombre de usuario: ${usuarioLogueado?.id}",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black,
                             textAlign = TextAlign.Center
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        OutlinedTextField(
-                            value = username.value,
-                            onValueChange = { username.value = it },
-                            singleLine = true,
-                            modifier = Modifier
-                                .fillMaxWidth(0.8f)
-                                .padding(vertical = 4.dp),
-//                            colors = TextFieldDefaults.outlinedTextFieldColors(
-//                                containerColor = Color(0xfff68c70), //Color del contenedor
-//                                focusedBorderColor = Color.Black, // Color del borde cuando el campo está enfocado
-//                                unfocusedBorderColor = Color(0xfff55c7a) // Color del borde
-//                            )
-
                         )
                     }
 
@@ -126,6 +132,14 @@ fun EditProfileScreen(
 //                            )
                         )
                     }
+                    if (errorMessage.value.isNotEmpty()) {
+                        Text(
+                            text = errorMessage.value,
+                            color = Color.Red,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(40.dp))
 
@@ -138,7 +152,7 @@ fun EditProfileScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Correo: JuanPalomo@gmail.com",
+                            text = "Correo: ${usuarioLogueado?.correo}",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black,
@@ -156,7 +170,7 @@ fun EditProfileScreen(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
                     Button(
-                        onClick = onAcceptChangesClicked,
+                        onClick = {updateFields()},
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
@@ -188,7 +202,6 @@ fun PantallaEditarPerfilPreview() {
         onHomeButtonClicked = {},
         onSearchClicked = {},
         onProfileClicked = {},
-        onFavoritesClicked = {},
-        modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center)
+        onFavoritesClicked = {}
     )
 }

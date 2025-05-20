@@ -53,6 +53,11 @@ object AppViewModelProvider {
                 superAhorroApplication().container.usuarioRepository
             )
         }
+        initializer {
+            EditProfileViewModel(
+                superAhorroApplication().container.usuarioRepository
+            )
+        }
 
     }
 }
