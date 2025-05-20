@@ -55,6 +55,11 @@ object AppViewModelProvider {
             )
         }
         initializer {
+            EditProfileViewModel(
+                superAhorroApplication().container.usuarioRepository
+            )
+       }
+       initializer {
             PantallaBusquedaViewModel(
                 superAhorroApplication().container.usuarioRepository,
                 superAhorroApplication().container.tablaRepository
