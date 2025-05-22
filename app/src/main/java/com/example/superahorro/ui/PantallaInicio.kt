@@ -1,5 +1,7 @@
 package com.example.superahorro.ui
 
+import android.content.Intent
+import android.widget.Toast
 import com.example.superahorro.ui.theme.AppBarTitleStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.BorderStroke
@@ -71,6 +73,7 @@ import com.example.superahorro.Datos.Tabla
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -354,11 +357,39 @@ fun UserDropdownMenu(
     onLogout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+
+    fun compartirApp() {
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, "¿Quiéres comparar valoraciones de productos? ¡Descarga SuperAhorro!\n https://github.com/ispadill/SuperAhorro")
+        }
+
+        try {
+            context.startActivity(Intent.createChooser(shareIntent, "Compartir con"))
+        } catch (e: Exception) {
+            Toast.makeText(context, "No se pudo abrir el menú de compartir", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     DropdownMenu(
         expanded = expanded,
         onDismissRequest = onDismissRequest,
         modifier = modifier
     ) {
+        DropdownMenuItem(
+            text = {
+                Text(
+                    "Compartir app",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            onClick = {
+                compartirApp()
+                onDismissRequest()
+            }
+        )
         DropdownMenuItem(
             text = {
                 Text(
