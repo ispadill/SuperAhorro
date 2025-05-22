@@ -57,6 +57,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.filled.Favorite
@@ -166,7 +167,7 @@ fun PantallaInicio(
             FloatingActionButton(
                 onClick = onCreateTableClicked,
                 shape = MaterialTheme.shapes.medium,
-                containerColor = Color(0xfff55c7a),
+                //containerColor = Color(0xfff55c7a),
                 modifier = Modifier
                     .padding(
                         end = WindowInsets.safeDrawing.asPaddingValues()
@@ -591,8 +592,17 @@ fun BottomNavigationBar(
     onProfileClicked: () -> Unit,
     onFavoritesClicked: () -> Unit,
 ) {
+
+    var bottomBarColor: Color
+
+    if(isSystemInDarkTheme()){
+        bottomBarColor = Color(0xFF9C27B0)
+    }else{
+        bottomBarColor = Color(0xFFF55C7A)
+    }
+
     BottomAppBar(
-        containerColor = Color(0xfff55c7a), // Color de fondo de la barra inferior
+        containerColor = bottomBarColor, // Color de fondo de la barra inferior
         contentColor = Color.Black, // Color del contenido (íconos y texto)
         actions = {
             IconButton(

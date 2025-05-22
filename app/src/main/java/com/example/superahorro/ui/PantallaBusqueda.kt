@@ -47,6 +47,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -134,8 +135,9 @@ fun PantallaBusqueda(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize().background(color = Color(0xfff6bc66)),
-        containerColor = Color(0xfff6bc66),
+        modifier = Modifier.fillMaxSize()//.background(color = Color(0xfff6bc66)),
+        //containerColor = Color(0xfff6bc66),
+                ,
         topBar = {
             UsuariosTopAppBar(
                 title = "BUSCAR USUARIOS",
@@ -160,7 +162,7 @@ fun PantallaBusqueda(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xfff6bc66))
+                //.background(Color(0xfff6bc66))
                 .padding(top = innerPadding.calculateTopPadding())
         ) {
             if (isSearchVisible) {
@@ -290,11 +292,20 @@ fun UsuarioItem(
     val imagenPerfil = usuarioConRating.imagenPerfilBitmap ?:
     viewModel.cargarImagenPerfil(context, usuario.id)
 
+
+    var color: Color
+
+    if(isSystemInDarkTheme()){
+        color = Color(0xFF03A9F4)
+    }else{
+        color = Color(0xfff68c70)
+    }
+
     Card(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xfff68c70),
+            containerColor = color,
         ),
         border = BorderStroke(1.dp, Color.Black)
     ) {
@@ -398,6 +409,8 @@ fun UsuariosTopAppBar(
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
+
+
     Column {
         androidx.compose.material3.CenterAlignedTopAppBar(
             title = { Text(
@@ -475,7 +488,7 @@ fun UserSearchBarBelowAppBar(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color(0xFFF6BC66))
+            //.background(Color(0xFFF6BC66))
             .padding(bottom = 4.dp)
     ) {
         OutlinedTextField(
@@ -489,8 +502,8 @@ fun UserSearchBarBelowAppBar(
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "Buscar",
-                    tint = Color(0xFF555555)
+                    contentDescription = "Buscar"//,
+                    //tint = Color(0xFF555555)
                 )
             },
             trailingIcon = {
@@ -498,8 +511,8 @@ fun UserSearchBarBelowAppBar(
                     IconButton(onClick = onClearClick) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Limpiar",
-                            tint = Color(0xFF555555)
+                            contentDescription = "Limpiar"//,
+                            //tint = Color(0xFF555555)
                         )
                     }
                 }
