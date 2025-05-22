@@ -227,7 +227,8 @@ fun EditProfileScreen(
 
                 usuarioLogueado?.nombre = fullName.value
                 usuarioLogueado?.correo = correo.value
-
+                val newLog: Loggeado = usuarioLogueado ?: Loggeado("", "", "", "", listOf(), listOf(), listOf(), listOf())
+                viewModel.updateLogFromUi(newLog)
                 selectedImageUri.value?.let { uri ->
                     usuarioLogueado?.let { user ->
                         viewModel.updateUserProfileImage(context, user, uri) {

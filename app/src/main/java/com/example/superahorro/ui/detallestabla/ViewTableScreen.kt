@@ -156,13 +156,6 @@ private fun DetallesTablaCuerpo(
         ) {
             Text("Publicar")
         }
-        OutlinedButton(
-            onClick = { deleteConfirmationRequired = true },
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Eliminar")
-        }
 
         Button(
             onClick = {
@@ -191,7 +184,13 @@ private fun DetallesTablaCuerpo(
         ) {
             Text("Añadir a favoritos")
         }
-
+        OutlinedButton(
+            onClick = { deleteConfirmationRequired = true },
+            shape = MaterialTheme.shapes.small,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Eliminar")
+        }
 
 
         if (deleteConfirmationRequired) {

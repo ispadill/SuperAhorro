@@ -48,7 +48,6 @@ fun LoginScreen(
 
     val username = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
-
     val errorMessage = remember { mutableStateOf("") }
 
     fun validateAndLogin() {
@@ -95,9 +94,7 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .padding(8.dp, top = 50.dp)
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 50.dp)) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(bottom = 50.dp)) {
                     Text(
                         text = "SuperAhorro",
                         fontSize = 50.sp,
@@ -160,7 +157,6 @@ fun LoginScreen(
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
                                 .padding(vertical = 4.dp),
-
                             visualTransformation = PasswordVisualTransformation()
 //                            colors = TextFieldDefaults.outlinedTextFieldColors(
 //                                containerColor = Color(0xfff68c70), //Color del contenedor
@@ -199,8 +195,6 @@ fun LoginScreen(
                             )
                         }
                     }
-
-                }
                     if (errorMessage.value.isNotEmpty()) {
                         Text(
                             text = errorMessage.value,
@@ -222,8 +216,7 @@ fun LoginScreen(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
                     Button(
-                        onClick = { validateAndLogin() },
-
+                        onClick = {validateAndLogin()},
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
@@ -248,9 +241,7 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .padding(8.dp, top = 50.dp)
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 50.dp)) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(bottom = 50.dp)) {
                     Image(
                         painter = painterResource(R.drawable.logoapp),
                         contentDescription = null,
@@ -261,6 +252,7 @@ fun LoginScreen(
                 }
             }
         }
+    }
 }
 
 
@@ -276,8 +268,6 @@ fun PantallaLoginPreview() {
     LoginScreen(
         onAceptarClicked = {},
         onRegistrarseClicked = {},
-        modifier = Modifier
-            .fillMaxSize()
-            .wrapContentSize(Alignment.Center))
+        modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center))
 
 }
