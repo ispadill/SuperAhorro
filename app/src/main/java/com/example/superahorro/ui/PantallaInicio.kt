@@ -362,7 +362,7 @@ fun UserDropdownMenu(
     fun compartirApp() {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, "¿Quiéres comparar valoraciones de productos? ¡Descarga SuperAhorro!\n https://github.com/ispadill/SuperAhorro")
+            putExtra(Intent.EXTRA_TEXT, "¿Quieres comparar valoraciones de productos? ¡Descarga SuperAhorro!\n https://github.com/ispadill/SuperAhorro")
         }
 
         try {

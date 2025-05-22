@@ -26,16 +26,21 @@ import com.example.superahorro.R
 import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.superahorro.ui.theme.AppBarTitleStyle
 
 
 @Composable
 fun FavoritosScreen(
+    navHostController: NavHostController?,
     onHomeButtonClicked: () -> Unit,
     onSearchClicked: () -> Unit,
     onProfileClicked: () -> Unit,
     onFavoritesClicked: () -> Unit,
-    onViewTableClicked: () -> Unit
+    onViewTableClicked: () -> Unit,
+    viewModel: PantallaInicioViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -53,7 +58,14 @@ fun FavoritosScreen(
         modifier = Modifier.fillMaxSize().background(color = Color(0xfff6bc66)),
         containerColor = Color(0xfff6bc66),
         topBar = {
-            FavoritosTopAppBar(title = "FAVORITOS", onSearchClick = onSearchClicked)
+            if (navHostController != null) {
+                FavoritosTopAppBar(
+                    title = "FAVORITOS",
+                    onSearchClick = onSearchClicked,
+                    viewModel = viewModel,
+                    navController = navHostController
+                )
+            }
         },
         bottomBar = {
             BottomNavigationBar(
@@ -154,8 +166,11 @@ fun FavoritosScreen(
 fun FavoritosTopAppBar(
     title: String,
     onSearchClick: () -> Unit,
+    viewModel: PantallaInicioViewModel,
+    navController: NavHostController?,
     modifier: Modifier = Modifier
 ) {
+    var showMenu by remember { mutableStateOf(false) }
     Column {
         androidx.compose.material3.CenterAlignedTopAppBar(
             title = { Text(
@@ -167,11 +182,25 @@ fun FavoritosTopAppBar(
                 containerColor = Color(0xfff55c7a)
             ),
             navigationIcon = {
-                IconButton(onClick = { }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.logoapp),
-                        contentDescription = "Logo de la aplicación",
-                        modifier = Modifier.size(100.dp)
+                Box {
+                    IconButton(onClick = { showMenu = true }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.logoapp),
+                            contentDescription = "Menú de usuario",
+                            modifier = Modifier.size(100.dp)
+                        )
+                    }
+
+                    UserDropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false },
+                        onLogout = { viewModel.viewModelScope.launch {
+                            if (navController != null) {
+                                viewModel.cerrarSesion(navController)
+                            }
+                        }
+                            showMenu = false
+                        }
                     )
                 }
             },

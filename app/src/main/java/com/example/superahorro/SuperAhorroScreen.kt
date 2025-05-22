@@ -325,6 +325,7 @@ fun SuperAhorroApp(
                     onViewTableClicked = {
                         navController.navigate(SuperAhorroScreen.ViewTable.name)
                     },
+                    navHostController = navController
                 )
             }
         }
