@@ -187,6 +187,9 @@ fun SuperAhorroApp(
                 ViewTableScreen(
                     tablaId = tablaId,
                     onReturnClicked = { navController.navigateUp() },
+                    onAddFavoritosClicked = {
+                        navController.navigate(SuperAhorroScreen.Favorites.name)
+                    },
                     navigateToEditTabla = { navController.navigate("${SuperAhorroScreen.EditTabla.name}/$it") }
                 )
             }

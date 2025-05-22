@@ -146,7 +146,11 @@ fun FavoritosScreen(
                                         tablasFavoritas = db.tablaDao().getTablasByIds(nuevasFavoritas)
                                     }
                                 },
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xfff55c7a),
+                                    contentColor = Color.Black
+                                )
                             ) {
                                 Text("Quitar de favoritos")
                             }

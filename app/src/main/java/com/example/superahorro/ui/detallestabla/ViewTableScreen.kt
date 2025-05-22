@@ -68,6 +68,7 @@ fun ViewTableScreen(
     tablaId: Int,
     navigateToEditTabla: (Int) -> Unit,
     onReturnClicked: () -> Unit,
+    onAddFavoritosClicked: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TablaDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
@@ -109,6 +110,7 @@ fun ViewTableScreen(
                     onReturnClicked()
                 }
             },
+            onAddFavoritosClicked=onAddFavoritosClicked,
             scope = coroutineScope,
             context = LocalContext.current,
             tabla = uiState.tablaUsuario,
@@ -129,7 +131,7 @@ fun ViewTableScreen(
 private fun DetallesTablaCuerpo(
     onPublicar: () -> Unit,
     onDelete: () -> Unit,
-
+    onAddFavoritosClicked: () -> Unit,
     scope: CoroutineScope,
     context: android.content.Context,
     tabla: Tabla?,
@@ -171,6 +173,7 @@ private fun DetallesTablaCuerpo(
                         if (!nuevasFavoritas.contains(tabla.id)) {
                             if (tabla != null) {
                                 nuevasFavoritas.add(tabla.id)
+                                onAddFavoritosClicked()
                             }
                             val nuevoUsuario = usuario.copy(tablasFavoritas = nuevasFavoritas)
                             loggeadoDAO.update(nuevoUsuario)
