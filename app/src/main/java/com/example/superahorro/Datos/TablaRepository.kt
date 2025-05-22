@@ -1,7 +1,9 @@
 package com.example.superahorro.Datos
 
 import com.example.superahorro.Datos.Tabla
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 
 /**
  * Repositorio que proporciona acceso a la tabla de tablas
@@ -30,7 +32,11 @@ class TablaRepository(private val tablaDao: TablaDAO) {
     /**
      * Obtiene una tabla por su ID
      */
-    fun getTablaById(id: Int): Flow<Tabla?> = tablaDao.getTablaById(id)
+    suspend fun getTablaById(tablaId: Int): Tabla? {
+        return withContext(Dispatchers.IO) {
+            tablaDao.getTablaById(tablaId)
+        }
+    }
 
     /**
      * Obtiene todas las tablas de un usuario
@@ -43,4 +49,6 @@ class TablaRepository(private val tablaDao: TablaDAO) {
     suspend fun countTablas(): Int = tablaDao.countTablas()
 
     suspend fun deleteAll()=tablaDao.deleteAll()
+
+    suspend fun insertAndGetId(tabla: Tabla): Long=tablaDao.insertAndGetId(tabla)
 }
