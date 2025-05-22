@@ -50,6 +50,7 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.inventory.ui.item.TablaEditScreen
+import com.example.inventory.ui.item.TablaEntryScreen
 import com.example.inventory.ui.item.ViewTableScreen
 import com.example.superahorro.Datos.BaseDeDatos
 import com.example.superahorro.ui.EditProfileScreen
@@ -133,8 +134,7 @@ fun SuperAhorroApp(
                         navController.navigate(SuperAhorroScreen.Main.name)
                     },
                     onCreateTableClicked = {
-//                        navController.navigate(SuperAhorroScreen.CreateTable.name)
-                        navController.navigate(SuperAhorroScreen.Main.name)
+                        navController.navigate(SuperAhorroScreen.CreateTable.name)
                     },
                     onSearchClicked = {
                         navController.navigate(SuperAhorroScreen.Search.name)
@@ -193,25 +193,31 @@ fun SuperAhorroApp(
                     navigateToEditTabla = { navController.navigate("${SuperAhorroScreen.EditTabla.name}/$it") }
                 )
             }
-            composable(route = SuperAhorroScreen.EditTabla.name) {
-                val context = LocalContext.current
+            composable(
+                route = "${SuperAhorroScreen.EditTabla.name}/{${SuperAhorroScreen.TABLE_ID_KEY}}",
+                arguments = listOf(
+                    navArgument(SuperAhorroScreen.TABLE_ID_KEY) {
+                        type = NavType.IntType
+                    }
+                )
+            ) { backStackEntry ->
+                val tablaId = backStackEntry.arguments?.getInt(SuperAhorroScreen.TABLE_ID_KEY) ?: run {
+                    navController.navigateUp()
+                    return@composable
+                }
                 TablaEditScreen(
+                    navigateBack = { navController.navigateUp() },
+                   // tablaId = tablaId
+                )
+            }
+            composable(route = SuperAhorroScreen.CreateTable.name) {
+                val context = LocalContext.current
+                TablaEntryScreen(
                     navigateBack = {
                         navController.navigate(SuperAhorroScreen.Main.name)
                     },
                 )
             }
-//            composable(route = SuperAhorroScreen.CreateTable.name) {
-//                val context = LocalContext.current
-//                CreateTableScreen(
-//                    onReturnClicked = {
-//                        navController.navigate(SuperAhorroScreen.Main.name)
-//                    },
-//                    onCreateClicked = {
-//                        navController.navigate(SuperAhorroScreen.ViewTable.name)
-//                    }
-//                )
-//            }
             composable(
                 route = "${SuperAhorroScreen.OtherProfile.name}/{${SuperAhorroScreen.USER_ID_KEY}}",
                 arguments = listOf(navArgument(SuperAhorroScreen.USER_ID_KEY) {
@@ -229,8 +235,8 @@ fun SuperAhorroApp(
                     onSearchClicked = {
                         navController.navigate(SuperAhorroScreen.Search.name)
                     },
-                    onViewTableClicked = {
-                        navController.navigate(SuperAhorroScreen.ViewTable.name)
+                    onViewTableClicked = { tablaId ->
+                        navController.navigate(SuperAhorroScreen.detallesTablaRoute(tablaId))
                     },
                     onProfileClicked = {
                         navController.navigate(SuperAhorroScreen.Profile.name)

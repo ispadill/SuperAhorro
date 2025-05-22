@@ -56,7 +56,6 @@ object TablaEntryDestination {
 @Composable
 fun TablaEntryScreen(
     navigateBack: () -> Unit,
-    onNavigateUp: () -> Unit,
     canNavigateBack: Boolean = true,
     viewModel: TablaEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {

@@ -29,6 +29,7 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.superahorro.ModeloDominio.Sesion
 import com.example.superahorro.ui.theme.AppBarTitleStyle
 
 
@@ -49,8 +50,11 @@ fun FavoritosScreen(
     LaunchedEffect(true) {
         scope.launch {
             val db = BaseDeDatos.getDatabase(context)
-            val usuario = db.loggeadoDao().getUsuarioPorId("Juan") // Cambia luego por ID real
-            tablasFavoritas = db.tablaDao().getTablasByIds(usuario.tablasFavoritas)
+            val usuario =
+                Sesion.usuario?.let { db.loggeadoDao().getUsuarioPorId(it.id) } // Cambia luego por ID real
+            if (usuario != null) {
+                tablasFavoritas = db.tablaDao().getTablasByIds(usuario.tablasFavoritas)
+            }
         }
     }
 

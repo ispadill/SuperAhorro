@@ -167,7 +167,7 @@ fun PantallaInicio(
             FloatingActionButton(
                 onClick = onCreateTableClicked,
                 shape = MaterialTheme.shapes.medium,
-                //containerColor = Color(0xfff55c7a),
+                containerColor = Color(0xfff55c7a),
                 modifier = Modifier
                     .padding(
                         end = WindowInsets.safeDrawing.asPaddingValues()
