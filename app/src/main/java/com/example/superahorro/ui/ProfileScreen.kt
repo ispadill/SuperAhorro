@@ -1,12 +1,8 @@
 package com.example.superahorro.ui
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.view.Surface
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -34,33 +29,17 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.superahorro.ModeloDominio.Sesion
-import com.example.superahorro.ModeloDominio.Sesion.usuario
 import com.example.superahorro.R
-import java.io.File
-
 
 /**
  * Pantalla principal que muestra el perfil del usuario con sus datos personales.
@@ -79,34 +58,16 @@ fun ProfileScreen(
     onSearchClicked: () -> Unit,
     onProfileClicked: () -> Unit,
     onFavoritesClicked: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-    val viewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    var reloadTrigger by remember { mutableStateOf(false) }
-
-    LaunchedEffect(reloadTrigger) {
-        viewModel.loadCurrentUser()
-    }
-
-    val imagenPerfil by remember(uiState.usuario?.imagenPerfilUri, reloadTrigger) {
-        derivedStateOf {
-            viewModel.cargarImagenPerfil(context, uiState.usuario?.id ?: "")
-        }
-    }
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = Color(0xfff6bc66),
+        containerColor = Color(0xfff6bc66), // Fondo de la pantalla
         bottomBar = {
-            BottomNavigationBar(
-                onHomeButtonClicked,
+            BottomNavigationBar(onHomeButtonClicked,
                 onSearchClicked,
                 onProfileClicked,
-                onFavoritesClicked
-            )
+                onFavoritesClicked)
         }
     ) { innerPadding ->
         Column(
@@ -114,56 +75,58 @@ fun ProfileScreen(
                 .fillMaxWidth()
                 .fillMaxSize()
                 .background(Color(0xfff6bc66))
-                .padding(innerPadding),
+                .padding(innerPadding), // Agregar el padding del Scaffold
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp) // Añade espacio uniforme entre elementos
+            verticalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.height(16.dp)) // Espacio superior adicional
 
-            // Foto de perfil (sin otros cambios)
+            // Logo de la aplicación
             Box(
                 modifier = Modifier
-                    .size(200.dp)
-                    .clip(CircleShape)
-                    .background(Color.White)
-                    .border(2.dp, Color(0xfff55c7a), CircleShape)
+                    .fillMaxWidth()
+                    .padding(8.dp, top = 50.dp)
             ) {
-                if (uiState.usuario != null) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(bottom = 50.dp)) {
                     Image(
-                        bitmap = imagenPerfil.asImageBitmap(),
-                        contentDescription = "Foto de perfil de ${uiState.usuario!!.nombre}",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize(),
-                        alignment = Alignment.Center
+                        painter = painterResource(R.drawable.logoapp),
+                        contentDescription = null,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .size(200.dp)
                     )
                 }
             }
 
-            // Resto del contenido exactamente igual que antes
-            uiState.usuario?.let { usuario ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Nombre de Usuario: ${usuario.id}",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        textAlign = TextAlign.Center
-                    )
+            // Información del perfil
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Nombre de Usuario: Juanito666",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
+                            textAlign = TextAlign.Center
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(40.dp))
 
-                    Text(
-                        text = "Nombre Completo: ${usuario.nombre}",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        textAlign = TextAlign.Center
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Nombre Completo: Juan Palomo",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
+                            textAlign = TextAlign.Center
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(40.dp))
 
@@ -176,7 +139,7 @@ fun ProfileScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Correo: ${usuario.correo}",
+                            text = "Correo: JuanPalomo@gmail.com",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black,
@@ -187,28 +150,52 @@ fun ProfileScreen(
             }
 
             Spacer(modifier = Modifier.height(60.dp))
-
-            Button(
-                onClick = {
-                    reloadTrigger = !reloadTrigger
-                    onEditProfileClicked()
-                },
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xfff55c7a),
-                    contentColor = Color.Black
-                ),
+                    .padding(8.dp)
             ) {
-                Text(
-                    text = "Editar Perfil",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center
-                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(bottom = 150.dp)) {
+                    Button(
+                        onClick = onEditProfileClicked,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xfff55c7a),
+                            contentColor = Color.Black
+                        ),
+                    ) {
+                        Text(
+                            text = "Editar Perfil",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
             }
         }
     }
+}
+
+
+/**
+ * Previsualización de la pantalla de perfil para Android Studio.
+ *
+ * Muestra una representación estática del diseño para facilitar el desarrollo.
+ */
+@Preview(showBackground = true)
+@Composable
+fun PantallaPerfilPreview() {
+
+        ProfileScreen(
+            onEditProfileClicked = {},
+            onHomeButtonClicked = {},
+            onSearchClicked = {},
+            onProfileClicked = {},
+            onFavoritesClicked = {},
+            modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center))
+
 }

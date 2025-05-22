@@ -25,6 +25,5 @@ data class Loggeado(
     var listaAmigos: List<String>,
     var tablasPropias: List<Int>,
     var tablasPublicas: List<Int>,
-    var tablasFavoritas: List<Int>,
-    var imagenPerfilUri: String? = null
+    var tablasFavoritas: List<Int>
 ) : Usuario(id = id, tipo = "LOGEADO")

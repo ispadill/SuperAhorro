@@ -1,8 +1,8 @@
 package com.example.superahorro.ui
 
-import android.content.Intent
-import android.widget.Toast
 import com.example.superahorro.ui.theme.AppBarTitleStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -57,6 +57,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.filled.Favorite
@@ -71,13 +72,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.superahorro.Datos.Tabla
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
-import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
-import kotlinx.coroutines.launch
 
 /**
  * Función para filtrar tablas según criterio de búsqueda.
@@ -115,9 +110,9 @@ fun performSearch(query: String, tablas: List<Tabla>): List<String> {
  */
 @Composable
 fun PantallaInicio(
-    navHostController: NavHostController?,
     onCreateTableClicked: () -> Unit,
-    onViewTableClicked: (Int) -> Unit,
+    onOtherProfileClicked: () -> Unit,
+    onViewTableClicked: () -> Unit,
     onHomeButtonClicked: () -> Unit,
     onSearchClicked: () -> Unit,
     onProfileClicked: () -> Unit,
@@ -141,20 +136,16 @@ fun PantallaInicio(
         modifier = Modifier.fillMaxSize().background(color = Color(0xfff6bc66)),
         containerColor = Color(0xfff6bc66),
         topBar = {
-            if (navHostController != null) {
-                TablasTopAppBar(
-                    title = "MIS TABLAS",
-                    onSearchClick = {
-                        isSearchVisible = !isSearchVisible
-                        if (!isSearchVisible) {
-                            searchQuery = ""
-                            showSuggestions = false
-                        }
-                    },
-                    viewModel =viewModel,
-                    navHostController
-                )
-            }
+            TablasTopAppBar(
+                title = "MIS TABLAS",
+                onSearchClick = {
+                    isSearchVisible = !isSearchVisible
+                    if (!isSearchVisible) {
+                        searchQuery = ""
+                        showSuggestions = false
+                    }
+                }
+            )
         },
         bottomBar = {
             BottomNavigationBar(onHomeButtonClicked,
@@ -166,7 +157,7 @@ fun PantallaInicio(
             FloatingActionButton(
                 onClick = onCreateTableClicked,
                 shape = MaterialTheme.shapes.medium,
-                containerColor = Color(0xfff55c7a),
+                containerColor = Color(0xfff68c70),
                 modifier = Modifier
                     .padding(
                         end = WindowInsets.safeDrawing.asPaddingValues()
@@ -238,7 +229,7 @@ private fun InicioCuerpo(
     tablasList: List<Tabla>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    onViewTableClicked: (Int) -> Unit
+    onViewTableClicked: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -265,7 +256,7 @@ private fun TablasList(
     tablasList: List<Tabla>,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
-    onViewTableClicked: (Int) -> Unit,
+    onViewTableClicked: () -> Unit,
 ) {
     LazyColumn(
         modifier = modifier,
@@ -276,7 +267,8 @@ private fun TablasList(
                 tabla = tabla,
                 modifier = Modifier
                     .padding(8.dp)
-                    .clickable {onViewTableClicked(tabla.id)},
+                    .clickable { },
+                onViewTableClicked
             )
         }
     }
@@ -289,10 +281,10 @@ private fun TablasList(
  * @param modifier Modificador para personalización del layout
  */
 @Composable
-fun TablaItem(
-
+private fun TablaItem(
     tabla: Tabla,
     modifier: Modifier = Modifier,
+    onViewTableClicked: () -> Unit,
 ) {
     Card(
         modifier = modifier,
@@ -301,6 +293,7 @@ fun TablaItem(
             containerColor = Color(0xfff68c70),
         ),
         border = BorderStroke(1.dp, Color.Black),
+        onClick = onViewTableClicked
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -350,105 +343,42 @@ fun TablaItem(
     }
 }
 
-@Composable
-fun UserDropdownMenu(
-    expanded: Boolean,
-    onDismissRequest: () -> Unit,
-    onLogout: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val context = LocalContext.current
-
-    fun compartirApp() {
-        val shareIntent = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, "¿Quieres comparar valoraciones de productos? ¡Descarga SuperAhorro!\n https://github.com/ispadill/SuperAhorro")
-        }
-
-        try {
-            context.startActivity(Intent.createChooser(shareIntent, "Compartir con"))
-        } catch (e: Exception) {
-            Toast.makeText(context, "No se pudo abrir el menú de compartir", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    DropdownMenu(
-        expanded = expanded,
-        onDismissRequest = onDismissRequest,
-        modifier = modifier
-    ) {
-        DropdownMenuItem(
-            text = {
-                Text(
-                    "Compartir app",
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            onClick = {
-                compartirApp()
-                onDismissRequest()
-            }
-        )
-        DropdownMenuItem(
-            text = {
-                Text(
-                    "Cerrar sesión",
-                    color = Color.Red,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            onClick = {
-                onLogout()
-                onDismissRequest()
-            }
-        )
-    }
-}
-
+/**
+ * Barra superior personalizada para la pantalla de tablas.
+ *
+ * Incluye:
+ * - Logo de la aplicación
+ * - Título centrado
+ * - Botón de búsqueda
+ * - Divisor inferior decorativo
+ *
+ * @param title Texto a mostrar como título
+ * @param onSearchClick Callback para el botón de búsqueda
+ * @param modifier Modificador para personalización del layout
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TablasTopAppBar(
     title: String,
     onSearchClick: () -> Unit,
-    viewModel: PantallaInicioViewModel,
-    navController: NavHostController?,
     modifier: Modifier = Modifier
 ) {
-    var showMenu by remember { mutableStateOf(false) }
-
     Column {
         androidx.compose.material3.CenterAlignedTopAppBar(
-            title = {
-                Text(
-                    text = title,
-                    style = AppBarTitleStyle
-                )
-            },
+            title = { Text(
+                text = title,
+                style = AppBarTitleStyle
+            )  },
             modifier = modifier,
             colors = topAppBarColors(
                 containerColor = Color(0xfff55c7a)
             ),
             navigationIcon = {
-                Box {
-                    IconButton(onClick = { showMenu = true }) {
-                        Image(
-                            painter = painterResource(id = R.drawable.logoapp),
-                            contentDescription = "Menú de usuario",
-                            modifier = Modifier.size(100.dp)
-                        )
-                    }
-
-                    UserDropdownMenu(
-                        expanded = showMenu,
-                        onDismissRequest = { showMenu = false },
-                        onLogout = { viewModel.viewModelScope.launch {
-                            if (navController != null) {
-                                viewModel.cerrarSesion(navController)
-                            }
-                        }
-                            showMenu = false
-                        }
+                IconButton(onClick = { }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.logoapp),
+                        contentDescription = "Logo de la aplicación",
+                        modifier = Modifier.size(100.dp)
                     )
                 }
             },
@@ -629,6 +559,6 @@ fun BottomNavigationBar(
 @Composable
 fun PantallaInicioPreview() {
 
-    PantallaInicio(onHomeButtonClicked = {}, onProfileClicked = {}, onFavoritesClicked = {}, onSearchClicked = {}, onViewTableClicked = {}, onCreateTableClicked = {}, navHostController = null)
+    PantallaInicio(onHomeButtonClicked = {}, onProfileClicked = {}, onFavoritesClicked = {}, onOtherProfileClicked = {}, onSearchClicked = {}, onViewTableClicked = {}, onCreateTableClicked = {},)
 
 }

@@ -44,8 +44,9 @@ object TablaEditDestination{
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TablaEditScreen(
+fun ItemEditScreen(
     navigateBack: () -> Unit,
+    onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TablaEditViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {

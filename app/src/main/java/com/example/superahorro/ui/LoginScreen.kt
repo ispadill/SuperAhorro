@@ -28,51 +28,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.superahorro.Datos.Loggeado
 import com.example.superahorro.R
-import com.example.superahorro.ModeloDominio.Sesion
 
 @Composable
 fun LoginScreen(
     onAceptarClicked: () -> Unit,
     onRegistrarseClicked: () -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    modifier: Modifier = Modifier
 ) {
 
     val username = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
-
-    val errorMessage = remember { mutableStateOf("") }
-
-    fun validateAndLogin() {
-        when {
-            username.value.isEmpty() -> errorMessage.value = "Por favor, ingrese su nombre de usuario."
-            password.value.isEmpty() -> errorMessage.value = "Por favor, ingrese una contraseña."
-            else -> {
-                viewModel.isUsernameValidFromUi(username.value) { isTaken ->
-                    if (isTaken) {
-                        errorMessage.value = "No existe un usuario con ese nombre y esa contraseña"
-                    } else {
-                        errorMessage.value = ""
-                        viewModel.devLogeadoFromUi(username.value) { usuario ->
-                            if (usuario != null) {
-                                onAceptarClicked()
-                            } else {
-                                errorMessage.value = "Error al recuperar el usuario."
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -95,9 +65,7 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .padding(8.dp, top = 50.dp)
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 50.dp)) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(bottom = 50.dp)) {
                     Text(
                         text = "SuperAhorro",
                         fontSize = 50.sp,
@@ -160,8 +128,6 @@ fun LoginScreen(
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
                                 .padding(vertical = 4.dp),
-
-                            visualTransformation = PasswordVisualTransformation()
 //                            colors = TextFieldDefaults.outlinedTextFieldColors(
 //                                containerColor = Color(0xfff68c70), //Color del contenedor
 //                                focusedBorderColor = Color.Black, // Color del borde cuando el campo está enfocado
@@ -201,17 +167,6 @@ fun LoginScreen(
                     }
 
                 }
-                    if (errorMessage.value.isNotEmpty()) {
-                        Text(
-                            text = errorMessage.value,
-                            color = Color.Red,
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                    }
-
-                }
-
             }
             Spacer(modifier = Modifier.height(40.dp))
 
@@ -222,8 +177,7 @@ fun LoginScreen(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
                     Button(
-                        onClick = { validateAndLogin() },
-
+                        onClick = onAceptarClicked,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
@@ -248,9 +202,7 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .padding(8.dp, top = 50.dp)
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 50.dp)) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(bottom = 50.dp)) {
                     Image(
                         painter = painterResource(R.drawable.logoapp),
                         contentDescription = null,
@@ -261,6 +213,7 @@ fun LoginScreen(
                 }
             }
         }
+    }
 }
 
 
@@ -276,8 +229,6 @@ fun PantallaLoginPreview() {
     LoginScreen(
         onAceptarClicked = {},
         onRegistrarseClicked = {},
-        modifier = Modifier
-            .fillMaxSize()
-            .wrapContentSize(Alignment.Center))
+        modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center))
 
 }

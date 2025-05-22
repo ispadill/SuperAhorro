@@ -55,11 +55,12 @@ class TablaEditViewModel(
     }
 
     init{
-//        viewModelScope.launch {
-//            tablaUiState = tablaRepository.getTablaById(tablaId)
-//                .first()
-//                .toTablaUiState(true)
-//        }
+        viewModelScope.launch {
+            tablaUiState = tablaRepository.getTablaById(tablaId)
+                .filterNotNull()
+                .first()
+                .toTablaUiState(true)
+        }
     }
 
     fun updateUiState(detallesTabla: DetallesTabla) {

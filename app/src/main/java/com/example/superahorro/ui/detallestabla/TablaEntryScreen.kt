@@ -54,7 +54,7 @@ object TablaEntryDestination {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TablaEntryScreen(
+fun ItemEntryScreen(
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
     canNavigateBack: Boolean = true,

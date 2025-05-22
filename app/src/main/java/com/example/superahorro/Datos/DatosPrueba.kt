@@ -1,15 +1,10 @@
 package com.example.superahorro.Datos
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.room.Room
-import com.example.superahorro.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
-import java.io.FileOutputStream
 import kotlin.random.Random
 
 /**
@@ -22,28 +17,13 @@ class DatosPrueba {
          */
         suspend fun cargarDatosPrueba(context: Context) {
             val db = BaseDeDatos.getDatabase(context.applicationContext)
-            val directorioImagenes = context.getDir("profile_images", Context.MODE_PRIVATE)
-
 
             withContext(Dispatchers.IO) {
-
-                directorioImagenes.listFiles()?.forEach { file ->
-                    if (file.name != "default.jpg") {
-                        file.delete()
-                    }
-                }
-
                 db.tablaDao().deleteAll()
                 db.usuarioDao().deleteAll()
                 db.loggeadoDao().deleteAll()
                 db.plantillaDao().deleteAll()
                 db.anonimosDao().deleteAll()
-
-                val defaultBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.logoapp)
-                val defaultFile = File(directorioImagenes, "default.jpg")
-                FileOutputStream(defaultFile).use { output ->
-                    defaultBitmap.compress(Bitmap.CompressFormat.PNG, 90, output)
-                }
 
                 val plantillas = crearPlantillas()
                 plantillas.forEach { plantilla ->
@@ -53,34 +33,22 @@ class DatosPrueba {
                 val usuariosAnonimos = crearUsuariosAnonimos(3)
                 val usuariosLoggeados = crearUsuariosLoggeados(10)
 
+                val tablas = crearTablas(50, usuariosLoggeados, plantillas)
+
+                val usuariosActualizados = distribuirTablasEntreUsuarios(usuariosLoggeados, tablas)
+
                 usuariosAnonimos.forEach { anonimo ->
                     db.usuarioDao().insert(anonimo)
                     db.anonimosDao().insert(anonimo)
                 }
 
-                usuariosLoggeados.forEach { loggeado ->
-                    val loggeadoInicial = loggeado.copy(
-                        tablasPropias = emptyList(),
-                        tablasPublicas = emptyList(),
-                        tablasFavoritas = emptyList(),
-                        imagenPerfilUri = defaultFile.absolutePath
-                    )
-                    db.usuarioDao().insert(loggeadoInicial)
-                    db.loggeadoDao().insert(loggeadoInicial)
-                }
-
-                val tablasCreadas = crearTablas(50, usuariosLoggeados, plantillas)
-                val tablasConIds = mutableListOf<Tabla>()
-
-                tablasCreadas.forEach { tabla ->
-                    val id = db.tablaDao().insertAndGetId(tabla)
-                    tablasConIds.add(tabla.copy(id = id.toInt()))
-                }
-
-                val usuariosActualizados = distribuirTablasEntreUsuarios(usuariosLoggeados, tablasConIds)
-
                 usuariosActualizados.forEach { loggeado ->
-                    db.loggeadoDao().update(loggeado)
+                    db.usuarioDao().insert(loggeado)
+                    db.loggeadoDao().insert(loggeado)
+                }
+
+                tablas.forEach { tabla ->
+                    db.tablaDao().insert(tabla)
                 }
             }
         }
@@ -120,32 +88,20 @@ class DatosPrueba {
         private fun crearUsuariosLoggeados(cantidad: Int): List<Loggeado> {
             val nombres = listOf("Juan", "Maria", "Pedro", "Ana", "Luis", "Laura", "Carlos", "Sofia", "Enrique", "Elena")
             Log.d("DATA_DEBUG", "Creando $cantidad usuarios loggeados")
-
-            val usuariosBasicos = (0 until cantidad).map { index ->
+            return (0 until cantidad).map { index ->
                 val nombre = nombres[index % nombres.size]
                 val id = nombre
 
                 Loggeado(
                     id = id,
-                    nombre = id,
+                    nombre = id ,
                     correo = "$id@gmail.com",
                     contraseña = "pass_$id",
                     listaAmigos = listOf(),
                     tablasPropias = listOf(),
                     tablasPublicas = listOf(),
-                    tablasFavoritas = listOf(),
-                    imagenPerfilUri = "logoapp"
+                    tablasFavoritas = listOf()
                 )
-            }
-
-            return usuariosBasicos.map { usuario ->
-                val amigos = usuariosBasicos
-                    .filter { it.id != usuario.id }
-                    .shuffled()
-                    .take(Random.nextInt(1, usuariosBasicos.size))
-                    .map { it.id }
-
-                usuario.copy(listaAmigos = amigos)
             }
         }
 
@@ -178,26 +134,30 @@ class DatosPrueba {
          * Distribuye las tablas entre los usuarios loggeados
          */
         private fun distribuirTablasEntreUsuarios(usuarios: List<Loggeado>, tablas: List<Tabla>): List<Loggeado> {
-            return usuarios.map { usuario ->
-                val tablasPropias = tablas
-                    .filter { it.autor == usuario.id }
-                    .map { it.id }
-
-                val tablasFavoritas = tablas
-                    .filter { it.autor != usuario.id }
+            val usuariosConAmigos = usuarios.map { usuario ->
+                val amigos = usuarios.filter { it.id != usuario.id }
                     .shuffled()
-                    .take(Random.nextInt(3, 10).coerceAtMost(tablas.size / 2))
+                    .take(Random.nextInt(1, usuarios.size))
                     .map { it.id }
 
-                Log.d("DATA_DEBUG", "Usuario ${usuario.id} - Tablas propias: ${tablasPropias.size}, Favoritas: ${tablasFavoritas.size}")
+                usuario.copy(listaAmigos = amigos)
+            }
 
-                Log.d("DATA_DEBUG", "IDs Tablas propias: $tablasPropias")
-                Log.d("DATA_DEBUG", "IDs Tablas favoritas: $tablasFavoritas")
+            return usuariosConAmigos.mapIndexed { index, usuario ->
+                val tablasPropias = tablas.filter { it.autor == usuario.id }
+                    .map { it.id }
+
+                val tablasFavoritas = tablas.filter { it.autor != usuario.id }
+                    .shuffled()
+                    .take(Random.nextInt(3, 10))
+                    .map { it.id }
 
                 usuario.copy(
                     tablasPropias = tablasPropias,
-                    tablasPublicas = tablasPropias.shuffled().take(tablasPropias.size / 2),
-                    tablasFavoritas = tablasFavoritas
+                    tablasPublicas = listOf(), // Preguntar George
+                    tablasFavoritas = tablasFavoritas,
+                    nombre = usuario.nombre,
+                    correo = usuario.correo
                 )
             }
         }

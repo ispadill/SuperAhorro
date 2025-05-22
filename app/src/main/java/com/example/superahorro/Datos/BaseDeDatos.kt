@@ -14,7 +14,7 @@ import androidx.room.TypeConverters
         Tabla::class,
         Plantilla::class
     ],
-    version = 4,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(Convertidor::class)
