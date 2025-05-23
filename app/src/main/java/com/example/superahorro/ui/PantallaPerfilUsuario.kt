@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,6 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -53,6 +55,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.superahorro.Datos.Loggeado
 import com.example.superahorro.Datos.Tabla
+import com.example.superahorro.R
 
 /**
  * Pantalla que muestra el perfil de un usuario específico y sus tablas.
@@ -81,6 +84,21 @@ fun PantallaPerfilUsuario(
     val imagenPerfil = uiState.imagenPerfilBitmap
     val usuario = uiState.usuario
 
+    var color: Color
+    var colorBoxBorder: Color
+    var colorCardBorder: Color
+
+
+    if(isSystemInDarkTheme()){
+        color = Color(0xFF5C33A2)
+        colorBoxBorder = Color.White
+        colorCardBorder = Color.White
+    }else{
+        color = Color(0xFFF68C70)
+        colorBoxBorder = Color.Black
+        colorCardBorder = Color.Black
+    }
+
     LaunchedEffect(usuarioId) {
         viewModel.cargarDatosUsuario(context, usuarioId)
         viewModel.cargarTablasUsuario(context,usuarioId)
@@ -88,7 +106,7 @@ fun PantallaPerfilUsuario(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = Color(0xFFF6BC66),
+        //containerColor = Color(0xFFF6BC66),
         topBar = {
             PerfilUsuarioTopAppBar(
                 usuario = usuario,
@@ -108,16 +126,16 @@ fun PantallaPerfilUsuario(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF6BC66))
+                //.background(Color(0xFFF6BC66))
                 .padding(top = innerPadding.calculateTopPadding())
         ) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFF68C70)),
+                colors = CardDefaults.cardColors(containerColor = color),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                border = BorderStroke(1.dp, Color.Black)
+                border = BorderStroke(1.dp, colorCardBorder)
             ) {
                 Row{
                     Column(modifier=Modifier
@@ -186,7 +204,7 @@ fun PantallaPerfilUsuario(
                                     modifier = Modifier
                                         .height(50.dp)
                                         .width(1.dp),
-                                    color = Color.Black
+                                    //color = Color.Black
 
                                 )
                                 Spacer(modifier = Modifier.width(10.dp))
@@ -205,9 +223,9 @@ fun PantallaPerfilUsuario(
             Card (
                 modifier = Modifier
                     .padding(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xfff55c7a)),
+                colors = CardDefaults.cardColors(containerColor = color),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                border = BorderStroke(1.dp, Color.Black)
+                border = BorderStroke(1.dp, colorCardBorder)
             ){
                 Text(
                     text = "TABLAS",
@@ -257,10 +275,10 @@ private fun Estadisticas(
         Spacer(modifier = Modifier.width(8.dp))
         Row(modifier=Modifier.padding(top = 3.dp)) {
             if(icono==true){
-                Icon(
-                    imageVector = Icons.Default.Star,
+                Image(
+                    painter = painterResource(id = R.drawable.estrella),
+                    contentScale = ContentScale.Crop,
                     contentDescription = "Valoración media",
-                    tint = Color(0xFFF6BC66),
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -309,20 +327,20 @@ private fun PerfilUsuarioTopAppBar(
             },
             modifier = modifier,
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color(0xFFF55C7A)
+                //containerColor = Color(0xFFF55C7A)
             ),
             navigationIcon = {
                 IconButton(onClick = onBackClick) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Volver",
-                        tint = Color.Black
+                        //tint = Color.Black
                     )
                 }
             }
         )
         Divider(
-            color = Color.Black,
+            //color = Color.Black,
             thickness = 3.dp,
             modifier = Modifier.fillMaxWidth()
         )

@@ -294,11 +294,17 @@ fun UsuarioItem(
 
 
     var color: Color
+    var colorCardBorder: Color
+    var colorBoxBorder: Color
 
     if(isSystemInDarkTheme()){
         color = Color(0xFF03A9F4)
+        colorCardBorder = Color.White
+        colorBoxBorder = Color.White
     }else{
         color = Color(0xfff68c70)
+        colorCardBorder = Color.Black
+        colorBoxBorder = Color.Black
     }
 
     Card(
@@ -307,7 +313,7 @@ fun UsuarioItem(
         colors = CardDefaults.cardColors(
             containerColor = color,
         ),
-        border = BorderStroke(1.dp, Color.Black)
+        border = BorderStroke(1.dp, colorCardBorder)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -321,7 +327,7 @@ fun UsuarioItem(
                     modifier = Modifier
                         .size(60.dp)
                         .clip(CircleShape)
-                        .border(1.dp, Color.Black, CircleShape),
+                        .border(1.dp, colorBoxBorder, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
@@ -347,7 +353,7 @@ fun UsuarioItem(
                     Text(
                         text = "@${usuario.id}",
                         style = MaterialTheme.typography.bodyLarge,
-                        color = Color.Black,
+                        //color = Color.Black,
                     )
                 }
 
@@ -359,10 +365,9 @@ fun UsuarioItem(
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Star,
+                        Image(
+                            painter = painterResource(id = R.drawable.estrella),
                             contentDescription = "Valoración media",
-                            tint = Color(0xFFF6BC66),
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
@@ -419,7 +424,7 @@ fun UsuariosTopAppBar(
             )  },
             modifier = modifier,
             colors = topAppBarColors(
-                containerColor = Color(0xfff55c7a)
+                //containerColor = Color(0xfff55c7a)
             ),
             navigationIcon = {
                 Box {
@@ -449,13 +454,13 @@ fun UsuariosTopAppBar(
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Buscar",
-                        tint = Color.Black
+                        //tint = Color.Black
                     )
                 }
             }
         )
         Divider(
-            color = Color.Black,
+            //color = Color.Black,
             thickness = 3.dp,
             modifier = Modifier.fillMaxWidth()
         )
@@ -540,7 +545,7 @@ fun UserSearchBarBelowAppBar(
                         .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp)),
                     shape = RoundedCornerShape(8.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color.White
+                        //containerColor = Color.White
                     ),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {

@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -75,14 +77,14 @@ fun LoginScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = Color(0xfff6bc66), // Fondo de la pantalla
+        //containerColor = Color(0xfff6bc66), // Fondo de la pantalla
 
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxSize()
-                .background(Color(0xfff6bc66))
+                //.background(Color(0xfff6bc66))
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
@@ -99,7 +101,7 @@ fun LoginScreen(
                         text = "SuperAhorro",
                         fontSize = 50.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black,
+                        //color = Color.Black,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -119,7 +121,7 @@ fun LoginScreen(
                             text = "Nombre de Usuario: ",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black,
+                            //color = Color.Black,
                             textAlign = TextAlign.Center
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -130,11 +132,11 @@ fun LoginScreen(
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
                                 .padding(vertical = 4.dp),
-//                            colors = TextFieldDefaults.outlinedTextFieldColors(
-//                                containerColor = Color(0xfff68c70), //Color del contenedor
-//                                focusedBorderColor = Color.Black, // Color del borde cuando el campo está enfocado
-//                                unfocusedBorderColor = Color(0xfff55c7a) // Color del borde
-//                            )
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            ),
 
                         )
                     }
@@ -146,7 +148,7 @@ fun LoginScreen(
                             text = "Contraseña: ",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black,
+                            //color = Color.Black,
                             textAlign = TextAlign.Center
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -157,12 +159,12 @@ fun LoginScreen(
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
                                 .padding(vertical = 4.dp),
-                            visualTransformation = PasswordVisualTransformation()
-//                            colors = TextFieldDefaults.outlinedTextFieldColors(
-//                                containerColor = Color(0xfff68c70), //Color del contenedor
-//                                focusedBorderColor = Color.Black, // Color del borde cuando el campo está enfocado
-//                                unfocusedBorderColor = Color(0xfff55c7a) // Color del borde
-//                            )
+                            visualTransformation = PasswordVisualTransformation(),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            ),
                         )
                     }
 
@@ -173,7 +175,7 @@ fun LoginScreen(
                             text = "¿No tienes cuenta? ",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black,
+                            //color = Color.Black,
                             textAlign = TextAlign.Center
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -182,15 +184,15 @@ fun LoginScreen(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xfff55c7a),
-                                contentColor = Color.Black
+                                //containerColor = Color(0xfff55c7a),
+                                //contentColor = Color.Black
                             ),
                         ) {
                             Text(
                                 text = "Regístrate",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Black,
+                                //color = Color.Black,
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -221,15 +223,15 @@ fun LoginScreen(
                             .fillMaxWidth()
                             .padding(16.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xfff55c7a),
-                            contentColor = Color.Black
+                            //containerColor = Color(0xfff55c7a),
+                            //contentColor = Color.Black
                         ),
                     ) {
                         Text(
                             text = "Aceptar",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black,
+                            //color = Color.Black,
                             textAlign = TextAlign.Center
                         )
                     }

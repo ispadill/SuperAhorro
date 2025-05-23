@@ -139,8 +139,9 @@ fun PantallaInicio(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize().background(color = Color(0xfff6bc66)),
-        containerColor = Color(0xfff6bc66),
+        modifier = Modifier.fillMaxSize()//.background(color = Color(0xfff6bc66)),
+        //containerColor = Color(0xfff6bc66),
+        ,
         topBar = {
             if (navHostController != null) {
                 TablasTopAppBar(
@@ -167,7 +168,7 @@ fun PantallaInicio(
             FloatingActionButton(
                 onClick = onCreateTableClicked,
                 shape = MaterialTheme.shapes.medium,
-                containerColor = Color(0xfff55c7a),
+                //containerColor = Color(0xfff55c7a),
                 modifier = Modifier
                     .padding(
                         end = WindowInsets.safeDrawing.asPaddingValues()
@@ -184,7 +185,7 @@ fun PantallaInicio(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xfff6bc66))
+                //.background(Color(0xfff6bc66))
                 .padding(top = innerPadding.calculateTopPadding())
         ) {
             if (isSearchVisible) {
@@ -295,13 +296,26 @@ fun TablaItem(
     tabla: Tabla,
     modifier: Modifier = Modifier,
 ) {
+
+    var color: Color
+    var colorCardBorder: Color
+
+
+    if(isSystemInDarkTheme()){
+        color = Color(0xFF3F51B5)
+        colorCardBorder = Color.White
+    }else{
+        color = Color(0xfff68c70)
+        colorCardBorder = Color.Black
+    }
+
     Card(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xfff68c70),
+            containerColor = color,
         ),
-        border = BorderStroke(1.dp, Color.Black),
+        border = BorderStroke(1.dp, colorCardBorder),
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -382,7 +396,7 @@ fun UserDropdownMenu(
             text = {
                 Text(
                     "Compartir app",
-                    color = Color.Black,
+                    //color = Color.Black,
                     fontWeight = FontWeight.Bold
                 )
             },
@@ -418,6 +432,7 @@ fun TablasTopAppBar(
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
+
     Column {
         androidx.compose.material3.CenterAlignedTopAppBar(
             title = {
@@ -428,7 +443,7 @@ fun TablasTopAppBar(
             },
             modifier = modifier,
             colors = topAppBarColors(
-                containerColor = Color(0xfff55c7a)
+                //containerColor = Color(0xfff55c7a)
             ),
             navigationIcon = {
                 Box {
@@ -458,13 +473,11 @@ fun TablasTopAppBar(
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Buscar",
-                        tint = Color.Black
                     )
                 }
             }
         )
         Divider(
-            color = Color.Black,
             thickness = 3.dp,
             modifier = Modifier.fillMaxWidth()
         )
@@ -497,7 +510,7 @@ fun SearchBarBelowAppBar(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color(0xFFF6BC66))
+            //.background(Color(0xFFF6BC66))
             .padding(bottom = 4.dp)
     ) {
         OutlinedTextField(
@@ -594,16 +607,19 @@ fun BottomNavigationBar(
 ) {
 
     var bottomBarColor: Color
+    var onBottomBarColor: Color
 
     if(isSystemInDarkTheme()){
         bottomBarColor = Color(0xFF9C27B0)
+        onBottomBarColor = Color(0xFFBDBDBD)
     }else{
         bottomBarColor = Color(0xFFF55C7A)
+        onBottomBarColor = Color.Black
     }
 
     BottomAppBar(
         containerColor = bottomBarColor, // Color de fondo de la barra inferior
-        contentColor = Color.Black, // Color del contenido (íconos y texto)
+        contentColor = onBottomBarColor, // Color del contenido (íconos y texto)
         actions = {
             IconButton(
                 onClick = onHomeButtonClicked,

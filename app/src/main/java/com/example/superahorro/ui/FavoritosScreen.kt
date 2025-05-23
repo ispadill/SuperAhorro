@@ -24,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import com.example.superahorro.R
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.lifecycle.viewModelScope
@@ -47,6 +48,22 @@ fun FavoritosScreen(
     val scope = rememberCoroutineScope()
     var tablasFavoritas by remember { mutableStateOf<List<Tabla>>(emptyList()) }
 
+    var color: Color
+    var colorCardBorder: Color
+    var colorBotonQuitar: Color
+
+
+    if(isSystemInDarkTheme()){
+        color = Color(0xFF3F51B5)
+        colorCardBorder = Color.White
+        colorBotonQuitar = Color(0xFF7344CB)
+    }else{
+        color = Color(0xfff68c70)
+        colorCardBorder = Color.Black
+        colorBotonQuitar = Color(0xFFF55C7A)
+
+    }
+
     LaunchedEffect(true) {
         scope.launch {
             val db = BaseDeDatos.getDatabase(context)
@@ -59,8 +76,9 @@ fun FavoritosScreen(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize().background(color = Color(0xfff6bc66)),
-        containerColor = Color(0xfff6bc66),
+        modifier = Modifier.fillMaxSize()//.background(color = Color(0xfff6bc66)),
+        //containerColor = Color(0xfff6bc66),
+        ,
         topBar = {
             if (navHostController != null) {
                 FavoritosTopAppBar(
@@ -96,7 +114,7 @@ fun FavoritosScreen(
                         Text(
                             text = "No hay tablas favoritas.",
                             style = MaterialTheme.typography.titleLarge,
-                            color = Color.DarkGray
+                            //color = Color.DarkGray
                         )
                     }
                 }
@@ -106,8 +124,8 @@ fun FavoritosScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xfff68c70)),
-                        border = BorderStroke(1.dp, Color.Black)
+                        colors = CardDefaults.cardColors(containerColor = color),
+                        border = BorderStroke(1.dp, colorCardBorder)
                     ) {
                         Column(
                             modifier = Modifier.padding(20.dp),
@@ -120,7 +138,7 @@ fun FavoritosScreen(
                                 Text(text = tabla.titulo, modifier = Modifier.weight(1f))
                                 Text(text = tabla.autor, modifier = Modifier.weight(1f))
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Icon(
+                                    Image(
                                         painter = painterResource(id = R.drawable.estrella),
                                         contentDescription = null,
                                         modifier = Modifier.size(30.dp)
@@ -157,8 +175,8 @@ fun FavoritosScreen(
                                 },
                                 modifier = Modifier.fillMaxWidth(),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xfff55c7a),
-                                    contentColor = Color.Black
+                                    containerColor = colorBotonQuitar,
+                                    //contentColor = Color.Black
                                 )
                             ) {
                                 Text("Quitar de favoritos")
@@ -192,7 +210,7 @@ fun FavoritosTopAppBar(
             )  },
             modifier = modifier,
             colors = topAppBarColors(
-                containerColor = Color(0xfff55c7a)
+                //containerColor = Color(0xfff55c7a)
             ),
             navigationIcon = {
                 Box {
@@ -228,7 +246,7 @@ fun FavoritosTopAppBar(
             }
         )
         Divider(
-            color = Color.Black,
+            //color = Color.Black,
             thickness = 3.dp,
             modifier = Modifier.fillMaxWidth()
         )

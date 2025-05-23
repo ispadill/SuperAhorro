@@ -27,6 +27,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 
 import androidx.compose.foundation.layout.*
 
@@ -118,6 +119,20 @@ fun EditProfileScreen(
 
     val currentImageUri = remember { mutableStateOf<Uri?>(null) }
 
+    var color: Color
+    var colorIconoEdit: Color
+    var colorBordeIconoEdit: Color
+
+
+    if(isSystemInDarkTheme()){
+        color = Color(0xFFAC2CC4)
+        colorIconoEdit = Color(0xFF2D3794)
+        colorBordeIconoEdit = Color(0xFFAC2CC4)
+    }else{
+        color = Color(0xFFF55C7A)
+        colorIconoEdit = Color(0xFFFF9800)
+        colorBordeIconoEdit= Color(0xFFF55C7A)
+    }
 
     LaunchedEffect(Unit) {
 
@@ -251,7 +266,7 @@ fun EditProfileScreen(
 
         modifier = Modifier.fillMaxSize(),
 
-        containerColor = Color(0xfff6bc66), // Fondo de la pantalla
+        //containerColor = Color(0xfff6bc66), // Fondo de la pantalla
 
         bottomBar = {
 
@@ -269,7 +284,7 @@ fun EditProfileScreen(
 
                 .fillMaxSize()
 
-                .background(Color(0xfff6bc66))
+                //.background(Color(0xfff6bc66))
 
                 .padding(innerPadding),
 
@@ -299,7 +314,7 @@ fun EditProfileScreen(
 
                         .clip(CircleShape)
 
-                        .border(2.dp, Color(0xfff55c7a), CircleShape)
+                        .border(2.dp, color, CircleShape)
 
                         .background(Color.White)
 
@@ -423,9 +438,9 @@ fun EditProfileScreen(
 
                         .clip(CircleShape)
 
-                        .background(Color(0xfff55c7a))
+                        .background(colorIconoEdit)
 
-                        .border(1.dp, Color.White, CircleShape),
+                        .border(1.dp, colorBordeIconoEdit, CircleShape),
 
                     contentAlignment = Alignment.Center
 
@@ -473,7 +488,7 @@ fun EditProfileScreen(
 
                             fontWeight = FontWeight.Bold,
 
-                            color = Color.Black,
+                            //color = Color.Black,
 
                             textAlign = TextAlign.Center
 
@@ -497,7 +512,7 @@ fun EditProfileScreen(
 
                             fontWeight = FontWeight.Bold,
 
-                            color = Color.Black,
+                            //color = Color.Black,
 
                             textAlign = TextAlign.Center
 
@@ -517,7 +532,15 @@ fun EditProfileScreen(
 
                                 .fillMaxWidth(0.8f)
 
-                                .padding(vertical = 4.dp)
+
+
+                                .padding(vertical = 4.dp),
+
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            ),
 
                         )
 
@@ -553,7 +576,7 @@ fun EditProfileScreen(
 
                             fontWeight = FontWeight.Bold,
 
-                            color = Color.Black,
+                            //color = Color.Black,
 
                             textAlign = TextAlign.Center
 
@@ -573,8 +596,13 @@ fun EditProfileScreen(
 
                                 .fillMaxWidth(0.8f)
 
-                                .padding(vertical = 4.dp)
+                                .padding(vertical = 4.dp),
 
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            ),
                         )
 
                     }
@@ -587,7 +615,7 @@ fun EditProfileScreen(
 
                             text = errorMessage.value,
 
-                            color = Color.Red,
+                            //color = Color.Red,
 
                             fontSize = 14.sp,
 
@@ -631,9 +659,9 @@ fun EditProfileScreen(
 
                         colors = ButtonDefaults.buttonColors(
 
-                            containerColor = Color(0xfff55c7a),
+                            //containerColor = Color(0xfff55c7a),
 
-                            contentColor = Color.Black
+                            //contentColor = Color.Black
 
                         ),
 
@@ -647,7 +675,7 @@ fun EditProfileScreen(
 
                             fontWeight = FontWeight.Bold,
 
-                            color = Color.Black,
+                            //color = Color.Black,
 
                             textAlign = TextAlign.Center
 
