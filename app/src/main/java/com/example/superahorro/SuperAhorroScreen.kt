@@ -190,6 +190,10 @@ fun SuperAhorroApp(
                     onAddFavoritosClicked = {
                         navController.navigate(SuperAhorroScreen.Favorites.name)
                     },
+                    onPublicarClicked = {
+
+                        navController.navigate(SuperAhorroScreen.Main.name)
+                    },
                     navigateToEditTabla = { navController.navigate("${SuperAhorroScreen.EditTabla.name}/$it") }
                 )
             }

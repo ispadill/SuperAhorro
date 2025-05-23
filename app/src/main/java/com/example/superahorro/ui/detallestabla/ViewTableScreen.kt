@@ -44,6 +44,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -60,6 +61,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.superahorro.Datos.BaseDeDatos
+import com.example.superahorro.ModeloDominio.Sesion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -69,6 +71,7 @@ fun ViewTableScreen(
     navigateToEditTabla: (Int) -> Unit,
     onReturnClicked: () -> Unit,
     onAddFavoritosClicked: () -> Unit,
+    onPublicarClicked: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TablaDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
@@ -103,7 +106,6 @@ fun ViewTableScreen(
         }, modifier = modifier
     ) { innerPadding ->
         DetallesTablaCuerpo(
-            onPublicar = {},
             onDelete = {
                 coroutineScope.launch {
                     uiState.tablaUsuario?.let { viewModel.deleteTabla(tablaId) }
@@ -111,6 +113,7 @@ fun ViewTableScreen(
                 }
             },
             onAddFavoritosClicked=onAddFavoritosClicked,
+            onPublicarClicked=onPublicarClicked,
             scope = coroutineScope,
             context = LocalContext.current,
             tabla = uiState.tablaUsuario,
@@ -127,17 +130,28 @@ fun ViewTableScreen(
 }
 
 
+
 @Composable
 private fun DetallesTablaCuerpo(
-    onPublicar: () -> Unit,
+    onPublicarClicked: () -> Unit,
     onDelete: () -> Unit,
     onAddFavoritosClicked: () -> Unit,
     scope: CoroutineScope,
     context: android.content.Context,
     tabla: Tabla?,
-
     modifier: Modifier = Modifier
 ) {
+    var esPublica by remember { mutableStateOf(false) }
+
+    LaunchedEffect(tabla?.id) {
+        if (tabla != null) {
+            val db = BaseDeDatos.getDatabase(context)
+            val loggeadoDAO = db.loggeadoDao()
+            val usuario = Sesion.usuario?.let { loggeadoDAO.getUsuarioPorId(it.id) }
+            esPublica = usuario?.tablasPublicas?.contains(tabla.id) == true
+        }
+    }
+
     Column(
         modifier = modifier.padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
@@ -147,36 +161,58 @@ private fun DetallesTablaCuerpo(
         if (tabla != null) {
             DetallesTabla(
                 tabla = tabla,
+                esPublica = esPublica,
                 modifier = Modifier.fillMaxWidth()
             )
         }
+
+        // Botón dinámico de publicar/despublicar
         Button(
-            onClick = onPublicar,
+            onClick = {
+                scope.launch {
+                    val db = BaseDeDatos.getDatabase(context)
+                    val loggeadoDAO = db.loggeadoDao()
+                    val usuario = Sesion.usuario?.let { loggeadoDAO.getUsuarioPorId(it.id) }
+                    val nuevasPublicas = usuario?.tablasPublicas?.toMutableList() ?: mutableListOf()
+
+                    tabla?.let {
+                        if (esPublica) {
+                            nuevasPublicas.remove(it.id)
+                        } else {
+                            nuevasPublicas.add(it.id)
+                        }
+                        val nuevoUsuario = usuario?.copy(tablasPublicas = nuevasPublicas)
+                        if (nuevoUsuario != null) {
+                            loggeadoDAO.update(nuevoUsuario)
+                            esPublica = !esPublica
+                        }
+                    }
+                }
+            },
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.small,
-            enabled = true
         ) {
-            Text("Publicar")
+            Text(if (esPublica) "Despublicar" else "Publicar")
         }
-
         Button(
             onClick = {
                 scope.launch {
                     val db = BaseDeDatos.getDatabase(context)
                     val loggeadoDAO = db.loggeadoDao()
 
-                    //Cambiar Juan por el ID del usuario logueado real
-                    val usuario = loggeadoDAO.getUsuarioPorId("Juan")
+                    val usuario =  Sesion.usuario?.let { db.loggeadoDao().getUsuarioPorId(it.id) }
 
-                    val nuevasFavoritas = usuario.tablasFavoritas.toMutableList()
+                    val nuevasFavoritas = usuario?.tablasFavoritas?.toMutableList()
                     if (tabla != null) {
-                        if (!nuevasFavoritas.contains(tabla.id)) {
-                            if (tabla != null) {
-                                nuevasFavoritas.add(tabla.id)
-                                onAddFavoritosClicked()
+                        if (nuevasFavoritas != null) {
+                            if (!nuevasFavoritas.contains(tabla.id)) {
+                                        nuevasFavoritas.add(tabla.id)
+                                    onAddFavoritosClicked()
+                                val nuevoUsuario = nuevasFavoritas?.let { usuario.copy(tablasFavoritas = it) }
+                                if (nuevoUsuario != null) {
+                                    loggeadoDAO.update(nuevoUsuario)
+                                }
                             }
-                            val nuevoUsuario = usuario.copy(tablasFavoritas = nuevasFavoritas)
-                            loggeadoDAO.update(nuevoUsuario)
                         }
                     }
                 }
@@ -211,7 +247,9 @@ private fun DetallesTablaCuerpo(
 
 @Composable
 fun DetallesTabla(
-    tabla: Tabla, modifier: Modifier = Modifier
+    tabla: Tabla,
+    esPublica: Boolean,
+    modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier, colors = CardDefaults.cardColors(
@@ -246,6 +284,13 @@ fun DetallesTabla(
                     horizontal = 20.dp
                 )
             )
+            if (esPublica) {
+                Text(
+                    text = "Esta tabla es pública",
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
         }
 
     }

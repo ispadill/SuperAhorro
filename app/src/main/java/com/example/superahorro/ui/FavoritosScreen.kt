@@ -51,7 +51,7 @@ fun FavoritosScreen(
         scope.launch {
             val db = BaseDeDatos.getDatabase(context)
             val usuario =
-                Sesion.usuario?.let { db.loggeadoDao().getUsuarioPorId(it.id) } // Cambia luego por ID real
+                Sesion.usuario?.let { db.loggeadoDao().getUsuarioPorId(it.id) }
             if (usuario != null) {
                 tablasFavoritas = db.tablaDao().getTablasByIds(usuario.tablasFavoritas)
             }
@@ -140,14 +140,19 @@ fun FavoritosScreen(
                                         val db = BaseDeDatos.getDatabase(context)
                                         val loggeadoDAO = db.loggeadoDao()
 
-                                        val usuario = loggeadoDAO.getUsuarioPorId("Juan") // usa el ID real luego
-                                        val nuevasFavoritas = usuario.tablasFavoritas.toMutableList()
-                                        nuevasFavoritas.remove(tabla.id)
-                                        val usuarioActualizado = usuario.copy(tablasFavoritas = nuevasFavoritas)
-                                        loggeadoDAO.update(usuarioActualizado)
+                                        val usuario =  Sesion.usuario?.let { db.loggeadoDao().getUsuarioPorId(it.id) }
+                                        val nuevasFavoritas = usuario?.tablasFavoritas?.toMutableList()
+                                        if (tabla != null) {
+                                            if (nuevasFavoritas != null) {
+                                                nuevasFavoritas.remove(tabla.id)
+                                                val usuarioActualizado =
+                                                    usuario.copy(tablasFavoritas = nuevasFavoritas)
+                                                loggeadoDAO.update(usuarioActualizado)
+                                                // Refrescar lista
+                                                tablasFavoritas = db.tablaDao().getTablasByIds(nuevasFavoritas)
+                                            }
+                                        }
 
-                                        // Refrescar lista
-                                        tablasFavoritas = db.tablaDao().getTablasByIds(nuevasFavoritas)
                                     }
                                 },
                                 modifier = Modifier.fillMaxWidth(),
