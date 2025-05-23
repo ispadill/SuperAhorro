@@ -83,7 +83,7 @@ fun PantallaPerfilUsuario(
 
     LaunchedEffect(usuarioId) {
         viewModel.cargarDatosUsuario(context, usuarioId)
-        viewModel.cargarTablasUsuario(usuarioId)
+        viewModel.cargarTablasUsuario(context,usuarioId)
     }
 
     Scaffold(

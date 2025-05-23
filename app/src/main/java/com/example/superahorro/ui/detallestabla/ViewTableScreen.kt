@@ -80,7 +80,7 @@ fun ViewTableScreen(
         println("Tabla ID recibido: $tablaId")
         viewModel.cargarTablaUsuario(tablaId)
     }
-
+    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Scaffold(
@@ -108,7 +108,31 @@ fun ViewTableScreen(
         DetallesTablaCuerpo(
             onDelete = {
                 coroutineScope.launch {
-                    uiState.tablaUsuario?.let { viewModel.deleteTabla(tablaId) }
+                    val db = BaseDeDatos.getDatabase(context)
+                    val loggeadoDAO = db.loggeadoDao()
+                    val usuario = Sesion.usuario?.let { loggeadoDAO.getUsuarioPorId(it.id) }
+
+                    uiState.tablaUsuario?.let { tabla ->
+                        val nuevasFavoritas = usuario?.tablasFavoritas?.toMutableList() ?: mutableListOf()
+                        val nuevasPublicas = usuario?.tablasPublicas?.toMutableList() ?: mutableListOf()
+                        val nuevasPropias = usuario?.tablasPropias?.toMutableList() ?: mutableListOf()
+
+                        nuevasFavoritas.remove(tabla.id)
+                        nuevasPublicas.remove(tabla.id)
+                        nuevasPropias.remove(tabla.id)
+
+                        val nuevoUsuario = usuario?.copy(
+                            tablasFavoritas = nuevasFavoritas,
+                            tablasPublicas = nuevasPublicas,
+                            tablasPropias = nuevasPropias
+                        )
+                        if (nuevoUsuario != null) {
+                            loggeadoDAO.update(nuevoUsuario)
+                        }
+
+                        viewModel.deleteTabla(tabla.id)
+                    }
+
                     onReturnClicked()
                 }
             },
