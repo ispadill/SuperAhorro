@@ -22,17 +22,21 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.superahorro.Datos.Tabla
 import com.example.superahorro.Datos.TablaRepository
+import com.example.superahorro.ModeloDominio.Sesion
 import java.text.NumberFormat
 
 /**
  * ViewModel to validate and insert items in the Room database.
  */
 class TablaEntryViewModel(private val tablaRepository: TablaRepository) : ViewModel() {
-
+    private val autorPorDefecto = Sesion.usuario?.nombre ?: "Anónimo"
     /**
      * Holds current item ui state
      */
-    var tablaUiState by mutableStateOf(TablaUiState())
+    var tablaUiState by mutableStateOf(TablaUiState(
+        detallesTabla = DetallesTabla(autor = autorPorDefecto),
+        isEntryValid = false
+    ))
         private set
 
     /**
