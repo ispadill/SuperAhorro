@@ -33,6 +33,23 @@ import androidx.navigation.NavHostController
 import com.example.superahorro.ModeloDominio.Sesion
 import com.example.superahorro.ui.theme.AppBarTitleStyle
 
+/**
+ * Pantalla que muestra las tablas favoritas del usuario logueado.
+ *
+ * Esta pantalla accede a la base de datos local para obtener las tablas marcadas como favoritas por el usuario.
+ * Se muestra una lista con tarjetas para cada tabla favorita, donde se permite quitarla de favoritos.
+ * 
+ * - Usa un `Scaffold` con barra superior (TopAppBar) y barra inferior de navegación.
+ * - Cambia el color de los elementos si el sistema está en modo oscuro.
+ *
+ * @param navHostController Controlador de navegación (puede ser nulo si no se necesita en esta pantalla)
+ * @param onHomeButtonClicked Callback para ir a la pantalla principal
+ * @param onSearchClicked Callback para navegar a búsqueda
+ * @param onProfileClicked Callback para ir al perfil
+ * @param onFavoritesClicked Callback para volver a favoritos
+ * @param onViewTableClicked Callback para ver el detalle de una tabla (actualmente no se usa en el código)
+ * @param viewModel ViewModel compartido (PantallaInicioViewModel) que contiene funciones globales como cerrar sesión
+ */
 
 @Composable
 fun FavoritosScreen(
@@ -74,7 +91,8 @@ fun FavoritosScreen(
             }
         }
     }
-
+    
+    // UI con barra superior, inferior y lista de favoritas
     Scaffold(
         modifier = Modifier.fillMaxSize()//.background(color = Color(0xfff6bc66)),
         //containerColor = Color(0xfff6bc66),
@@ -192,6 +210,21 @@ fun FavoritosScreen(
     }
 }
 
+/**
+ * Barra superior personalizada para la pantalla de favoritos.
+ *
+ * Contiene:
+ * - Título centrado con el nombre de la pantalla
+ * - Botón de menú que despliega un `DropdownMenu` con opción de cerrar sesión
+ * - Botón de búsqueda a la derecha
+ *
+ * @param title Título mostrado en la barra
+ * @param onSearchClick Acción al pulsar el botón de búsqueda
+ * @param viewModel ViewModel que contiene la función de cierre de sesión
+ * @param navController Controlador de navegación necesario para redirigir al cerrar sesión
+ * @param modifier Modificador opcional para personalizar la barra
+ */
+ 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritosTopAppBar(
