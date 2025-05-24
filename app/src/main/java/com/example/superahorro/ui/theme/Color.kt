@@ -2,13 +2,13 @@ package com.example.superahorro.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val md_theme_light_primary = Color(0xFFF68C70)
+val md_theme_light_primary = Color(0xfff55c7a)
 val md_theme_light_onPrimary = Color(0xFF000000)
-val md_theme_light_primaryContainer = Color(0xFFFF9800)
+val md_theme_light_primaryContainer = Color(0xfff55c7a)
 val md_theme_light_onPrimaryContainer = Color(0xFF002114)
 val md_theme_light_secondary = Color(0xFF4D6357)
 val md_theme_light_onSecondary = Color(0xFFFFFFFF)
-val md_theme_light_secondaryContainer = Color(0xFFEED625)
+val md_theme_light_secondaryContainer = Color(0xfff6bc66)
 val md_theme_light_onSecondaryContainer = Color(0xFF092016)
 val md_theme_light_tertiary = Color(0xFF3D6373)
 val md_theme_light_onTertiary = Color(0xFFFFFFFF)
