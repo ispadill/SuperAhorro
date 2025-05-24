@@ -68,6 +68,7 @@ class TablaDetailsViewModel(
     suspend fun deleteTabla(tablaId: Int) {
         tablaRepository.getTablaById(tablaId)?.let { tablaRepository.deleteTabla(it) }
     }
+
 }
 
 /**

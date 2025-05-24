@@ -35,6 +35,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -121,7 +122,7 @@ fun RegisterScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = Color(0xfff6bc66), // Fondo de la pantalla
+        //containerColor = Color(0xfff6bc66), // Fondo de la pantalla
         floatingActionButton = {
             Box(
                 modifier = Modifier.fillMaxSize()
@@ -129,7 +130,7 @@ fun RegisterScreen(
                 FloatingActionButton(
                     onClick = onBackClicked,
                     shape = MaterialTheme.shapes.medium,
-                    containerColor = Color(0xfff68c70),
+                    //containerColor = Color(0xfff68c70),
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .padding(top = 60.dp, start = 40.dp)
@@ -146,7 +147,7 @@ fun RegisterScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxSize()
-                .background(Color(0xfff6bc66))
+                //.background(Color(0xfff6bc66))
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
@@ -163,7 +164,7 @@ fun RegisterScreen(
                         text = "SuperAhorro",
                         fontSize = 50.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black,
+                        //color = Color.Black,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -182,7 +183,7 @@ fun RegisterScreen(
                             text = "Nombre completo: ",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black,
+                            //color = Color.Black,
                             textAlign = TextAlign.Center
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -193,11 +194,11 @@ fun RegisterScreen(
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
                                 .padding(vertical = 4.dp),
-//                            colors = TextFieldDefaults.outlinedTextFieldColors(
-//                                containerColor = Color(0xfff68c70), //Color del contenedor
-//                                focusedBorderColor = Color.Black, // Color del borde cuando el campo está enfocado
-//                                unfocusedBorderColor = Color(0xfff55c7a) // Color del borde
-//                            )
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            ),
 
                         )
                     }
@@ -207,7 +208,7 @@ fun RegisterScreen(
                             text = "Nombre de Usuario: ",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black,
+                            //color = Color.Black,
                             textAlign = TextAlign.Center
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -218,11 +219,11 @@ fun RegisterScreen(
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
                                 .padding(vertical = 4.dp),
-//                            colors = TextFieldDefaults.outlinedTextFieldColors(
-//                                containerColor = Color(0xfff68c70), //Color del contenedor
-//                                focusedBorderColor = Color.Black, // Color del borde cuando el campo está enfocado
-//                                unfocusedBorderColor = Color(0xfff55c7a) // Color del borde
-//                            )
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            ),
 
                         )
                     }
@@ -233,7 +234,7 @@ fun RegisterScreen(
                             text = "Correo: ",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black,
+                            //color = Color.Black,
                             textAlign = TextAlign.Center
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -244,11 +245,11 @@ fun RegisterScreen(
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
                                 .padding(vertical = 4.dp),
-//                            colors = TextFieldDefaults.outlinedTextFieldColors(
-//                                containerColor = Color(0xfff68c70), //Color del contenedor
-//                                focusedBorderColor = Color.Black, // Color del borde cuando el campo está enfocado
-//                                unfocusedBorderColor = Color(0xfff55c7a) // Color del borde
-//                            )
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            ),
 
                         )
                     }
@@ -259,7 +260,7 @@ fun RegisterScreen(
                             text = "Contraseña: ",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black,
+                            //color = Color.Black,
                             textAlign = TextAlign.Center
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -270,12 +271,12 @@ fun RegisterScreen(
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
                                 .padding(vertical = 4.dp),
-                            visualTransformation = PasswordVisualTransformation()
-//                            colors = TextFieldDefaults.outlinedTextFieldColors(
-//                                containerColor = Color(0xfff68c70), //Color del contenedor
-//                                focusedBorderColor = Color.Black, // Color del borde cuando el campo está enfocado
-//                                unfocusedBorderColor = Color(0xfff55c7a) // Color del borde
-//                            )
+                            visualTransformation = PasswordVisualTransformation(),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            ),
                         )
                     }
 
@@ -285,7 +286,7 @@ fun RegisterScreen(
                             text = "Repita la contraseña: ",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black,
+                            //color = Color.Black,
                             textAlign = TextAlign.Center
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -296,12 +297,12 @@ fun RegisterScreen(
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
                                 .padding(vertical = 4.dp),
-                            visualTransformation = PasswordVisualTransformation()
-//                            colors = TextFieldDefaults.outlinedTextFieldColors(
-//                                containerColor = Color(0xfff68c70), //Color del contenedor
-//                                focusedBorderColor = Color.Black, // Color del borde cuando el campo está enfocado
-//                                unfocusedBorderColor = Color(0xfff55c7a) // Color del borde
-//                            )
+                            visualTransformation = PasswordVisualTransformation(),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            ),
                         )
                     }
                     if (errorMessage.value.isNotEmpty()) {
@@ -330,15 +331,15 @@ fun RegisterScreen(
                             .fillMaxWidth()
                             .padding(16.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xfff55c7a),
-                            contentColor = Color.Black
+                            //containerColor = Color(0xfff55c7a),
+                            //contentColor = Color.Black
                         ),
                     ) {
                         Text(
                             text = "Registrarme",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black,
+                            //color = Color.Black,
                             textAlign = TextAlign.Center
                         )
                     }

@@ -21,14 +21,26 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.superahorro.ui.AppViewModelProvider
 import com.example.superahorro.ui.tabla.TablaEditViewModel
@@ -49,32 +61,46 @@ fun TablaEditScreen(
     modifier: Modifier = Modifier,
     viewModel: TablaEditViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
+
+    // Mantenemos el estado local para la edición
+    var detallesTabla by remember { mutableStateOf(DetallesTabla()) }
+
+    // Actualizamos el estado local cuando se cargan los datos
+    LaunchedEffect(uiState.tablaUsuario) {
+        uiState.tablaUsuario?.let { tabla ->
+            detallesTabla = DetallesTabla(
+                id = tabla.id,
+                titulo = tabla.titulo,
+                autor = tabla.autor,
+                valoracion = tabla.valoracion,
+                numeroValoraciones = tabla.numeroValoraciones,
+                plantillaId = tabla.plantillaId
+            )
+        }
+    }
+
     Scaffold(
-        topBar = {
-//            InventoryTopAppBar(
-//                title = stringResource(ItemEditDestination.titleRes),
-//                canNavigateBack = true,
-//                navigateUp = onNavigateUp
-//            )
-        },
         modifier = modifier
     ) { innerPadding ->
         ItemEntryBody(
-            tablaUiState = viewModel.tablaUiState,
-            onItemValueChange = viewModel::updateUiState,
+            tablaUiState = TablaUiState(
+                detallesTabla = detallesTabla,
+                isEntryValid = viewModel.validarEntrada(detallesTabla.titulo, detallesTabla.autor)
+            ),
+            onItemValueChange = { nuevosDetalles ->
+                detallesTabla = nuevosDetalles
+                viewModel.actualizarDetallesTabla(nuevosDetalles)
+            },
             onSaveClick = {
                 coroutineScope.launch {
-                    viewModel.updateTabla()
+                    viewModel.guardarCambios()
                     navigateBack()
                 }
             },
             modifier = Modifier
-                .padding(
-                    start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
-                    end = innerPadding.calculateEndPadding(LocalLayoutDirection.current),
-                    top = innerPadding.calculateTopPadding()
-                )
+                .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
         )
     }

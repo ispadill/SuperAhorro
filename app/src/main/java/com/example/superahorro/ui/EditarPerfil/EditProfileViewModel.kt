@@ -75,15 +75,17 @@ class EditProfileViewModel(private val usuarioRepository: UsuarioRepository) : V
     fun updateLogFromUi(log: Loggeado) {
 
         viewModelScope.launch {
-
-            updateLog(log)
-
-            _uiState.update { currentState ->
-
-                currentState.copy(loggeado = log)
-
+            try {
+                updateLog(log)
+                _uiState.update { currentState ->
+                    currentState.copy(loggeado = log)
+                }
+                Sesion.usuario = log
+            } catch (e: Exception) {
+                _uiState.update { currentState ->
+                    currentState.copy(errorMessage = "Error al actualizar los datos.")
+                }
             }
-
         }
 
     }

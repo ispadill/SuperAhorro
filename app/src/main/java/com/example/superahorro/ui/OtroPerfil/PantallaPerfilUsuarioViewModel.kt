@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.superahorro.Datos.BaseDeDatos
 import com.example.superahorro.Datos.Loggeado
 import com.example.superahorro.Datos.Tabla
 import com.example.superahorro.Datos.TablaRepository
@@ -87,14 +88,22 @@ class PantallaPerfilUsuarioViewModel(
     }
 
     /**
-     * Carga todas las tablas creadas por el usuario
+     * Carga todas las tablas publicadas por el usuario
      *
      * @param usuarioId ID del usuario cuyas tablas se quieren cargar
      */
-    fun cargarTablasUsuario(usuarioId: String) {
+    fun cargarTablasUsuario(context: Context,usuarioId: String) {
         viewModelScope.launch {
             try {
-                val tablasUsuario = tablaRepository.getTablasDeUsuario(usuarioId)
+                val db = BaseDeDatos.getDatabase(context)
+                val usuario = db.loggeadoDao().getUsuarioPorId(usuarioId)
+
+                val tablasUsuario = if (usuario != null) {
+                    db.tablaDao().getTablasByIds(usuario.tablasPublicas)
+                } else {
+                    emptyList()
+                }
+
                 val ratingMedio = calcularValoracionMedia(tablasUsuario)
 
                 _uiState.update {
@@ -106,7 +115,7 @@ class PantallaPerfilUsuarioViewModel(
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
-                        error = "Error al cargar tablas del usuario: ${e.message}"
+                        error = "Error al cargar tablas públicas: ${e.message}"
                     )
                 }
             }

@@ -46,6 +46,7 @@ import kotlinx.coroutines.launch
 import java.util.Currency
 import java.util.Locale
 import androidx.compose.ui.unit.dp
+import com.example.superahorro.ModeloDominio.Sesion
 
 object TablaEntryDestination {
     val route = "item_entry"
@@ -56,7 +57,6 @@ object TablaEntryDestination {
 @Composable
 fun TablaEntryScreen(
     navigateBack: () -> Unit,
-    onNavigateUp: () -> Unit,
     canNavigateBack: Boolean = true,
     viewModel: TablaEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -125,6 +125,7 @@ fun TablaInputForm(
     onValueChange: (DetallesTabla) -> Unit = {},
     enabled: Boolean = true
 ) {
+    val nombreAutor = Sesion.usuario?.nombre ?: "Anónimo"
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -144,7 +145,7 @@ fun TablaInputForm(
         )
         OutlinedTextField(
             value = detallesTabla.autor,
-            onValueChange = { onValueChange(detallesTabla.copy(autor = it)) },
+            onValueChange = {},
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             label = { Text("Autor") },
             colors = OutlinedTextFieldDefaults.colors(
@@ -152,9 +153,9 @@ fun TablaInputForm(
                 unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                 disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
             ),
-            leadingIcon = { Text(Currency.getInstance(Locale.getDefault()).symbol) },
+            leadingIcon = {},
             modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
+            enabled = false,
             singleLine = true
         )
 //        OutlinedTextField(

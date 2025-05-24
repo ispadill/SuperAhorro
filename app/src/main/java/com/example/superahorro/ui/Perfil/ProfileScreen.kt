@@ -7,6 +7,7 @@ import android.view.Surface
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -97,9 +98,24 @@ fun ProfileScreen(
         }
     }
 
+    var color: Color
+    var colorBoxBorder: Color
+    var colorCardBorder: Color
+
+
+    if(isSystemInDarkTheme()){
+        color = Color(0xFF3F51B5)
+        colorBoxBorder = Color(0xFF9341A4)
+        colorCardBorder = Color.White
+    }else{
+        color = Color(0xfff68c70)
+        colorBoxBorder = Color(0xfff55c7a)
+        colorCardBorder = Color.Black
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = Color(0xfff6bc66),
+        //containerColor = Color(0xfff6bc66),
         bottomBar = {
             BottomNavigationBar(
                 onHomeButtonClicked,
@@ -113,7 +129,7 @@ fun ProfileScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxSize()
-                .background(Color(0xfff6bc66))
+                //.background(Color(0xfff6bc66))
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp) // Añade espacio uniforme entre elementos
@@ -126,7 +142,7 @@ fun ProfileScreen(
                     .size(200.dp)
                     .clip(CircleShape)
                     .background(Color.White)
-                    .border(2.dp, Color(0xfff55c7a), CircleShape)
+                    .border(2.dp, colorBoxBorder, CircleShape)
             ) {
                 if (uiState.usuario != null) {
                     Image(
@@ -151,7 +167,7 @@ fun ProfileScreen(
                         text = "Nombre de Usuario: ${usuario.id}",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black,
+                        //color = Color.Black,
                         textAlign = TextAlign.Center
                     )
 
@@ -161,7 +177,7 @@ fun ProfileScreen(
                         text = "Nombre Completo: ${usuario.nombre}",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black,
+                        //color = Color.Black,
                         textAlign = TextAlign.Center
                     )
 
@@ -179,7 +195,7 @@ fun ProfileScreen(
                             text = "Correo: ${usuario.correo}",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black,
+                            //color = Color.Black,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -197,15 +213,15 @@ fun ProfileScreen(
                     .fillMaxWidth()
                     .padding(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xfff55c7a),
-                    contentColor = Color.Black
+                    //containerColor = Color(0xfff55c7a),
+                    //contentColor = Color.Black
                 ),
             ) {
                 Text(
                     text = "Editar Perfil",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black,
+                    //color = Color.Black,
                     textAlign = TextAlign.Center
                 )
             }

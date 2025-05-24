@@ -10,6 +10,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
+
         applicationId = "com.example.superahorro"
         minSdk = 24
         targetSdk = 35
@@ -17,6 +18,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {

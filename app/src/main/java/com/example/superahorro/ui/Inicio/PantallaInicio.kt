@@ -1,6 +1,9 @@
 package com.example.superahorro.ui
 
+import android.content.Intent
+import android.widget.Toast
 import com.example.superahorro.ui.theme.AppBarTitleStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,20 +14,26 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -44,80 +53,80 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.border
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.BottomAppBar
 import com.example.superahorro.R
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.superahorro.Datos.Loggeado
+import com.example.superahorro.Datos.Tabla
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 
 /**
- * Función para filtrar usuarios según criterio de búsqueda.
+ * Función para filtrar tablas según criterio de búsqueda.
  *
  * @param query Texto de búsqueda
- * @param usuarios Lista completa de usuarios
- * @return Lista de resultados formateados como "ID (Tipo)"
+ * @param tablas Lista completa de tablas
+ * @return Lista de resultados formateados como "Título (Autor)"
  */
-fun performUserSearch(query: String, usuarios: List<Loggeado>): List<String> {
+fun performSearch(query: String, tablas: List<Tabla>): List<String> {
     return if (query.isNotEmpty()) {
-        usuarios
-            .filter {
-                it.id.contains(query, ignoreCase = true) ||
-                        it.nombre.contains(query, ignoreCase = true)
-            }
-            .map { "${it.id} (${it.nombre})" }
+        tablas
+            .filter { it.titulo.contains(query, ignoreCase = true) ||
+                    it.autor.contains(query, ignoreCase = true) }
+            .map { "${it.titulo} (${it.autor})" }
     } else {
         emptyList()
     }
 }
-
 /**
- * Pantalla de búsqueda de la aplicación que muestra una lista de usuarios y funcionalidades de búsqueda.
+ * Pantalla principal de la aplicación que muestra una lista de tablas y funcionalidades de búsqueda.
  *
  * Utiliza un [Scaffold] para estructurar los componentes principales:
  * - TopAppBar con logo y búsqueda
  * - LazyColumn para lista de elementos
  * - BottomAppBar con navegación
- * - FloatingActionButton para creación de nuevos usuarios
+ * - FloatingActionButton para creación de nuevas tablas
  *
- * @param onViewUserClicked Callback para visualización de detalles de usuario
+ * @param onCreateTableClicked Callback para creación de nueva tabla
+ * @param onOtherProfileClicked Callback para navegación a perfil de otro usuario
+ * @param onViewTableClicked Callback para visualización de tabla
  * @param onHomeButtonClicked Callback para navegación a inicio
  * @param onSearchClicked Callback para activar búsqueda
  * @param onProfileClicked Callback para navegación a perfil
  * @param onFavoritesClicked Callback para navegación a favoritos
  */
 @Composable
-fun PantallaBusqueda(
+fun PantallaInicio(
     navHostController: NavHostController?,
-    onViewUserClicked: (String) -> Unit,
+    onCreateTableClicked: () -> Unit,
+    onViewTableClicked: (Int) -> Unit,
     onHomeButtonClicked: () -> Unit,
     onSearchClicked: () -> Unit,
     onProfileClicked: () -> Unit,
     onFavoritesClicked: () -> Unit,
-    viewModel: PantallaBusquedaViewModel = viewModel(factory = AppViewModelProvider.Factory)
-) {
+    viewModel: PantallaInicioViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    ) {
     val modifier = Modifier.fillMaxSize()
-    val context = LocalContext.current
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var isSearchVisible by rememberSaveable { mutableStateOf(false) }
@@ -125,30 +134,29 @@ fun PantallaBusqueda(
     var searchResults by remember { mutableStateOf(listOf<String>()) }
     var showSuggestions by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        viewModel.cargarUsuariosConRatings(context)
-    }
-
     LaunchedEffect(searchQuery) {
         viewModel.actualizarBusqueda(searchQuery)
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize().background(color = Color(0xfff6bc66)),
-        containerColor = Color(0xfff6bc66),
+        modifier = Modifier.fillMaxSize()//.background(color = Color(0xfff6bc66)),
+        //containerColor = Color(0xfff6bc66),
+        ,
         topBar = {
-            UsuariosTopAppBar(
-                title = "BUSCAR USUARIOS",
-                onSearchClick = {
-                    isSearchVisible = !isSearchVisible
-                    if (!isSearchVisible) {
-                        searchQuery = ""
-                        showSuggestions = false
-                    }
-                },
-                viewModel = viewModel,
-                navController=navHostController
-            )
+            if (navHostController != null) {
+                TablasTopAppBar(
+                    title = "MIS TABLAS",
+                    onSearchClick = {
+                        isSearchVisible = !isSearchVisible
+                        if (!isSearchVisible) {
+                            searchQuery = ""
+                            showSuggestions = false
+                        }
+                    },
+                    viewModel =viewModel,
+                    navHostController
+                )
+            }
         },
         bottomBar = {
             BottomNavigationBar(onHomeButtonClicked,
@@ -156,19 +164,36 @@ fun PantallaBusqueda(
                 onProfileClicked,
                 onFavoritesClicked)
         },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onCreateTableClicked,
+                shape = MaterialTheme.shapes.medium,
+                //containerColor = Color(0xfff55c7a),
+                modifier = Modifier
+                    .padding(
+                        end = WindowInsets.safeDrawing.asPaddingValues()
+                            .calculateEndPadding(LocalLayoutDirection.current)
+                    )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Añadir tabla"
+                )
+            }
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xfff6bc66))
+                //.background(Color(0xfff6bc66))
                 .padding(top = innerPadding.calculateTopPadding())
         ) {
             if (isSearchVisible) {
-                UserSearchBarBelowAppBar(
+                SearchBarBelowAppBar(
                     query = searchQuery,
                     onQueryChange = {
                         searchQuery = it
-                        searchResults = performUserSearch(it, uiState.usuarios)
+                        searchResults = performSearch(it, uiState.tablas)
                         showSuggestions = it.isNotEmpty() && searchResults.isNotEmpty()
                     },
                     onClearClick = {
@@ -178,235 +203,247 @@ fun PantallaBusqueda(
                     showSuggestions = showSuggestions,
                     searchResults = searchResults,
                     onResultClick = { resultText ->
-                        val idOnly = resultText.split(" (").firstOrNull() ?: resultText
-                        searchQuery = idOnly
+                        val titleOnly = resultText.split(" (").firstOrNull() ?: resultText
+                        searchQuery = titleOnly
                         showSuggestions = false
                     }
                 )
             }
 
-            BusquedaCuerpo(
-                usuariosConValoraciones = if (searchQuery.isEmpty()) uiState.usuariosConRating else {
-                    uiState.usuariosConRating.filter {
-                        it.usuario.id.contains(searchQuery, ignoreCase = true) ||
-                                it.usuario.nombre.contains(searchQuery, ignoreCase = true) ||
-                                it.usuario.tipo.contains(searchQuery, ignoreCase = true)
-                    }
+            InicioCuerpo(
+                tablasList = if (searchQuery.isEmpty()) uiState.tablas else {
+                    uiState.tablas.filter { it.titulo.contains(searchQuery, ignoreCase = true) ||
+                            it.autor.contains(searchQuery, ignoreCase = true) }
                 },
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
                     top = 8.dp,
                     bottom = innerPadding.calculateBottomPadding()
                 ),
-                onViewUserClicked = onViewUserClicked,
-                viewModel = viewModel
+                onViewTableClicked,
             )
         }
     }
 }
 
 /**
- * Contenedor principal del cuerpo de la pantalla de búsqueda.
+ * Contenedor principal del cuerpo de la pantalla de inicio.
  *
- * Encapsula la lista de usuarios dentro de un diseño Column centrado horizontalmente.
+ * Encapsula la lista de tablas dentro de un diseño Column centrado horizontalmente.
  *
- * @param usuariosConValoraciones Lista de usuarios con valoraciones a mostrar
+ * @param tablasList Lista de tablas a mostrar
  * @param modifier Modificador para personalización del layout
- * @param contentPadding Padding interno para la lista de usuarios
- * @param onViewUserClicked Callback al hacer clic en un usuario
- * @param viewModel ViewModel para operaciones adicionales
+ * @param contentPadding Padding interno para la lista de tablas
  */
 @Composable
-private fun BusquedaCuerpo(
-    usuariosConValoraciones: List<UsuarioConRating>,
+private fun InicioCuerpo(
+    tablasList: List<Tabla>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    onViewUserClicked: (String) -> Unit,
-    viewModel: PantallaBusquedaViewModel
+    onViewTableClicked: (Int) -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier,
     ) {
-        UsuariosList(
-            usuariosConValoraciones = usuariosConValoraciones,
+        TablasList(
+            tablasList = tablasList,
             contentPadding = contentPadding,
             modifier = Modifier.padding(horizontal = 8.dp),
-            onViewUserClicked = onViewUserClicked,
-            viewModel = viewModel
+            onViewTableClicked
         )
     }
 }
 
 /**
- * Componente que muestra una lista desplazable de usuarios usando LazyColumn.
+ * Componente que muestra una lista desplazable de tablas usando LazyColumn.
  *
- * @param usuariosConValoraciones Lista de usuarios con valoraciones a mostrar
+ * @param tablasList Lista de tablas a mostrar
  * @param contentPadding Padding interno para la lista
  * @param modifier Modificador para personalización del layout
- * @param onViewUserClicked Callback al hacer clic en un usuario
- * @param viewModel ViewModel para operaciones adicionales
  */
 @Composable
-private fun UsuariosList(
-    usuariosConValoraciones: List<UsuarioConRating>,
+private fun TablasList(
+    tablasList: List<Tabla>,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
-    onViewUserClicked: (String) -> Unit,
-    viewModel: PantallaBusquedaViewModel
+    onViewTableClicked: (Int) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier,
         contentPadding = contentPadding
     ) {
-        items(items = usuariosConValoraciones, key = { it.usuario.id }) { usuarioRating ->
-            UsuarioItem(
-                usuarioConRating = usuarioRating,
+        items(items = tablasList, key = { it.id }) { tabla ->
+            TablaItem(
+                tabla = tabla,
                 modifier = Modifier
                     .padding(8.dp)
-                    .clickable { onViewUserClicked(usuarioRating.usuario.id) },
-                viewModel = viewModel
+                    .clickable {onViewTableClicked(tabla.id)},
             )
         }
     }
 }
 
 /**
- * Componente que representa un ítem individual de la lista de usuarios.
+ * Componente que representa un ítem individual de la lista de tablas.
  *
- * @param usuarioConRating Datos del usuario con valoración a mostrar
+ * @param tabla Datos de la tabla a mostrar
  * @param modifier Modificador para personalización del layout
- * @param viewModel ViewModel para operaciones adicionales
  */
 @Composable
-fun UsuarioItem(
-    usuarioConRating: UsuarioConRating,
-    modifier: Modifier = Modifier,
-    viewModel: PantallaBusquedaViewModel
-) {
-    val context = LocalContext.current
-    val usuario = usuarioConRating.usuario
+fun TablaItem(
 
-    val imagenPerfil = usuarioConRating.imagenPerfilBitmap ?:
-    viewModel.cargarImagenPerfil(context, usuario.id)
+    tabla: Tabla,
+    modifier: Modifier = Modifier,
+) {
+
+    var color: Color
+    var colorCardBorder: Color
+
+
+    if(isSystemInDarkTheme()){
+        color = Color(0xFF3F51B5)
+        colorCardBorder = Color.White
+    }else{
+        color = Color(0xfff68c70)
+        colorCardBorder = Color.Black
+    }
 
     Card(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xfff68c70),
+            containerColor = color,
         ),
-        border = BorderStroke(1.dp, Color.Black)
+        border = BorderStroke(1.dp, colorCardBorder),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
-                    modifier = Modifier
-                        .size(60.dp)
-                        .clip(CircleShape)
-                        .border(1.dp, Color.Black, CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        bitmap = imagenPerfil.asImageBitmap(),
-                        contentDescription = "Foto de perfil de ${usuario.nombre}",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize().background(Color.White)
-                    )
-                }
-
-                Spacer(Modifier.weight(1f))
-
-                Column(
-                    modifier = Modifier.weight(1f).width(50.dp)
-                ) {
+                    Modifier.height(50.dp).width(130.dp), contentAlignment = Alignment.Center
+                ){
                     Text(
-                        text = usuario.nombre,
+                        text = tabla.titulo.split(" ").firstOrNull() ?: "",
                         style = MaterialTheme.typography.titleLarge,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "@${usuario.id}",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Color.Black,
                     )
                 }
-
                 Spacer(Modifier.weight(1f))
-
-                Column(
-                    horizontalAlignment = Alignment.End
+                Box(
+                    Modifier.height(50.dp).width(80.dp), contentAlignment = Alignment.Center
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Star,
-                            contentDescription = "Valoración media",
-                            tint = Color(0xFFF6BC66),
-                            modifier = Modifier.size(20.dp)
+                    Text(
+                        text = tabla.autor,
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                }
+                Spacer(Modifier.weight(1f))
+                Box(
+                    Modifier.height(50.dp).width(80.dp), contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Image(
+                            painter = painterResource(id = R.drawable.estrella),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(30.dp)
                         )
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Spacer(Modifier.size(2.dp))
                         Text(
-                            text ="%.2f".format(usuarioConRating.ratingMedio),
-                            style = MaterialTheme.typography.titleLarge
+                            text = "%.2f".format(tabla.valoracion),
+                            style = MaterialTheme.typography.titleMedium,
                         )
                     }
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    Text(
-                        text = "${usuario.tablasPropias.size} TABLAS",
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.End
-                    )
                 }
             }
         }
     }
 }
 
-/**
- * Barra superior personalizada para la pantalla de usuarios.
- *
- * Incluye:
- * - Logo de la aplicación
- * - Título centrado
- * - Botón de búsqueda
- * - Divisor inferior decorativo
- *
- * @param title Texto a mostrar como título
- * @param onSearchClick Callback para el botón de búsqueda
- * @param modifier Modificador para personalización del layout
- */
+@Composable
+fun UserDropdownMenu(
+    expanded: Boolean,
+    onDismissRequest: () -> Unit,
+    onLogout: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+
+    fun compartirApp() {
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, "¿Quieres comparar valoraciones de productos? ¡Descarga SuperAhorro!\n https://github.com/ispadill/SuperAhorro")
+        }
+
+        try {
+            context.startActivity(Intent.createChooser(shareIntent, "Compartir con"))
+        } catch (e: Exception) {
+            Toast.makeText(context, "No se pudo abrir el menú de compartir", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismissRequest,
+        modifier = modifier
+    ) {
+        DropdownMenuItem(
+            text = {
+                Text(
+                    "Compartir app",
+                    //color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            onClick = {
+                compartirApp()
+                onDismissRequest()
+            }
+        )
+        DropdownMenuItem(
+            text = {
+                Text(
+                    "Cerrar sesión",
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            onClick = {
+                onLogout()
+                onDismissRequest()
+            }
+        )
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UsuariosTopAppBar(
+fun TablasTopAppBar(
     title: String,
     onSearchClick: () -> Unit,
-    viewModel: PantallaBusquedaViewModel,
+    viewModel: PantallaInicioViewModel,
     navController: NavHostController?,
     modifier: Modifier = Modifier
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
+
     Column {
         androidx.compose.material3.CenterAlignedTopAppBar(
-            title = { Text(
-                text = title,
-                style = AppBarTitleStyle
-            )  },
+            title = {
+                Text(
+                    text = title,
+                    style = AppBarTitleStyle
+                )
+            },
             modifier = modifier,
             colors = topAppBarColors(
-                containerColor = Color(0xfff55c7a)
+                //containerColor = Color(0xfff55c7a)
             ),
             navigationIcon = {
                 Box {
@@ -436,13 +473,11 @@ fun UsuariosTopAppBar(
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Buscar",
-                        tint = Color.Black
                     )
                 }
             }
         )
         Divider(
-            color = Color.Black,
             thickness = 3.dp,
             modifier = Modifier.fillMaxWidth()
         )
@@ -461,7 +496,7 @@ fun UsuariosTopAppBar(
  * @param modifier Modificador para personalización del layout
  */
 @Composable
-fun UserSearchBarBelowAppBar(
+fun SearchBarBelowAppBar(
     query: String,
     onQueryChange: (String) -> Unit,
     onClearClick: () -> Unit,
@@ -469,13 +504,13 @@ fun UserSearchBarBelowAppBar(
     searchResults: List<String>,
     onResultClick: (String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: PantallaBusquedaViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: PantallaInicioViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color(0xFFF6BC66))
+            //.background(Color(0xFFF6BC66))
             .padding(bottom = 4.dp)
     ) {
         OutlinedTextField(
@@ -485,7 +520,7 @@ fun UserSearchBarBelowAppBar(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp)
                 .background(Color.White, RoundedCornerShape(8.dp)),
-            placeholder = { Text("Buscar usuarios") },
+            placeholder = { Text("Buscar tablas") },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
@@ -511,7 +546,7 @@ fun UserSearchBarBelowAppBar(
             ),
             keyboardActions = KeyboardActions(
                 onSearch = {
-                    performUserSearch(query, uiState.usuarios)
+                    performSearch(query,uiState.tablas)
                 }
             )
         )
@@ -553,4 +588,73 @@ fun UserSearchBarBelowAppBar(
             }
         }
     }
+}
+
+/**
+ * Barra de navegación inferior con acciones principales.
+ *
+ * @param onHomeButtonClicked Callback para navegación a inicio
+ * @param onSearchClicked Callback para activar búsqueda
+ * @param onProfileClicked Callback para navegación a perfil
+ * @param onFavoritesClicked Callback para navegación a favoritos
+ */
+@Composable
+fun BottomNavigationBar(
+    onHomeButtonClicked: () -> Unit,
+    onSearchClicked: () -> Unit,
+    onProfileClicked: () -> Unit,
+    onFavoritesClicked: () -> Unit,
+) {
+
+    var bottomBarColor: Color
+    var onBottomBarColor: Color
+
+    if(isSystemInDarkTheme()){
+        bottomBarColor = Color(0xFF9C27B0)
+        onBottomBarColor = Color(0xFFBDBDBD)
+    }else{
+        bottomBarColor = Color(0xFFF55C7A)
+        onBottomBarColor = Color.Black
+    }
+
+    BottomAppBar(
+        containerColor = bottomBarColor, // Color de fondo de la barra inferior
+        contentColor = onBottomBarColor, // Color del contenido (íconos y texto)
+        actions = {
+            IconButton(
+                onClick = onHomeButtonClicked,
+                modifier = Modifier.padding(horizontal = 28.dp)) {
+                Icon(imageVector = Icons.Default.Home, contentDescription = "Inicio",Modifier.size(40.dp))
+            }
+            IconButton(
+                onClick = onSearchClicked,
+                modifier = Modifier.padding(horizontal = 28.dp)) {
+                Icon(imageVector = Icons.Default.Search, contentDescription = "Buscar",Modifier.size(40.dp))
+            }
+            IconButton(
+                onClick = onProfileClicked,
+                modifier = Modifier.padding(horizontal = 28.dp)) {
+                Icon(imageVector = Icons.Default.Person, contentDescription = "Perfil",Modifier.size(40.dp))
+            }
+            IconButton(
+                onClick = onFavoritesClicked,
+                modifier = Modifier.padding(horizontal = 28.dp)) {
+                Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favoritos",Modifier.size(40.dp))
+            }
+        }
+    )
+}
+
+/**
+ * Previsualización de la pantalla principal con datos de prueba.
+ *
+ * Muestra una implementación estática del layout para visualización en Android Studio.
+ * Utiliza callbacks vacíos para propósitos de demostración.
+ */
+@Preview(showBackground = true)
+@Composable
+fun PantallaInicioPreview() {
+
+    PantallaInicio(onHomeButtonClicked = {}, onProfileClicked = {}, onFavoritesClicked = {}, onSearchClicked = {}, onViewTableClicked = {}, onCreateTableClicked = {}, navHostController = null)
+
 }

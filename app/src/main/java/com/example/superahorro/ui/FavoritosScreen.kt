@@ -24,36 +24,70 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import com.example.superahorro.R
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import com.example.superahorro.ModeloDominio.Sesion
 import com.example.superahorro.ui.theme.AppBarTitleStyle
 
 
 @Composable
 fun FavoritosScreen(
+    navHostController: NavHostController?,
     onHomeButtonClicked: () -> Unit,
     onSearchClicked: () -> Unit,
     onProfileClicked: () -> Unit,
     onFavoritesClicked: () -> Unit,
-    onViewTableClicked: () -> Unit
+    onViewTableClicked: () -> Unit,
+    viewModel: PantallaInicioViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var tablasFavoritas by remember { mutableStateOf<List<Tabla>>(emptyList()) }
 
+    var color: Color
+    var colorCardBorder: Color
+    var colorBotonQuitar: Color
+
+
+    if(isSystemInDarkTheme()){
+        color = Color(0xFF3F51B5)
+        colorCardBorder = Color.White
+        colorBotonQuitar = Color(0xFF7344CB)
+    }else{
+        color = Color(0xfff68c70)
+        colorCardBorder = Color.Black
+        colorBotonQuitar = Color(0xFFF55C7A)
+
+    }
+
     LaunchedEffect(true) {
         scope.launch {
             val db = BaseDeDatos.getDatabase(context)
-            val usuario = db.loggeadoDao().getUsuarioPorId("Juan") // Cambia luego por ID real
-            tablasFavoritas = db.tablaDao().getTablasByIds(usuario.tablasFavoritas)
+            val usuario =
+                Sesion.usuario?.let { db.loggeadoDao().getUsuarioPorId(it.id) }
+            if (usuario != null) {
+                tablasFavoritas = db.tablaDao().getTablasByIds(usuario.tablasFavoritas)
+            }
         }
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize().background(color = Color(0xfff6bc66)),
-        containerColor = Color(0xfff6bc66),
+        modifier = Modifier.fillMaxSize()//.background(color = Color(0xfff6bc66)),
+        //containerColor = Color(0xfff6bc66),
+        ,
         topBar = {
-            FavoritosTopAppBar(title = "FAVORITOS", onSearchClick = onSearchClicked)
+            if (navHostController != null) {
+                FavoritosTopAppBar(
+                    title = "FAVORITOS",
+                    onSearchClick = onSearchClicked,
+                    viewModel = viewModel,
+                    navController = navHostController
+                )
+            }
         },
         bottomBar = {
             BottomNavigationBar(
@@ -80,7 +114,7 @@ fun FavoritosScreen(
                         Text(
                             text = "No hay tablas favoritas.",
                             style = MaterialTheme.typography.titleLarge,
-                            color = Color.DarkGray
+                            //color = Color.DarkGray
                         )
                     }
                 }
@@ -90,8 +124,8 @@ fun FavoritosScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xfff68c70)),
-                        border = BorderStroke(1.dp, Color.Black)
+                        colors = CardDefaults.cardColors(containerColor = color),
+                        border = BorderStroke(1.dp, colorCardBorder)
                     ) {
                         Column(
                             modifier = Modifier.padding(20.dp),
@@ -104,7 +138,7 @@ fun FavoritosScreen(
                                 Text(text = tabla.titulo, modifier = Modifier.weight(1f))
                                 Text(text = tabla.autor, modifier = Modifier.weight(1f))
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Icon(
+                                    Image(
                                         painter = painterResource(id = R.drawable.estrella),
                                         contentDescription = null,
                                         modifier = Modifier.size(30.dp)
@@ -124,17 +158,26 @@ fun FavoritosScreen(
                                         val db = BaseDeDatos.getDatabase(context)
                                         val loggeadoDAO = db.loggeadoDao()
 
-                                        val usuario = loggeadoDAO.getUsuarioPorId("Juan") // usa el ID real luego
-                                        val nuevasFavoritas = usuario.tablasFavoritas.toMutableList()
-                                        nuevasFavoritas.remove(tabla.id)
-                                        val usuarioActualizado = usuario.copy(tablasFavoritas = nuevasFavoritas)
-                                        loggeadoDAO.update(usuarioActualizado)
+                                        val usuario =  Sesion.usuario?.let { db.loggeadoDao().getUsuarioPorId(it.id) }
+                                        val nuevasFavoritas = usuario?.tablasFavoritas?.toMutableList()
+                                        if (tabla != null) {
+                                            if (nuevasFavoritas != null) {
+                                                nuevasFavoritas.remove(tabla.id)
+                                                val usuarioActualizado =
+                                                    usuario.copy(tablasFavoritas = nuevasFavoritas)
+                                                loggeadoDAO.update(usuarioActualizado)
+                                                // Refrescar lista
+                                                tablasFavoritas = db.tablaDao().getTablasByIds(nuevasFavoritas)
+                                            }
+                                        }
 
-                                        // Refrescar lista
-                                        tablasFavoritas = db.tablaDao().getTablasByIds(nuevasFavoritas)
                                     }
                                 },
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = colorBotonQuitar,
+                                    //contentColor = Color.Black
+                                )
                             ) {
                                 Text("Quitar de favoritos")
                             }
@@ -154,8 +197,11 @@ fun FavoritosScreen(
 fun FavoritosTopAppBar(
     title: String,
     onSearchClick: () -> Unit,
+    viewModel: PantallaInicioViewModel,
+    navController: NavHostController?,
     modifier: Modifier = Modifier
 ) {
+    var showMenu by remember { mutableStateOf(false) }
     Column {
         androidx.compose.material3.CenterAlignedTopAppBar(
             title = { Text(
@@ -164,14 +210,28 @@ fun FavoritosTopAppBar(
             )  },
             modifier = modifier,
             colors = topAppBarColors(
-                containerColor = Color(0xfff55c7a)
+                //containerColor = Color(0xfff55c7a)
             ),
             navigationIcon = {
-                IconButton(onClick = { }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.logoapp),
-                        contentDescription = "Logo de la aplicación",
-                        modifier = Modifier.size(100.dp)
+                Box {
+                    IconButton(onClick = { showMenu = true }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.logoapp),
+                            contentDescription = "Menú de usuario",
+                            modifier = Modifier.size(100.dp)
+                        )
+                    }
+
+                    UserDropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false },
+                        onLogout = { viewModel.viewModelScope.launch {
+                            if (navController != null) {
+                                viewModel.cerrarSesion(navController)
+                            }
+                        }
+                            showMenu = false
+                        }
                     )
                 }
             },
@@ -186,7 +246,7 @@ fun FavoritosTopAppBar(
             }
         )
         Divider(
-            color = Color.Black,
+            //color = Color.Black,
             thickness = 3.dp,
             modifier = Modifier.fillMaxWidth()
         )
