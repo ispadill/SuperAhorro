@@ -31,7 +31,11 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 
-
+/**
+ * ViewModel para ProfileScreen que proporciona los datos del usuario que ha iniciado sesion
+ *
+ * @param usuarioRepository Repositorio para acceder a los datos de usuarios
+ */
 class ProfileViewModel(
 
     private val usuarioRepository: UsuarioRepository
@@ -53,7 +57,9 @@ class ProfileViewModel(
     }
 
 
-
+	/**
+     * Funcion que carga el usuario actual
+     */
     fun loadCurrentUser() {
 
         viewModelScope.launch {
@@ -93,7 +99,9 @@ class ProfileViewModel(
     }
 
 
-
+	/**
+     * Funcion que carga la imagen de perfil del usuario
+     */
     fun cargarImagenPerfil(context: Context, usuarioId: String): Bitmap {
 
         return try {
@@ -133,7 +141,9 @@ class ProfileViewModel(
     }
 
 
-
+	/**
+     * Funcion que devuelve una imagen de perfil predeterminada
+     */
     private fun getDefaultImage(context: Context): Bitmap {
 
         return BitmapFactory.decodeResource(context.resources, R.drawable.logoapp)
@@ -143,7 +153,9 @@ class ProfileViewModel(
 }
 
 
-
+/**
+ * Estado UI para la pantalla de ver los datos del perfil
+ */
 data class ProfileUiState(
 
     val usuario: Loggeado? = null,

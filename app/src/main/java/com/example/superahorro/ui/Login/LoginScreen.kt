@@ -40,6 +40,21 @@ import com.example.superahorro.Datos.Loggeado
 import com.example.superahorro.R
 import com.example.superahorro.ModeloDominio.Sesion
 
+
+
+/**
+ * Pantalla de login de la aplicación que muestra un formulario para que rellene el usuario.
+ *
+ * Utiliza un [Scaffold] para estructurar los componentes principales:
+ * - Box con un elemento Text para mostrar el nombre de la aplicacion
+ * - Box para mostrar la informacion del perfil (OutlinedTextField usuario y contraseña para que el usuario rellene), y un boton para si el usuario no tiene cuenta, que le lleve a registrarse
+ * - Boton de aceptar para iniciar sesion
+ * - Box con una imagen del logo de la aplicacion
+ * - Todos estos elementos estan englobados en un Column
+ *
+ * @param onAceptarClicked Callback para iniciar sesion (la funcion validateAndLogin comprueba si los datos introducidos son correctos y existe un usuario con ese nombre de usuario y contraseña en la BD)
+ * @param onRegistrarseClicked Callback para navegación al formulario de registro
+ */
 @Composable
 fun LoginScreen(
     onAceptarClicked: () -> Unit,
@@ -51,7 +66,10 @@ fun LoginScreen(
     val username = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val errorMessage = remember { mutableStateOf("") }
-
+	
+	/**
+	 * Función para validar los datos del formulario de login.
+	 */
     fun validateAndLogin() {
         when {
             username.value.isEmpty() -> errorMessage.value = "Por favor, ingrese su nombre de usuario."
