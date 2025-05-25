@@ -101,7 +101,6 @@ enum class SuperAhorroScreen() {
  */
 @Composable
 fun SuperAhorroApp(
-    //viewModel: SuperAhorroViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
 
@@ -116,12 +115,6 @@ fun SuperAhorroApp(
             SuperAhorroScreen.Main
         }
     }
-
-
-//    Scaffold(
-//    ) { innerPadding ->
-        //val uiState by viewModel.uiState.collectAsState()
-
         NavHost(
             navController = navController,
             startDestination = SuperAhorroScreen.Login.name,

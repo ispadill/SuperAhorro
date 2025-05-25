@@ -12,12 +12,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
+import com.example.superahorro.Datos.BaseDeDatos
 import com.example.superahorro.Datos.DatosPrueba
 import com.example.superahorro.ui.PantallaInicio
 import com.example.superahorro.ui.theme.SuperAhorroTheme
 import kotlinx.coroutines.launch
 
-
+/**
+ * Clase principal, que llama a la inicialización de la aplicación.
+ */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         lifecycleScope.launch {

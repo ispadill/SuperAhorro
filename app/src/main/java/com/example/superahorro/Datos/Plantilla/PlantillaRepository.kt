@@ -16,6 +16,8 @@ class PlantillaRepository(private val plantillaDao: PlantillaDAO) {
      * Inserta una plantilla en la base de datos
      */
     suspend fun insertPlantilla(plantilla: Plantilla) = plantillaDao.insert(plantilla)
-
+    /**
+     * Elimina todas las plantillas de la base de datos
+     */
     suspend fun deleteAll()=plantillaDao.deleteAll()
 }

@@ -135,9 +135,7 @@ fun PantallaBusqueda(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize()//.background(color = Color(0xfff6bc66)),
-        //containerColor = Color(0xfff6bc66),
-                ,
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             UsuariosTopAppBar(
                 title = "BUSCAR USUARIOS",
@@ -162,7 +160,6 @@ fun PantallaBusqueda(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                //.background(Color(0xfff6bc66))
                 .padding(top = innerPadding.calculateTopPadding())
         ) {
             if (isSearchVisible) {
@@ -353,7 +350,6 @@ fun UsuarioItem(
                     Text(
                         text = "@${usuario.id}",
                         style = MaterialTheme.typography.bodyLarge,
-                        //color = Color.Black,
                     )
                 }
 
@@ -424,7 +420,6 @@ fun UsuariosTopAppBar(
             )  },
             modifier = modifier,
             colors = topAppBarColors(
-                //containerColor = Color(0xfff55c7a)
             ),
             navigationIcon = {
                 Box {
@@ -454,13 +449,11 @@ fun UsuariosTopAppBar(
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Buscar",
-                        //tint = Color.Black
                     )
                 }
             }
         )
         Divider(
-            //color = Color.Black,
             thickness = 3.dp,
             modifier = Modifier.fillMaxWidth()
         )
@@ -493,7 +486,6 @@ fun UserSearchBarBelowAppBar(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            //.background(Color(0xFFF6BC66))
             .padding(bottom = 4.dp)
     ) {
         OutlinedTextField(
@@ -507,8 +499,7 @@ fun UserSearchBarBelowAppBar(
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "Buscar"//,
-                    //tint = Color(0xFF555555)
+                    contentDescription = "Buscar"
                 )
             },
             trailingIcon = {
@@ -516,8 +507,7 @@ fun UserSearchBarBelowAppBar(
                     IconButton(onClick = onClearClick) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Limpiar"//,
-                            //tint = Color(0xFF555555)
+                            contentDescription = "Limpiar"
                         )
                     }
                 }
@@ -545,7 +535,6 @@ fun UserSearchBarBelowAppBar(
                         .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp)),
                     shape = RoundedCornerShape(8.dp),
                     colors = CardDefaults.cardColors(
-                        //containerColor = Color.White
                     ),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {

@@ -48,12 +48,13 @@ import java.util.Locale
 import androidx.compose.ui.unit.dp
 import com.example.superahorro.ModeloDominio.Sesion
 
-object TablaEntryDestination {
-    val route = "item_entry"
-    val titleRes = "Crear tabla"
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * Pantalla que permite al usuario ingresar los datos de una nueva tabla y guardarlos.
+ *
+ * @param navigateBack Función que se ejecuta al guardar o cancelar para volver atrás.
+ * @param canNavigateBack Indica si se puede volver atrás.
+ * @param viewModel ViewModel encargado de la lógica de entrada de datos.
+ */
 @Composable
 fun TablaEntryScreen(
     navigateBack: () -> Unit,
@@ -61,15 +62,7 @@ fun TablaEntryScreen(
     viewModel: TablaEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
-    Scaffold(
-        topBar = {
-//            InventoryTopAppBar(
-//                title = stringResource(ItemEntryDestination.titleRes),
-//                canNavigateBack = canNavigateBack,
-//                navigateUp = onNavigateUp
-//            )
-        }
-    ) { innerPadding ->
+    Scaffold { innerPadding ->
         ItemEntryBody(
             tablaUiState = viewModel.tablaUiState,
             onItemValueChange = viewModel::updateUiState,
@@ -90,7 +83,14 @@ fun TablaEntryScreen(
         )
     }
 }
-
+/**
+ * Cuerpo del formulario de entrada de la tabla, incluye campos y el botón de guardar.
+ *
+ * @param tablaUiState Estado de la UI con los datos actuales y su validez.
+ * @param onItemValueChange Función que se llama cuando se modifica algún campo del formulario.
+ * @param onSaveClick Acción a realizar al hacer clic en el botón de guardar.
+ * @param modifier Modificador de estilo para ajustar el diseño.
+ */
 @Composable
 fun ItemEntryBody(
     tablaUiState: TablaUiState,
@@ -117,7 +117,14 @@ fun ItemEntryBody(
         }
     }
 }
-
+/**
+ * Formulario de entrada de los campos que conforman una tabla.
+ *
+ * @param detallesTabla Datos actuales de la tabla a mostrar o editar.
+ * @param modifier Modificador para ajustar el diseño del formulario.
+ * @param onValueChange Función que se llama al modificar algún campo editable.
+ * @param enabled Indica si los campos deben estar habilitados para edición.
+ */
 @Composable
 fun TablaInputForm(
     detallesTabla: DetallesTabla,
@@ -125,7 +132,6 @@ fun TablaInputForm(
     onValueChange: (DetallesTabla) -> Unit = {},
     enabled: Boolean = true
 ) {
-    val nombreAutor = Sesion.usuario?.nombre ?: "Anónimo"
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -158,46 +164,6 @@ fun TablaInputForm(
             enabled = false,
             singleLine = true
         )
-//        OutlinedTextField(
-//            value = detallesTabla.valoracion,
-//            onValueChange = { onValueChange(detallesTabla.copy(valoracion = it)) },
-//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-//            label = { Text("Valoracion") },
-//            colors = OutlinedTextFieldDefaults.colors(
-//                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-//                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-//                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-//            ),
-//            modifier = Modifier.fillMaxWidth(),
-//            enabled = enabled,
-//            singleLine = true
-//        )
-//        OutlinedTextField(
-//            value = itemDetails.supermercado,
-//            onValueChange = { onValueChange(itemDetails.copy(supermercado = it)) },
-//            label = { Text(stringResource(R.string.supermercado_req)) },
-//            colors = OutlinedTextFieldDefaults.colors(
-//                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-//                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-//                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-//            ),
-//            modifier = Modifier.fillMaxWidth(),
-//            enabled = enabled,
-//            singleLine = true
-//        )
-//        OutlinedTextField(
-//            value = itemDetails.autor,
-//            onValueChange = { onValueChange(itemDetails.copy(autor = it)) },
-//            label = { Text(stringResource(R.string.autor)) },
-//            colors = OutlinedTextFieldDefaults.colors(
-//                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-//                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-//                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-//            ),
-//            modifier = Modifier.fillMaxWidth(),
-//            enabled = enabled,
-//            singleLine = true
-//        )
         if (enabled) {
             Text(
                 text = "Campos obligatorios",

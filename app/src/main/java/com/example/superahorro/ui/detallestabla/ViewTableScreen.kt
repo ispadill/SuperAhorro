@@ -63,7 +63,18 @@ import com.example.superahorro.ui.AppViewModelProvider
 import com.example.superahorro.ui.tabla.TablaDetailsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-
+/**
+ * Pantalla para obtener los datos relativos a la tabla, y poder realizar acciones sobre la misma.
+ *
+ *  Se indican sus características, y un texto indicando si la tabla ya es pública.
+ * @param tablaId ID de la tabla a visualizar.
+ * @param navigateToEditTabla Función de navegación para editar la tabla.
+ * @param onReturnClicked Callback que se ejecuta al volver atrás tras borrar.
+ * @param onAddFavoritosClicked Callback que se ejecuta al añadir la tabla a favoritos.
+ * @param onPublicarClicked Callback que se ejecuta al publicar o despublicar la tabla.
+ * @param modifier Modificador para aplicar ajustes de diseño a la pantalla.
+ * @param viewModel ViewModel utilizado para obtener y gestionar los datos de la tabla.
+ */
 @Composable
 fun ViewTableScreen(
     tablaId: Int,
@@ -83,13 +94,6 @@ fun ViewTableScreen(
     val coroutineScope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Scaffold(
-        topBar = {
-//            InventoryTopAppBar(
-//                title = stringResource(ItemDetailsDestination.titleRes),
-//                canNavigateBack = true,
-//                navigateUp = navigateBack
-//            )
-        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { uiState.tablaUsuario?.let { navigateToEditTabla(tablaId) } },
@@ -153,7 +157,18 @@ fun ViewTableScreen(
 }
 
 
-
+/**
+ * Muestra los detalles de una tabla, y e incluye botones para permitir realizar,
+ * acciones como publicarla/despublicarla añadirla a favoritos o eliminarla.
+ *
+ * @param onPublicarClicked Callback que se ejecuta después de publicar o despublicar la tabla.
+ * @param onDelete Callback que se ejecuta al confirmar la eliminación de la tabla.
+ * @param onAddFavoritosClicked Callback que se ejecuta al añadir la tabla a favoritos.
+ * @param scope CoroutineScope para ejecutar operaciones asíncronas como actualizaciones en base de datos.
+ * @param context Contexto de la aplicación, necesario para acceder a la base de datos.
+ * @param tabla Objeto de tipo [Tabla] que contiene la información que se va a mostrar y gestionar.
+ * @param modifier Modificador para aplicar ajustes de diseño al contenedor de esta función.
+ */
 @Composable
 private fun DetallesTablaCuerpo(
     onPublicarClicked: () -> Unit,
@@ -269,7 +284,14 @@ private fun DetallesTablaCuerpo(
         }
     }
 }
-
+/**
+ * Muestra los datos básicos de una tabla: título, autor y valoración.
+ * También muestra un aviso indicando si la tabla es pública.
+ *
+ * @param tabla Objeto de tipo [Tabla] con los datos a mostrar.
+ * @param esPublica Indica si la tabla está publicada.
+ * @param modifier Modificador para aplicar ajustes de diseño al componente.
+ */
 @Composable
 fun DetallesTabla(
     tabla: Tabla,
@@ -320,7 +342,13 @@ fun DetallesTabla(
 
     }
 }
-
+/**
+ * Muestra la fila de la tabla, en formato adecuado.
+ *
+ * @param label Texto descriptivo que actúa como etiqueta.
+ * @param itemDetail Valor asociado a la etiqueta que se muestra en negrita.
+ * @param modifier Modificador para aplicar ajustes de diseño a la fila.
+ */
 @Composable
 private fun FilaTabla(
      label: String, itemDetail: String, modifier: Modifier = Modifier
@@ -331,7 +359,13 @@ private fun FilaTabla(
         Text(text = itemDetail, fontWeight = FontWeight.Bold)
     }
 }
-
+/**
+ * Muestra un cuadro de diálogo de confirmación para eliminar una tabla.
+ *
+ * @param onDeleteConfirm Callback que se ejecuta cuando se confirma la eliminación.
+ * @param onDeleteCancel Callback que se ejecuta cuando se cancela la eliminación.
+ * @param modifier Modificador para aplicar ajustes de diseño al diálogo.
+ */
 @Composable
 private fun DeleteConfirmationDialog(
     onDeleteConfirm: () -> Unit, onDeleteCancel: () -> Unit, modifier: Modifier = Modifier

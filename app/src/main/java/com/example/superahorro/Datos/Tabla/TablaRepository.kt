@@ -47,8 +47,9 @@ class TablaRepository(private val tablaDao: TablaDAO) {
      * Obtiene el número total de tablas
      */
     suspend fun countTablas(): Int = tablaDao.countTablas()
-
+    /**
+     * Elimina todas las tablas de la base de datos
+     */
     suspend fun deleteAll()=tablaDao.deleteAll()
 
-    suspend fun insertAndGetId(tabla: Tabla): Long=tablaDao.insertAndGetId(tabla)
 }

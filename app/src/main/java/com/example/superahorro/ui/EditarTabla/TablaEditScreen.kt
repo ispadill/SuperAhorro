@@ -53,7 +53,13 @@ object TablaEditDestination{
     val routeWithArgs = "$route/{$tablaIdArg}"
 }
 
-
+/**
+ * Pantalla para editar los detalles de una tabla existente.
+ *
+ * @param navigateBack Callback que se ejecuta al guardar o cancelar para volver atrás.
+ * @param modifier Modificador para aplicar ajustes de diseño a la pantalla.
+ * @param viewModel ViewModel asociado a la pantalla, encargado de la lógica de edición.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TablaEditScreen(

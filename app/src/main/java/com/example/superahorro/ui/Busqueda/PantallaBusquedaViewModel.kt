@@ -188,15 +188,11 @@ class PantallaBusquedaViewModel(
             }
         }
     }
-
     /**
-     * Limpia el término de búsqueda
+     * Cierra la sesión del usuario actual
+     * Regresa a la pantalla de login
      */
-    fun limpiarBusqueda() {
-        _uiState.update { it.copy(searchQuery = "", searchResults = emptyList()) }
-    }
-
-    suspend fun cerrarSesion(navController: NavHostController) {
+    fun cerrarSesion(navController: NavHostController) {
         Sesion.usuario = null
         Sesion.fechaLogin = Date()
 

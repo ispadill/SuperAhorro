@@ -1,7 +1,9 @@
 package com.example.superahorro.ui.theme
 
 import androidx.compose.ui.graphics.Color
-
+/**
+ * Archivo para guardar los colores de la app
+ */
 val md_theme_light_primary = Color(0xfff55c7a)
 val md_theme_light_onPrimary = Color(0xFF000000)
 val md_theme_light_primaryContainer = Color(0xfff55c7a)

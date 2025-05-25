@@ -24,7 +24,9 @@ abstract class BaseDeDatos : RoomDatabase() {
     abstract fun tablaDao(): TablaDAO
     abstract fun plantillaDao(): PlantillaDAO
     abstract fun anonimosDao(): AnonimosDAO
-
+    /**
+     * Objeto singleton para crear/obtener la BD
+     * */
     companion object {
         @Volatile
         private var Instance: BaseDeDatos? = null

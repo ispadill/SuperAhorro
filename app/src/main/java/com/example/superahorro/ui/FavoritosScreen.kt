@@ -94,8 +94,7 @@ fun FavoritosScreen(
     
     // UI con barra superior, inferior y lista de favoritas
     Scaffold(
-        modifier = Modifier.fillMaxSize()//.background(color = Color(0xfff6bc66)),
-        //containerColor = Color(0xfff6bc66),
+        modifier = Modifier.fillMaxSize()
         ,
         topBar = {
             if (navHostController != null) {

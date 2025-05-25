@@ -36,9 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.superahorro.Datos.Loggeado
 import com.example.superahorro.R
-import com.example.superahorro.ModeloDominio.Sesion
 
 
 
@@ -95,7 +93,6 @@ fun LoginScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        //containerColor = Color(0xfff6bc66), // Fondo de la pantalla
 
     ) { innerPadding ->
         Column(

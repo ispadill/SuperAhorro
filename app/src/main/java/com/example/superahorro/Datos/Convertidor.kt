@@ -4,6 +4,9 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
+/**
+ * Clase encargada de la transformación de archivos parseables a objetos, para su difusión por la aplicación
+ */
 class Convertidor {
     private val gson = Gson()
 

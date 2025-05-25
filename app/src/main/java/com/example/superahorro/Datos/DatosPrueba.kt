@@ -13,7 +13,8 @@ import java.io.FileOutputStream
 import kotlin.random.Random
 
 /**
- * Clase para generar y cargar datos de prueba en la base de datos
+ * Clase para generar y cargar datos de prueba en la base de datos.
+ * En el despliegue, se eliminará de la app.
  */
 class DatosPrueba {
     companion object {
