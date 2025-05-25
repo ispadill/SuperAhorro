@@ -638,8 +638,9 @@ fun BottomNavigationBar(
             }
             IconButton(
                 onClick = onFavoritesClicked,
-                modifier = Modifier.padding(horizontal = 28.dp)) {
-                Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favoritos",Modifier.size(40.dp))
+                modifier = Modifier.padding(horizontal = 18.dp)
+                .size(100.dp)){
+                Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favoritos",Modifier.size(35.dp))
             }
         }
     )
