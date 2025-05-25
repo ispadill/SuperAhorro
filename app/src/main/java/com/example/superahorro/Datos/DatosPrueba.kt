@@ -11,6 +11,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.random.Random
+import androidx.core.content.edit
 
 /**
  * Clase para generar y cargar datos de prueba en la base de datos.
@@ -22,9 +23,13 @@ class DatosPrueba {
          * Genera y carga todos los datos de prueba en la base de datos
          */
         suspend fun cargarDatosPrueba(context: Context) {
+            val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+            val datosCargados = prefs.getBoolean("datos_prueba_cargados", false)
+
             val db = BaseDeDatos.getDatabase(context.applicationContext)
             val directorioImagenes = context.getDir("profile_images", Context.MODE_PRIVATE)
 
+            if (datosCargados) return
 
             withContext(Dispatchers.IO) {
 
@@ -33,12 +38,6 @@ class DatosPrueba {
                         file.delete()
                     }
                 }
-
-                db.tablaDao().deleteAll()
-                db.usuarioDao().deleteAll()
-                db.loggeadoDao().deleteAll()
-                db.plantillaDao().deleteAll()
-                db.anonimosDao().deleteAll()
 
                 val defaultBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.logoapp)
                 val defaultFile = File(directorioImagenes, "default.jpg")
@@ -83,6 +82,8 @@ class DatosPrueba {
                 usuariosActualizados.forEach { loggeado ->
                     db.loggeadoDao().update(loggeado)
                 }
+
+                prefs.edit() { putBoolean("datos_prueba_cargados", true) }
             }
         }
 
