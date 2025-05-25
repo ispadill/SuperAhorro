@@ -289,7 +289,11 @@ fun UsuarioItem(
     val imagenPerfil = usuarioConRating.imagenPerfilBitmap ?:
     viewModel.cargarImagenPerfil(context, usuario.id)
 
-
+    /**
+    * Variables para asignar colores a las tablas
+    * Los colores de las tablas no se toman del theme porque se construyen externamente,
+    * por lo que el color se indica en la construcción
+    */
     var color: Color
     var colorCardBorder: Color
     var colorBoxBorder: Color

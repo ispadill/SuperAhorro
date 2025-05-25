@@ -65,6 +65,11 @@ fun FavoritosScreen(
     val scope = rememberCoroutineScope()
     var tablasFavoritas by remember { mutableStateOf<List<Tabla>>(emptyList()) }
 
+    /**
+    * Variables para asignar colores a las tablas favoritas
+    * Los colores de las tablas favoritas no se toman del theme porque se construyen externamente,
+    * por lo que el color se indica en la construcción
+    */
     var color: Color
     var colorCardBorder: Color
     var colorBotonQuitar: Color

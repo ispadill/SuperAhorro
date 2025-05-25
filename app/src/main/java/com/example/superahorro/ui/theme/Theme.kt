@@ -19,8 +19,10 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.example.superahorro.ui.theme.*
 /**
- * Variable para hacer referencia a los colores de la app
- */
+* Indica qué color se usará para cada elemento
+* Se puede añadir o eliminar colores generales de la aplicación aquí y llamarlos en otros sitios
+* Si se añade un elemento se tendrá que indicar a qué color de Color.kt corresponde
+*/
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
     onPrimary = md_theme_light_onPrimary,
@@ -85,20 +87,13 @@ private val DarkColors = darkColorScheme(
     scrim = md_theme_dark_scrim,
 )
 
-/* Other default colors to override
-background = Color(0xFFFFFBFE),
-surface = Color(0xFFFFFBFE),
-onPrimary = Color.White,
-onSecondary = Color.White,
-onTertiary = Color.White,
-onBackground = Color(0xFF1C1B1F),
-onSurface = Color(0xFF1C1B1F),
+/**
+* Lógica para el uso de los colores en toda la aplicación
 */
-
 @Composable
 fun SuperAhorroTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
+    // El color dinámico está disponible desde Android +12
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {

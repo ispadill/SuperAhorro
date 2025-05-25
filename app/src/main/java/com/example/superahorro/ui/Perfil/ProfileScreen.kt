@@ -99,6 +99,9 @@ fun ProfileScreen(
     }
 
     var color: Color
+    /**
+* Variable para la asignación de colores al perfil.
+*/
     var colorBoxBorder: Color
     var colorCardBorder: Color
 

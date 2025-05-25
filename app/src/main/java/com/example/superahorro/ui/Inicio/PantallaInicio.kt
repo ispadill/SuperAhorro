@@ -296,7 +296,11 @@ fun TablaItem(
     tabla: Tabla,
     modifier: Modifier = Modifier,
 ) {
-
+    /**
+* Variables para asignar colores a las tablas
+* Los colores de las tablas no se toman del theme porque se construyen externamente,
+* por lo que el color se indica en la construcción
+*/
     var color: Color
     var colorCardBorder: Color
 
@@ -605,7 +609,11 @@ fun BottomNavigationBar(
     onProfileClicked: () -> Unit,
     onFavoritesClicked: () -> Unit,
 ) {
-
+    /**
+* Variables para asignar colores a la barra inferior
+* Los colores de la barra inferior no se toma del theme porque se construye externamente y se pasa a diferentes pantallas,
+* por lo que el color se indica en la construcción.
+*/
     var bottomBarColor: Color
     var onBottomBarColor: Color
 

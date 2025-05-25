@@ -127,7 +127,9 @@ fun EditProfileScreen(
     val selectedImageUri = remember { mutableStateOf<Uri?>(null) }
 
     val currentImageUri = remember { mutableStateOf<Uri?>(null) }
-
+    /**
+    * Variables para asignar colores al borde de la foto de perfil y el icono de edit
+    */
     var color: Color
     var colorIconoEdit: Color
     var colorBordeIconoEdit: Color

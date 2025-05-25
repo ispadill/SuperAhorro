@@ -83,7 +83,9 @@ fun PantallaPerfilUsuario(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val imagenPerfil = uiState.imagenPerfilBitmap
     val usuario = uiState.usuario
-
+    /**
+    * Variables para asignar colores al Card con el texto "Tablas"
+    */
     var color: Color
     var colorBoxBorder: Color
     var colorCardBorder: Color
