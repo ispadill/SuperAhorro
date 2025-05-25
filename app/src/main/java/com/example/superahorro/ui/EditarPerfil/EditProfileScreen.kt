@@ -85,6 +85,15 @@ import java.io.FileOutputStream
 
 
 
+/**
+ * Pantalla que muestra el perfil del usuario con sus datos personales y permite modificarlos.
+ *
+ * @param onAcceptChangesClicked Callback para modificar los datos del perfil
+ * @param onHomeButtonClicked Callback para navegar al inicio
+ * @param onSearchClicked Callback para realizar búsquedas
+ * @param onProfileClicked Callback para acceder al perfil
+ * @param onFavoritesClicked Callback para acceder a favoritos
+ */
 @Composable
 
 fun EditProfileScreen(
@@ -218,7 +227,11 @@ fun EditProfileScreen(
         }
 
     }
-
+	/**
+	 * Funcion para la gestion de imagenes
+	 * Si la aplicación ya tiene permisos de almacenamiento, lanza un selector de imágenes desde la galería.
+	 * En caso contrario, solicita al usuario el permiso necesario para acceder al almacenamiento.
+	 */
     fun handleImageClick() {
 
         if (hasStoragePermission.value) {
@@ -232,7 +245,10 @@ fun EditProfileScreen(
         }
 
     }
-
+	
+	/**
+	 * Función para modificar los datos del usuario en la BD y en sesion.
+	 */
     fun updateFields() {
         when {
             fullName.value.isEmpty() -> errorMessage.value = "Por favor, ingrese un nombre."
@@ -694,7 +710,11 @@ fun EditProfileScreen(
 }
 
 
-
+/**
+ * Previsualización de la pantalla de editar perfil para Android Studio.
+ *
+ * Muestra una representación estática del diseño para facilitar el desarrollo.
+ */
 @Preview(showBackground = true)
 
 @Composable

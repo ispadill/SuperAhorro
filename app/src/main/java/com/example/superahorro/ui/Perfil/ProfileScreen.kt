@@ -64,7 +64,7 @@ import java.io.File
 
 
 /**
- * Pantalla principal que muestra el perfil del usuario con sus datos personales.
+ * Pantalla que muestra el perfil del usuario con sus datos personales.
  *
  * @param onEditProfileClicked Callback para editar el perfil
  * @param onHomeButtonClicked Callback para navegar al inicio

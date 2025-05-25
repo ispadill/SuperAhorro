@@ -65,7 +65,20 @@ import com.example.superahorro.R
 
 
 
-
+/**
+ * Pantalla de registro de la aplicación que muestra un formulario para que rellene el usuario.
+ *
+ * Utiliza un [Scaffold] para estructurar los componentes principales:
+ * - floatingActionButton para volver al formulario de login
+ * - Box con un elemento Text para mostrar el nombre de la aplicacion
+ * - Box para mostrar la informacion del perfil (OutlinedTextField usuario, nombre completo, correo, contraseña y repetir contraseña para que el usuario rellene)
+ * - Boton de aceptar para registrarse
+ * - Box con una imagen del logo de la aplicacion
+ * - Todos estos elementos estan englobados en un Column
+ *
+ * @param onRegistrarClicked Callback para registrarse en la app (la funcion validateAndRegister comprueba si los datos introducidos son correctos y existe un usuario con ese nombre de usuario en la BD para que no haya nombres de usuario iguales al ser clave)
+ * @param onBackClicked Callback para navegación al formulario de login
+ */
 @Composable
 fun RegisterScreen(
     onRegistrarClicked: () -> Unit,
@@ -81,7 +94,10 @@ fun RegisterScreen(
     val password = remember { mutableStateOf("") }
     val password2 = remember { mutableStateOf("") }
     val errorMessage = remember { mutableStateOf("") }
-
+	
+	/**
+	 * Función para validar los datos del formulario de registro.
+	 */
     fun validateAndRegister() {
         when {
             fullName.value.isEmpty() -> errorMessage.value = "Por favor, ingrese su nombre completo."

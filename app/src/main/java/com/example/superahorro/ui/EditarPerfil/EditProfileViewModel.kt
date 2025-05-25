@@ -31,7 +31,11 @@ import java.io.File
 import java.io.FileOutputStream
 
 
-
+/**
+ * ViewModel para EditProfileScreen que recoge los datos que el usuario que ha iniciado sesion quiere cambiar y los modifica
+ *
+ * @param usuarioRepository Repositorio para acceder a los datos de usuarios
+ */
 class EditProfileViewModel(private val usuarioRepository: UsuarioRepository) : ViewModel() {
 
 
@@ -41,7 +45,10 @@ class EditProfileViewModel(private val usuarioRepository: UsuarioRepository) : V
     val uiState: StateFlow<EditUiState> = _uiState.asStateFlow()
 
 
-
+	/**
+     * Funcion para comprobar si existe un usuario logeado con ese nombre de usuario
+	 * Devuelve true en el caso que no exista, false en caso contrario
+     */
     suspend fun isUsernameValid(username: String): Boolean {
 
         return usuarioRepository.getLoggeadoById(username) == null
@@ -49,7 +56,9 @@ class EditProfileViewModel(private val usuarioRepository: UsuarioRepository) : V
     }
 
 
-
+	/**
+     * Funcion para llamar a isUsernameValid desde una corrutina
+     */
     fun isUsernameValidFromUi(username: String, onResult: (Boolean) -> Unit) {
 
         viewModelScope.launch {
@@ -63,7 +72,9 @@ class EditProfileViewModel(private val usuarioRepository: UsuarioRepository) : V
     }
 
 
-
+	/**
+     * Funcion que actualiza en la BD los nuevos datos del usuario
+     */
     suspend fun updateLog(log: Loggeado) {
 
         return usuarioRepository.updateLoggeado(log)
@@ -71,7 +82,9 @@ class EditProfileViewModel(private val usuarioRepository: UsuarioRepository) : V
     }
 
 
-
+	/**
+     * Funcion para llamar a updateLog desde una corrutina
+     */
     fun updateLogFromUi(log: Loggeado) {
 
         viewModelScope.launch {
@@ -91,7 +104,10 @@ class EditProfileViewModel(private val usuarioRepository: UsuarioRepository) : V
     }
 
 
-
+	/**
+     * Funcion para comprobar si existe un usuario logeado con ese nombre de usuario
+	 * Devuelve true en el caso que ya exista un logeado con ese username, false en caso contrario
+     */
     suspend fun isUsernameTaken(username: String): Boolean {
 
         return usuarioRepository.getLoggeadoById(username) != null
@@ -99,7 +115,9 @@ class EditProfileViewModel(private val usuarioRepository: UsuarioRepository) : V
     }
 
 
-
+	/**
+     * Funcion para llamar a isUsernameTaken desde una corrutina
+     */
     fun isUsernameTakenFromUi(username: String, onResult: (Boolean) -> Unit) {
 
         viewModelScope.launch {
@@ -218,6 +236,9 @@ class EditProfileViewModel(private val usuarioRepository: UsuarioRepository) : V
 
 
 
+/**
+ * Estado UI para la pantalla de modificar los datos del perfil
+ */
 data class EditUiState(
 
     val loggeado: Loggeado = Loggeado("", "", "", "", listOf(), listOf(), listOf(), listOf()),
